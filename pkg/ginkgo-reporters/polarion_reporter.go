@@ -17,7 +17,7 @@
  *
  */
 
-package reporters
+package ginkgo_reporters
 
 import (
 	"encoding/xml"
@@ -30,7 +30,7 @@ import (
 	"github.com/onsi/ginkgo/types"
 )
 
-var Polarion = &PolarionReporter{}
+var Polarion = PolarionReporter{}
 
 func init() {
 	flag.BoolVar(&Polarion.Run, "polarion", false, "Run Polarion reporter")
