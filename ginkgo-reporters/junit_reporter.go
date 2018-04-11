@@ -25,12 +25,12 @@ import (
 	"github.com/onsi/ginkgo/reporters"
 )
 
-var junitOutput = ""
+var JunitOutput = ""
 
 func init() {
-	flag.StringVar(&junitOutput, "junit-output", "", "Set path to Junit report.")
+	flag.StringVar(&JunitOutput, "junit-output", "", "Set path to Junit report.")
 }
 
 func NewJunitReporter() *reporters.JUnitReporter {
-	return reporters.NewJUnitReporter(junitOutput)
+	return reporters.NewJUnitReporter(JunitOutput)
 }
