@@ -34,53 +34,91 @@ import (
 var Polarion = PolarionReporter{}
 
 func init() {
-	flag.BoolVar(&Polarion.Run, "polarion", false, "Run Polarion reporter")
-	flag.StringVar(&Polarion.projectId, "polarion-project-id", "", "Set the Polarion project ID")
-	flag.StringVar(&Polarion.filename, "polarion-report-file", "polarion.xml", "Set the Polarion report file path")
+	flag.BoolVar(&Polarion.Run, "polarion-execution", false, "Run Polarion reporter")
+	flag.StringVar(&Polarion.ProjectId, "polarion-project-id", "", "Set Polarion project ID")
+	flag.StringVar(&Polarion.Filename, "polarion-report-file", "polarion_results.xml", "Set Polarion report file path")
+	flag.StringVar(&Polarion.PlannedIn, "polarion-custom-plannedin", "", "Set Polarion planned-in ID")
+	flag.StringVar(&Polarion.Tier, "test-tier", "", "Set test tier number")
 }
 
-type PolarionTestCases struct {
-	XMLName   xml.Name           `xml:"testcases"`
-	TestCases []PolarionTestCase `xml:"testcase"`
-	ProjectID string             `xml:"project-id,attr"`
+type PolarionTestSuite struct {
+	XMLName    xml.Name           `xml:"testsuite"`
+	Tests      int                `xml:"tests,attr"`
+	Failures   int                `xml:"failures,attr"`
+	Time       float64            `xml:"time,attr"`
+	Properties PolarionProperties `xml:"properties"`
+	TestCases  []PolarionTestCase `xml:"testcase"`
 }
 
 type PolarionTestCase struct {
-	Title                Title                `xml:"title"`
-	Description          Description          `xml:"description"`
-	TestCaseCustomFields TestCaseCustomFields `xml:"custom-fields"`
+	Name           string               `xml:"name,attr"`
+	FailureMessage *JUnitFailureMessage `xml:"failure,omitempty"`
+	Skipped        *JUnitSkipped        `xml:"skipped,omitempty"`
+	SystemOut      string               `xml:"system-out,omitempty"`
 }
 
-type Title struct {
-	Content string `xml:",chardata"`
+type JUnitFailureMessage struct {
+	Type    string `xml:"type,attr"`
+	Message string `xml:",chardata"`
 }
 
-type Description struct {
-	Content string `xml:",chardata"`
+type JUnitSkipped struct {
+	XMLName xml.Name `xml:"skipped"`
 }
 
-type TestCaseCustomFields struct {
-	CustomFields []TestCaseCustomField `xml:"custom-field"`
+type PolarionProperties struct {
+	Property []PolarionProperty `xml:"property"`
 }
 
-type TestCaseCustomField struct {
-	Content string `xml:"content,attr"`
-	ID      string `xml:"id,attr"`
+type PolarionProperty struct {
+	Name  string `xml:"name,attr"`
+	Value string `xml:"value,attr"`
 }
 
 type PolarionReporter struct {
-	suite         PolarionTestCases
+	Suite         PolarionTestSuite
 	Run           bool
-	filename      string
-	projectId     string
-	testSuiteName string
+	Filename      string
+	TestSuiteName string
+	ProjectId     string
+	PlannedIn     string
+	Tier          string
 }
 
 func (reporter *PolarionReporter) SpecSuiteWillBegin(config config.GinkgoConfigType, summary *types.SuiteSummary) {
-	reporter.suite = PolarionTestCases{
-		TestCases: []PolarionTestCase{},
+
+	reporter.Suite = PolarionTestSuite{
+		Properties: PolarionProperties{},
+		TestCases:  []PolarionTestCase{},
 	}
-	reporter.testSuiteName = summary.SuiteDescription
+
+	properties := PolarionProperties{
+		Property: []PolarionProperty{
+			{
+				Name:  "polarion-project-id",
+				Value: reporter.ProjectId,
+			},
+			{
+				Name:  "polarion-testcase-lookup-method",
+				Value: "name",
+			},
+			{
+				Name:  "polarion-custom-plannedin",
+				Value: reporter.PlannedIn,
+			},
+			{
+				Name:  "polarion-testrun-id",
+				Value: reporter.PlannedIn + "_" + reporter.Tier,
+			},
+			{
+				Name:  "polarion-custom-isautomated",
+				Value: "True",
+			},
+		},
+	}
+
+	reporter.Suite.Properties = properties
+	reporter.TestSuiteName = summary.SuiteDescription
 }
 
 func (reporter *PolarionReporter) SpecWillRun(specSummary *types.SpecSummary) {
@@ -92,6 +130,25 @@ func (reporter *PolarionReporter) BeforeSuiteDidRun(setupSummary *types.SetupSum
 func (reporter *PolarionReporter) AfterSuiteDidRun(setupSummary *types.SetupSummary) {
 }
 
+func failureMessage(failure types.SpecFailure) string {
+	return fmt.Sprintf("%s\n%s\n%s", failure.ComponentCodeLocation.String(), failure.Message, failure.Location.String())
+}
+
+func (reporter *PolarionReporter) handleSetupSummary(name string, setupSummary *types.SetupSummary) {
+	if setupSummary.State != types.SpecStatePassed {
+		testCase := PolarionTestCase{
+			Name: name,
+		}
+
+		testCase.FailureMessage = &JUnitFailureMessage{
+			Type:    reporter.failureTypeForState(setupSummary.State),
+			Message: failureMessage(setupSummary.Failure),
+		}
+		testCase.SystemOut = setupSummary.CapturedOutput
+		reporter.Suite.TestCases = append(reporter.Suite.TestCases, testCase)
+	}
+}
+
 func (reporter *PolarionReporter) SpecDidComplete(specSummary *types.SpecSummary) {
 	testName := fmt.Sprintf(
 		"%s: %s",
@@ -99,26 +156,53 @@ func (reporter *PolarionReporter) SpecDidComplete(specSummary *types.SpecSummary
 		strings.Join(specSummary.ComponentTexts[2:], " "),
 	)
 	testCase := PolarionTestCase{
-		Title:       Title{Content: testName},
-		Description: Description{Content: testName},
+		Name: testName,
 	}
-	customFields := TestCaseCustomFields{}
-	customFields.CustomFields = append(customFields.CustomFields, TestCaseCustomField{
-		Content: "automated",
-		ID:      "caseautomation",
-	})
-	testCase.TestCaseCustomFields = customFields
-
-	reporter.suite.TestCases = append(reporter.suite.TestCases, testCase)
+	if specSummary.State == types.SpecStateFailed || specSummary.State == types.SpecStateTimedOut || specSummary.State == types.SpecStatePanicked {
+		testCase.FailureMessage = &JUnitFailureMessage{
+			Type:    reporter.failureTypeForState(specSummary.State),
+			Message: failureMessage(specSummary.Failure),
+		}
+		testCase.SystemOut = specSummary.CapturedOutput
+	}
+	if specSummary.State == types.SpecStateSkipped || specSummary.State == types.SpecStatePending {
+		testCase.Skipped = &JUnitSkipped{}
+	}
+	reporter.Suite.TestCases = append(reporter.Suite.TestCases, testCase)
 }
 
 func (reporter *PolarionReporter) SpecSuiteDidEnd(summary *types.SuiteSummary) {
-	if reporter.projectId == "" {
+	if reporter.ProjectId == "" {
 		fmt.Println("Can not create Polarion report without project ID")
 		return
 	}
-	reporter.suite.ProjectID = reporter.projectId
+	if reporter.PlannedIn == "" {
+		fmt.Println("Can not create Polarion report without planned-in ID")
+		return
+	}
+	if reporter.Tier == "" {
+		fmt.Println("Can not create Polarion report without tier ID")
+		return
+	}
+
+	reporter.Suite.Tests = summary.NumberOfSpecsThatWillBeRun
+	reporter.Suite.Time = summary.RunTime.Seconds()
+	reporter.Suite.Failures = summary.NumberOfFailedSpecs
 
 	// generate polarion test cases XML file
-	polarion_xml.GeneratePolarionXmlFile(Polarion.filename, Polarion.suite)
+	polarion_xml.GeneratePolarionXmlFile(reporter.Filename, reporter.Suite)
+
+}
+
+func (reporter *PolarionReporter) failureTypeForState(state types.SpecState) string {
+	switch state {
+	case types.SpecStateFailed:
+		return "Failure"
+	case types.SpecStateTimedOut:
+		return "Timeout"
+	case types.SpecStatePanicked:
+		return "Panic"
+	default:
+		return ""
+	}
 }
