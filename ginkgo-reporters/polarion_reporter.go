@@ -20,11 +20,11 @@
 package ginkgo_reporters
 
 import (
-	"encoding/xml"
 	"flag"
 	"fmt"
-	"os"
 	"strings"
+
+	"kubevirt.io/qe-tools/polarion-xml"
 
 	"github.com/onsi/ginkgo/config"
 	"github.com/onsi/ginkgo/types"
@@ -38,37 +38,8 @@ func init() {
 	flag.StringVar(&Polarion.filename, "polarion-report-file", "polarion.xml", "Set the Polarion report file path")
 }
 
-type PolarionTestCases struct {
-	XMLName   xml.Name           `xml:"testcases"`
-	TestCases []PolarionTestCase `xml:"testcase"`
-	ProjectID string             `xml:"project-id,attr"`
-}
-
-type PolarionTestCase struct {
-	Title                Title                `xml:"title"`
-	Description          Description          `xml:"description"`
-	TestCaseCustomFields TestCaseCustomFields `xml:"custom-fields"`
-}
-
-type Title struct {
-	Content string `xml:",chardata"`
-}
-
-type Description struct {
-	Content string `xml:",chardata"`
-}
-
-type TestCaseCustomFields struct {
-	CustomFields []TestCaseCustomField `xml:"custom-field"`
-}
-
-type TestCaseCustomField struct {
-	Content string `xml:"content,attr"`
-	ID      string `xml:"id,attr"`
-}
-
 type PolarionReporter struct {
-	suite         PolarionTestCases
+	suite         polarion_xml.TestCases
 	Run           bool
 	filename      string
 	projectId     string
@@ -76,8 +47,8 @@ type PolarionReporter struct {
 }
 
 func (reporter *PolarionReporter) SpecSuiteWillBegin(config config.GinkgoConfigType, summary *types.SuiteSummary) {
-	reporter.suite = PolarionTestCases{
-		TestCases: []PolarionTestCase{},
+	reporter.suite = polarion_xml.TestCases{
+		TestCases: []polarion_xml.TestCase{},
 	}
 	reporter.testSuiteName = summary.SuiteDescription
 }
@@ -97,12 +68,12 @@ func (reporter *PolarionReporter) SpecDidComplete(specSummary *types.SpecSummary
 		specSummary.ComponentTexts[1],
 		strings.Join(specSummary.ComponentTexts[2:], " "),
 	)
-	testCase := PolarionTestCase{
-		Title:       Title{Content: testName},
-		Description: Description{Content: testName},
+	testCase := polarion_xml.TestCase{
+		Title:       polarion_xml.Title{Content: testName},
+		Description: polarion_xml.Description{Content: testName},
 	}
-	customFields := TestCaseCustomFields{}
-	customFields.CustomFields = append(customFields.CustomFields, TestCaseCustomField{
+	customFields := polarion_xml.TestCaseCustomFields{}
+	customFields.CustomFields = append(customFields.CustomFields, polarion_xml.TestCaseCustomField{
 		Content: "automated",
 		ID:      "caseautomation",
 	})
@@ -117,17 +88,7 @@ func (reporter *PolarionReporter) SpecSuiteDidEnd(summary *types.SuiteSummary) {
 		return
 	}
 	reporter.suite.ProjectID = reporter.projectId
-	file, err := os.Create(reporter.filename)
-	if err != nil {
-		fmt.Printf("Failed to create Polarion report file: %s\n\t%s", reporter.filename, err.Error())
-		return
-	}
-	defer file.Close()
-	file.WriteString(xml.Header)
-	encoder := xml.NewEncoder(file)
-	encoder.Indent("  ", "    ")
-	err = encoder.Encode(reporter.suite)
-	if err != nil {
-		fmt.Printf("Failed to generate Polarion report\n\t%s", err.Error())
-	}
+
+	// generate polarion test cases XML file
+	polarion_xml.GeneratePolarionXmlFile(Polarion.filename, &Polarion.suite)
 }
