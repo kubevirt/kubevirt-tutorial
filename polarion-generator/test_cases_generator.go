@@ -36,6 +36,7 @@ const (
 	ginkgoDescribe = "Describe"
 	ginkgoContext = "Context"
 	ginkgoSpecify = "Specify"
+	ginkgoTable = "DescribeTable"
 	ginkgoWhen = "When"
 	ginkgoBy = "By"
 	ginkgoIt = "It"
@@ -46,7 +47,12 @@ type ginkgoBlock struct {
 	rparenPos   []token.Pos
 	steps       []string
 	stepContext []token.Pos
-	inIt        bool
+	funcBlocks  []funcBlock
+}
+
+type funcBlock struct {
+	steps []string
+	name  string
 }
 
 func addCustomField(customFields *polarion_xml.TestCaseCustomFields, id, content string) {
@@ -77,8 +83,139 @@ func addTestStep(testCaseSteps *polarion_xml.TestCaseSteps, content string, prep
 	}
 }
 
+func parseFunc(block *funcBlock, funcBody *ast.BlockStmt) {
+	ast.Inspect(funcBody, func(n ast.Node) bool {
+		switch x := n.(type) {
+		case *ast.CallExpr:
+			ident, ok := x.Fun.(*ast.Ident)
+			if !ok {
+				return false
+			}
+
+			if ident.Name != ginkgoBy {
+				return false
+			} else {
+				lit, ok := x.Args[0].(*ast.BasicLit)
+				if !ok {
+					return false
+				}
+				block.steps = append(block.steps, strings.Trim(lit.Value, "\""))
+			}
+		}
+		return true
+	})
+}
+
+func parseIt(testcase *polarion_xml.TestCase, block *ginkgoBlock, funcBody *ast.BlockStmt) {
+	// add test steps from BeforeEach()
+	for i := len(block.stepContext) - 1; i >= 0; i-- {
+		if block.stepContext[i] > funcBody.Rbrace {
+			addTestStep(&testcase.TestCaseSteps, block.steps[i], true)
+		} else {
+			block.stepContext = block.stepContext[:len(block.rparenPos)-1]
+			block.steps = block.steps[:len(block.content)-1]
+		}
+	}
+
+	ast.Inspect(funcBody, func(n ast.Node) bool {
+		switch x := n.(type) {
+		case *ast.CallExpr:
+			var ident *ast.Ident
+			if v, ok := x.Fun.(*ast.Ident); ok {
+				ident = v
+			} else if v, ok := x.Fun.(*ast.SelectorExpr); ok {
+				ident = v.Sel
+			} else {
+				return false
+			}
+
+			for _, b := range block.funcBlocks {
+				if b.name == ident.Name {
+					for _, step := range b.steps {
+						addTestStep(&testcase.TestCaseSteps, step, false)
+					}
+					return true
+				}
+			}
+
+			if len(x.Args) < 1 {
+				return true
+			}
+
+			var content string
+			if v, ok := x.Args[0].(*ast.BasicLit); ok {
+				content = v.Value
+			} else if v, ok := x.Args[0].(*ast.SelectorExpr); ok {
+				content = v.Sel.Name
+			} else {
+				return true
+			}
+			value := strings.Trim(content, "\"")
+
+			switch ident.Name {
+			case ginkgoBy:
+				addTestStep(&testcase.TestCaseSteps, value, false)
+			case polarion_xml.CaseImportance, polarion_xml.CasePosNeg:
+				addCustomField(
+					&testcase.TestCaseCustomFields,
+					polarion_xml.FieldsIds[ident.Name],
+					polarion_xml.FieldsValues[value],
+				)
+			}
+		}
+		return true
+	})
+}
+
+func parseTable(testcases *polarion_xml.TestCases, block *ginkgoBlock, exprs []ast.Expr) {
+	lit := exprs[0].(*ast.BasicLit)
+	baseName := strings.Trim(lit.Value, "\"")
+
+	funLit := exprs[1].(*ast.FuncLit)
+	tempCase := &polarion_xml.TestCase{}
+	parseIt(tempCase, block, funLit.Body)
+
+	for _, entry := range exprs[2:] {
+		callerExpr := entry.(*ast.CallExpr)
+		for i := len(block.rparenPos) - 1; i >= 0; i-- {
+			if block.rparenPos[i] > callerExpr.Rparen {
+				break
+			} else {
+				block.rparenPos = block.rparenPos[:len(block.rparenPos)-1]
+				block.content = block.content[:len(block.content)-1]
+			}
+		}
+
+		var content string
+		if v, ok := callerExpr.Args[0].(*ast.BasicLit); ok {
+			content = v.Value
+		} else if v, ok := callerExpr.Args[0].(*ast.SelectorExpr); ok {
+			content = v.Sel.Name
+		}
+
+		value := strings.Trim(content, "\"")
+		title := fmt.Sprintf(
+			"%s:%s %s %s",
+			block.content[0],
+			strings.Join(block.content[1:], " "),
+			baseName,
+			value,
+		)
+		testCase := &polarion_xml.TestCase{
+			Title: polarion_xml.Title{Content: title},
+			Description: polarion_xml.Description{Content: title},
+			TestCaseCustomFields: tempCase.TestCaseCustomFields,
+			TestCaseSteps: tempCase.TestCaseSteps,
+		}
+		addCustomField(&testCase.TestCaseCustomFields, "caseautomation", "automated")
+		addCustomField(&testCase.TestCaseCustomFields, "testtype", "functional")
+		addCustomField(&testCase.TestCaseCustomFields, "upstream", "yes")
+		testcases.TestCases = append(testcases.TestCases, *testCase)
+	}
+}
+
 func fillPolarionTestCases(file string, testCases *polarion_xml.TestCases) {
-	// Create the AST by parsing src.
+	// Create the AST by parsing src
 	fset := token.NewFileSet() // positions are relative to fset
 	f, err := parser.ParseFile(fset, file, nil, 0)
 	if err != nil {
@@ -89,6 +226,22 @@ func fillPolarionTestCases(file string, testCases *polarion_xml.TestCases) {
 
 	ast.Inspect(f, func(n ast.Node) bool {
 		switch x := n.(type) {
+		case *ast.AssignStmt:
+			ident, ok := x.Lhs[0].(*ast.Ident)
+			if !ok {
+				return false
+			}
+
+			funcDef, ok := x.Rhs[0].(*ast.FuncLit)
+			if !ok {
+				return false
+			}
+
+			funcBlock := &funcBlock{name: ident.Name}
+			parseFunc(funcBlock, funcDef.Body)
+			block.funcBlocks = append(block.funcBlocks, *funcBlock)
+			return false
+
 		case *ast.CallExpr:
 			var ident *ast.Ident
 			if v, ok := x.Fun.(*ast.Ident); ok {
@@ -132,15 +285,12 @@ func fillPolarionTestCases(file string, testCases *polarion_xml.TestCases) {
 						}
 					}
 				}
-				block.inIt = false
 			case ginkgoBy:
-				if block.inIt {
-					testCase := &testCases.TestCases[len(testCases.TestCases) - 1]
-					addTestStep(&testCase.TestCaseSteps, value, false)
-				} else {
-					block.steps = append(block.steps, value)
-					block.stepContext = append(block.stepContext, block.rparenPos[len(block.rparenPos) - 1])
-				}
+				block.steps = append(block.steps, value)
+				block.stepContext = append(block.stepContext, block.rparenPos[len(block.rparenPos) - 1])
+			case ginkgoTable:
+				parseTable(testCases, block, x.Args)
+				return false
 			case ginkgoIt, ginkgoSpecify:
 				for i := len(block.rparenPos) - 1; i >= 0; i-- {
 					if block.rparenPos[i] > x.Rparen {
@@ -150,7 +300,7 @@ func fillPolarionTestCases(file string, testCases *polarion_xml.TestCases) {
 						block.content = block.content[:len(block.content)-1]
 					}
 				}
-				title := fmt.Sprintf("%s: %s %s", block.content[0], strings.Join(block.content[1:], " "), value)
+				title := fmt.Sprintf("%s:%s %s", block.content[0], strings.Join(block.content[1:], " "), value)
 				customFields := polarion_xml.TestCaseCustomFields{}
 				addCustomField(&customFields, "caseautomation", "automated")
 				addCustomField(&customFields, "testtype", "functional")
@@ -160,23 +310,10 @@ func fillPolarionTestCases(file string, testCases *polarion_xml.TestCases) {
 					Description: polarion_xml.Description{Content: title},
 					TestCaseCustomFields: customFields,
 				}
-
-				for i := len(block.stepContext) - 1; i >= 0; i-- {
-					if block.stepContext[i] > x.Rparen {
-						addTestStep(&testCase.TestCaseSteps, block.steps[i], true)
-					} else {
-						block.steps = block.steps[:len(block.steps)-1]
-						block.stepContext = block.stepContext[:len(block.stepContext)-1]
-					}
-				}
+				funLit := x.Args[1].(*ast.FuncLit)
+				parseIt(&testCase, block, funLit.Body)
 				testCases.TestCases = append(testCases.TestCases, testCase)
-				block.inIt = true
-			case polarion_xml.CaseImportance, polarion_xml.CasePosNeg:
-				addCustomField(
-					&testCases.TestCases[len(testCases.TestCases) - 1].TestCaseCustomFields,
-					polarion_xml.FieldsIds[ident.Name],
-					polarion_xml.FieldsValues[value],
-				)
+				return false
 			}
 		}
 		return true
