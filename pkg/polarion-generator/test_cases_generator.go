@@ -29,7 +29,7 @@ import (
 	"os"
 	"strings"
 
-	"kubevirt.io/qe-tools/polarion-xml"
+	"kubevirt.io/qe-tools/pkg/polarion-xml"
 )
 
 const (
@@ -214,14 +214,8 @@ func parseTable(testcases *polarion_xml.TestCases, block *ginkgoBlock, exprs []a
 	}
 }
 
-func fillPolarionTestCases(file string, testCases *polarion_xml.TestCases) {
-	// Create the AST by parsing src
-	fset := token.NewFileSet() // positions are relative to fset
-	f, err := parser.ParseFile(fset, file, nil, 0)
-	if err != nil {
-		panic(err)
-	}
-
+// FillPolarionTestCases parse ginkgo format test and fill polarion test cases struct accordingly
+func FillPolarionTestCases(f *ast.File, testCases *polarion_xml.TestCases) {
 	var block *ginkgoBlock
 
 	ast.Inspect(f, func(n ast.Node) bool {
@@ -300,7 +294,10 @@ func fillPolarionTestCases(file string, testCases *polarion_xml.TestCases) {
 						block.content = block.content[:len(block.content)-1]
 					}
 				}
-				title := fmt.Sprintf("%s:%s %s", block.content[0], strings.Join(block.content[1:], " "), value)
+				title := fmt.Sprintf("%s: %s", block.content[0], value)
+				if len(block.content[1:]) > 0 {
+					title = fmt.Sprintf("%s: %s %s", block.content[0], strings.Join(block.content[1:], " "), value)
+				}
 				customFields := polarion_xml.TestCaseCustomFields{}
 				addCustomField(&customFields, "caseautomation", "automated")
 				addCustomField(&customFields, "testtype", "functional")
@@ -347,7 +344,15 @@ func main() {
 	// parse all test files and fill polarion test cases
 	var testCases = &polarion_xml.TestCases{ProjectID: *polarionProjectId}
 	for _, file := range files {
-		fillPolarionTestCases(file, testCases)
+		// Create the AST by parsing src
+		fset := token.NewFileSet() // positions are relative to fset
+		f, err := parser.ParseFile(fset, file, nil, 0)
+		if err != nil {
+			panic(err)
+		}
+
+		// fill polarion test cases struct
+		FillPolarionTestCases(f, testCases)
 	}
 
 	// generate polarion test cases XML file

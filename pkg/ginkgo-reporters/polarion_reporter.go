@@ -24,7 +24,7 @@ import (
 	"fmt"
 	"strings"
 
-	"kubevirt.io/qe-tools/polarion-xml"
+	"kubevirt.io/qe-tools/pkg/polarion-xml"
 
 	"github.com/onsi/ginkgo/config"
 	"github.com/onsi/ginkgo/types"
