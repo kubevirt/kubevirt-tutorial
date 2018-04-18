@@ -91,7 +91,7 @@ var _ = Describe("Test Case Generator", func() {
 	})
 
 	It("should generate correct titles", func() {
-		generateNames := map[int]string {
+		generateNames := map[int]string{
 			0: "Test Case Generator: table test entry 1",
 			1: "Test Case Generator: table test entry 2",
 			2: "Test Case Generator: test context test it 1",
@@ -104,7 +104,7 @@ var _ = Describe("Test Case Generator", func() {
 	})
 
 	It("should generate correct steps", func() {
-		generatedSteps := map[int]polarion_xml.TestCaseSteps {
+		generatedSteps := map[int]polarion_xml.TestCaseSteps{
 			0: {
 				Steps: []polarion_xml.TestCaseStep{
 					{

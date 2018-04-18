@@ -41,18 +41,18 @@ const (
 	CaseNegative = "CaseNegative"
 )
 
-var FieldsIds = map[string]string {
+var FieldsIds = map[string]string{
 	CaseImportance: IdImportance,
-	CasePosNeg    : IdPosNeg,
+	CasePosNeg:     IdPosNeg,
 }
 
-var FieldsValues = map[string]string {
+var FieldsValues = map[string]string{
 	ImportanceCritical: "critical",
-	ImportanceHigh: "high",
-	ImportanceMedium: "medium",
-	ImportanceLow: "low",
-	CasePositive: "positive",
-	CaseNegative: "negative",
+	ImportanceHigh:     "high",
+	ImportanceMedium:   "medium",
+	ImportanceLow:      "low",
+	CasePositive:       "positive",
+	CaseNegative:       "negative",
 }
 
 func Importance(content string) {

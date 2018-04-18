@@ -21,8 +21,8 @@ package polarion_xml
 
 import (
 	"encoding/xml"
-	"os"
 	"fmt"
+	"os"
 )
 
 type TestCases struct {

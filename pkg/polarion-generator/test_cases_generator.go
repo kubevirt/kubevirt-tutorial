@@ -20,13 +20,13 @@
 package main
 
 import (
-	"fmt"
 	"flag"
+	"fmt"
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"path/filepath"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"kubevirt.io/qe-tools/pkg/polarion-xml"
@@ -34,12 +34,12 @@ import (
 
 const (
 	ginkgoDescribe = "Describe"
-	ginkgoContext = "Context"
-	ginkgoSpecify = "Specify"
-	ginkgoTable = "DescribeTable"
-	ginkgoWhen = "When"
-	ginkgoBy = "By"
-	ginkgoIt = "It"
+	ginkgoContext  = "Context"
+	ginkgoSpecify  = "Specify"
+	ginkgoTable    = "DescribeTable"
+	ginkgoWhen     = "When"
+	ginkgoBy       = "By"
+	ginkgoIt       = "It"
 )
 
 type ginkgoBlock struct {
@@ -68,11 +68,11 @@ func addTestStep(testCaseSteps *polarion_xml.TestCaseSteps, content string, prep
 		StepColumn: []polarion_xml.TestCaseStepColumn{
 			{
 				Content: content,
-				ID: "step",
+				ID:      "step",
 			},
 			{
 				Content: "Succeeded",
-				ID: "expectedResult",
+				ID:      "expectedResult",
 			},
 		},
 	}
@@ -202,10 +202,10 @@ func parseTable(testcases *polarion_xml.TestCases, block *ginkgoBlock, exprs []a
 			value,
 		)
 		testCase := &polarion_xml.TestCase{
-			Title: polarion_xml.Title{Content: title},
-			Description: polarion_xml.Description{Content: title},
+			Title:                polarion_xml.Title{Content: title},
+			Description:          polarion_xml.Description{Content: title},
 			TestCaseCustomFields: tempCase.TestCaseCustomFields,
-			TestCaseSteps: tempCase.TestCaseSteps,
+			TestCaseSteps:        tempCase.TestCaseSteps,
 		}
 		addCustomField(&testCase.TestCaseCustomFields, "caseautomation", "automated")
 		addCustomField(&testCase.TestCaseCustomFields, "testtype", "functional")
@@ -281,7 +281,7 @@ func FillPolarionTestCases(f *ast.File, testCases *polarion_xml.TestCases) {
 				}
 			case ginkgoBy:
 				block.steps = append(block.steps, value)
-				block.stepContext = append(block.stepContext, block.rparenPos[len(block.rparenPos) - 1])
+				block.stepContext = append(block.stepContext, block.rparenPos[len(block.rparenPos)-1])
 			case ginkgoTable:
 				parseTable(testCases, block, x.Args)
 				return false
@@ -303,8 +303,8 @@ func FillPolarionTestCases(f *ast.File, testCases *polarion_xml.TestCases) {
 				addCustomField(&customFields, "testtype", "functional")
 				addCustomField(&customFields, "upstream", "yes")
 				testCase := polarion_xml.TestCase{
-					Title: polarion_xml.Title{Content: title},
-					Description: polarion_xml.Description{Content: title},
+					Title:                polarion_xml.Title{Content: title},
+					Description:          polarion_xml.Description{Content: title},
 					TestCaseCustomFields: customFields,
 				}
 				funLit := x.Args[1].(*ast.FuncLit)
