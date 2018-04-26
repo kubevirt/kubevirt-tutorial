@@ -24,12 +24,19 @@ Because generator use static analysis of AST, it creates number of limitations
 ### Additional custom fields for a test
 
 You can automatically generate additional test custom fields like `importance` or `positive`,
-you just need to use calls to empty methods under a test.
+you just need to create relevant polarion comment under test case.
 ```
 ...
 It("should work", func() {
-    polarion_xml.Importance(polarion_xml.ImportanceCritical)
-    polarion_xml.Positive(polarion_xml.CaseNegative)
+    // +polarion:caseimportance=critical
+    // +polarion:caseposneg=positive
     ...
 })
-``` 
+```
+
+Custom fields
+
+Name | Supported Values
+--- | --- 
+caseimportance | critical, high, medium, low
+caseposneg | positive, negative

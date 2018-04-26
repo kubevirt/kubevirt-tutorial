@@ -42,6 +42,13 @@ const (
 	ginkgoIt       = "It"
 )
 
+const polarionPrefix = "+polarion:"
+
+var polarionCustomFields = map[string][]string{
+	"caseimportance": {"critical", "high", "medium", "low"},
+	"caseposneg":     {"positive", "negative"},
+}
+
 type ginkgoBlock struct {
 	content     []string
 	rparenPos   []token.Pos
@@ -110,7 +117,10 @@ func parseIt(testcase *polarion_xml.TestCase, block *ginkgoBlock, funcBody *ast.
 	// add test steps from BeforeEach()
 	for i := len(block.stepContext) - 1; i >= 0; i-- {
 		if block.stepContext[i] > funcBody.Rbrace {
-			addTestStep(&testcase.TestCaseSteps, block.steps[i], true)
+			if testcase.TestCaseSteps == nil {
+				testcase.TestCaseSteps = &polarion_xml.TestCaseSteps{}
+			}
+			addTestStep(testcase.TestCaseSteps, block.steps[i], true)
 		} else {
 			block.stepContext = block.stepContext[:len(block.rparenPos)-1]
 			block.steps = block.steps[:len(block.content)-1]
@@ -132,7 +142,10 @@ func parseIt(testcase *polarion_xml.TestCase, block *ginkgoBlock, funcBody *ast.
 			for _, b := range block.funcBlocks {
 				if b.name == ident.Name {
 					for _, step := range b.steps {
-						addTestStep(&testcase.TestCaseSteps, step, false)
+						if testcase.TestCaseSteps == nil {
+							testcase.TestCaseSteps = &polarion_xml.TestCaseSteps{}
+						}
+						addTestStep(testcase.TestCaseSteps, step, false)
 					}
 					return true
 				}
@@ -154,20 +167,17 @@ func parseIt(testcase *polarion_xml.TestCase, block *ginkgoBlock, funcBody *ast.
 
 			switch ident.Name {
 			case ginkgoBy:
-				addTestStep(&testcase.TestCaseSteps, value, false)
-			case polarion_xml.CaseImportance, polarion_xml.CasePosNeg:
-				addCustomField(
-					&testcase.TestCaseCustomFields,
-					polarion_xml.FieldsIds[ident.Name],
-					polarion_xml.FieldsValues[value],
-				)
+				if testcase.TestCaseSteps == nil {
+					testcase.TestCaseSteps = &polarion_xml.TestCaseSteps{}
+				}
+				addTestStep(testcase.TestCaseSteps, value, false)
 			}
 		}
 		return true
 	})
 }
 
-func parseTable(testcases *polarion_xml.TestCases, block *ginkgoBlock, exprs []ast.Expr) {
+func parseTable(testcases *polarion_xml.TestCases, block *ginkgoBlock, exprs []ast.Expr, customFields *polarion_xml.TestCaseCustomFields) {
 	lit := exprs[0].(*ast.BasicLit)
 	baseName := strings.Trim(lit.Value, "\"")
 
@@ -204,7 +214,7 @@ func parseTable(testcases *polarion_xml.TestCases, block *ginkgoBlock, exprs []a
 		testCase := &polarion_xml.TestCase{
 			Title:                polarion_xml.Title{Content: title},
 			Description:          polarion_xml.Description{Content: title},
-			TestCaseCustomFields: tempCase.TestCaseCustomFields,
+			TestCaseCustomFields: *customFields,
 			TestCaseSteps:        tempCase.TestCaseSteps,
 		}
 		addCustomField(&testCase.TestCaseCustomFields, "caseautomation", "automated")
@@ -214,8 +224,42 @@ func parseTable(testcases *polarion_xml.TestCases, block *ginkgoBlock, exprs []a
 	}
 }
 
+func parseComments(n ast.Node, commentMap *ast.CommentMap, customFields *polarion_xml.TestCaseCustomFields) {
+	for _, cg := range commentMap.Filter(n).Comments() {
+		for _, c := range cg.List {
+			if !strings.HasPrefix(strings.Trim(c.Text, "// "), polarionPrefix) {
+				continue
+			}
+			if polarionComment := strings.Split(c.Text, ":"); len(polarionComment) != 2 {
+				panic(fmt.Errorf("polarion comment %s has incorrect format", c.Text))
+			} else if polarionField := strings.Split(polarionComment[1], "="); len(polarionField) != 2 {
+				panic(fmt.Errorf("polarion comment %s has incorrect custom field format", c.Text))
+			} else {
+				supportedValues, ok := polarionCustomFields[polarionField[0]]
+				if !ok {
+					panic(fmt.Errorf("usupported polarion custom field id %s", polarionField[0]))
+				}
+				if isFieldValueSupported(polarionField[1], supportedValues) {
+					addCustomField(customFields, polarionField[0], polarionField[1])
+				} else {
+					panic(fmt.Errorf("usupported value %s for polarion custom field %s", polarionField[1], polarionField[0]))
+				}
+			}
+		}
+	}
+}
+
+func isFieldValueSupported(value string, supportedValues []string) bool {
+	for _, v := range supportedValues {
+		if v == value {
+			return true
+		}
+	}
+	return false
+}
+
 // FillPolarionTestCases parse ginkgo format test and fill polarion test cases struct accordingly
-func FillPolarionTestCases(f *ast.File, testCases *polarion_xml.TestCases) {
+func FillPolarionTestCases(f *ast.File, testCases *polarion_xml.TestCases, commentMap *ast.CommentMap) error {
 	var block *ginkgoBlock
 
 	ast.Inspect(f, func(n ast.Node) bool {
@@ -283,7 +327,9 @@ func FillPolarionTestCases(f *ast.File, testCases *polarion_xml.TestCases) {
 				block.steps = append(block.steps, value)
 				block.stepContext = append(block.stepContext, block.rparenPos[len(block.rparenPos)-1])
 			case ginkgoTable:
-				parseTable(testCases, block, x.Args)
+				customFields := polarion_xml.TestCaseCustomFields{}
+				parseComments(x, commentMap, &customFields)
+				parseTable(testCases, block, x.Args, &customFields)
 				return false
 			case ginkgoIt, ginkgoSpecify:
 				for i := len(block.rparenPos) - 1; i >= 0; i-- {
@@ -303,10 +349,11 @@ func FillPolarionTestCases(f *ast.File, testCases *polarion_xml.TestCases) {
 				addCustomField(&customFields, "testtype", "functional")
 				addCustomField(&customFields, "upstream", "yes")
 				testCase := polarion_xml.TestCase{
-					Title:                polarion_xml.Title{Content: title},
-					Description:          polarion_xml.Description{Content: title},
-					TestCaseCustomFields: customFields,
+					Title:       polarion_xml.Title{Content: title},
+					Description: polarion_xml.Description{Content: title},
 				}
+				parseComments(x, commentMap, &customFields)
+				testCase.TestCaseCustomFields = customFields
 				funLit := x.Args[1].(*ast.FuncLit)
 				parseIt(&testCase, block, funLit.Body)
 				testCases.TestCases = append(testCases.TestCases, testCase)
@@ -315,6 +362,7 @@ func FillPolarionTestCases(f *ast.File, testCases *polarion_xml.TestCases) {
 		}
 		return true
 	})
+	return nil
 }
 
 func main() {
@@ -322,6 +370,7 @@ func main() {
 	testsDir := flag.String("tests-dir", ".", "Directory with tests files")
 	outputFile := flag.String("output-file", "polarion.xml", "Generated polarion test cases")
 	polarionProjectId := flag.String("project-id", "", "Set the Polarion project ID")
+	dryRun := flag.String("dry-run", "false", "Dry-run property")
 	flag.Parse()
 
 	// collect all test files from the directory
@@ -342,17 +391,33 @@ func main() {
 	}
 
 	// parse all test files and fill polarion test cases
-	var testCases = &polarion_xml.TestCases{ProjectID: *polarionProjectId}
+	var testCases = &polarion_xml.TestCases{
+		ProjectID: *polarionProjectId,
+		Properties: polarion_xml.PolarionProperties{
+			Property: []polarion_xml.PolarionProperty{
+				{
+					Name:  "lookup-method",
+					Value: "name",
+				},
+				{
+					Name:  "dry-run",
+					Value: *dryRun,
+				},
+			},
+		},
+	}
 	for _, file := range files {
 		// Create the AST by parsing src
 		fset := token.NewFileSet() // positions are relative to fset
-		f, err := parser.ParseFile(fset, file, nil, 0)
+		f, err := parser.ParseFile(fset, file, nil, parser.ParseComments)
 		if err != nil {
 			panic(err)
 		}
+		// Create comment map
+		cmap := ast.NewCommentMap(fset, f, f.Comments)
 
 		// fill polarion test cases struct
-		FillPolarionTestCases(f, testCases)
+		FillPolarionTestCases(f, testCases, &cmap)
 	}
 
 	// generate polarion test cases XML file

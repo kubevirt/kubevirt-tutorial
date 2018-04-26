@@ -1,7 +1,7 @@
 all: build
 
 build:
-	cd pkg/ && got fmt ./... && go install -v ./...
+	cd pkg/ && go fmt ./... && go install -v ./...
 deps-update:
 	glide cc && glide update --strip-vendor
 	hack/dep-prune.sh

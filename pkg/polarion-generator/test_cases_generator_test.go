@@ -20,6 +20,7 @@
 package main
 
 import (
+	"go/ast"
 	"go/parser"
 	"go/token"
 
@@ -50,8 +51,8 @@ var _ = Describe("Test Case Generator", func() {
 	}
 
 	table.DescribeTable("table test", func() {
-		polarion_xml.Positive(polarion_xml.CasePositive)
-		polarion_xml.Importance(polarion_xml.ImportanceMedium)
+		// +polarion:caseposneg=positive
+		// +polarion:caseimportance=medium
 		By("Testing the table")
 		testNameFunc("table")
 		testFunc1()
@@ -63,8 +64,8 @@ var _ = Describe("Test Case Generator", func() {
 	
 	Context("test context", func() {
 	    It("test it 1", func() {
-			polarion_xml.Importance(polarion_xml.ImportanceCritical)
-			polarion_xml.Positive(polarion_xml.CaseNegative)
+			// +polarion:caseimportance=critical
+			// +polarion:caseposneg=negative
 			By("Testing it 1")
 			testFunc1()
 			By("Testing it 1")
@@ -72,7 +73,7 @@ var _ = Describe("Test Case Generator", func() {
 	})
 	
 	It("test it 2", func() {
-		polarion_xml.Importance(polarion_xml.ImportanceLow)
+		// +polarion:caseimportance=low
 		testFunc1()
 		By("Testing it 2")
 		By("Testing it 2")
@@ -82,10 +83,13 @@ var _ = Describe("Test Case Generator", func() {
 
 	BeforeEach(func() {
 		fset := token.NewFileSet() // positions are relative to fset
-		f, err := parser.ParseFile(fset, "", testSrc, 0)
+		f, err := parser.ParseFile(fset, "", testSrc, parser.ParseComments)
 		Expect(err).ToNot(HaveOccurred())
+
+		cmap := ast.NewCommentMap(fset, f, f.Comments)
+
 		testCases = &polarion_xml.TestCases{}
-		FillPolarionTestCases(f, testCases)
+		FillPolarionTestCases(f, testCases, &cmap)
 
 		Expect(len(testCases.TestCases)).To(Equal(4))
 	})

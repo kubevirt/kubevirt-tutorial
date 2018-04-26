@@ -26,16 +26,17 @@ import (
 )
 
 type TestCases struct {
-	XMLName   xml.Name   `xml:"testcases"`
-	TestCases []TestCase `xml:"testcase"`
-	ProjectID string     `xml:"project-id,attr"`
+	Properties PolarionProperties `xml:"properties"`
+	XMLName    xml.Name           `xml:"testcases"`
+	TestCases  []TestCase         `xml:"testcase"`
+	ProjectID  string             `xml:"project-id,attr"`
 }
 
 type TestCase struct {
 	Title                Title                `xml:"title"`
 	Description          Description          `xml:"description"`
 	TestCaseCustomFields TestCaseCustomFields `xml:"custom-fields"`
-	TestCaseSteps        TestCaseSteps        `xml:"test-steps"`
+	TestCaseSteps        *TestCaseSteps        `xml:"test-steps,omitempty"`
 }
 
 type Title struct {
@@ -68,7 +69,16 @@ type TestCaseStepColumn struct {
 	ID      string `xml:"id,attr"`
 }
 
-func GeneratePolarionXmlFile(outputFile string, testCases *TestCases) {
+type PolarionProperties struct {
+	Property []PolarionProperty `xml:"property"`
+}
+
+type PolarionProperty struct {
+	Name  string `xml:"name,attr"`
+	Value string `xml:"value,attr"`
+}
+
+func GeneratePolarionXmlFile(outputFile string, testCases interface{}) {
 	file, err := os.Create(outputFile)
 	if err != nil {
 		panic(fmt.Errorf("Failed to create Polarion report file: %s\n\t%s", outputFile, err.Error()))
