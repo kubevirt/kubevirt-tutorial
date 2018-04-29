@@ -23,8 +23,9 @@ import (
 	"encoding/xml"
 	"flag"
 	"fmt"
-	"os"
 	"strings"
+
+	"kubevirt.io/qe-tools/pkg/polarion-xml"
 
 	"github.com/onsi/ginkgo/config"
 	"github.com/onsi/ginkgo/types"
@@ -117,17 +118,7 @@ func (reporter *PolarionReporter) SpecSuiteDidEnd(summary *types.SuiteSummary) {
 		return
 	}
 	reporter.suite.ProjectID = reporter.projectId
-	file, err := os.Create(reporter.filename)
-	if err != nil {
-		fmt.Printf("Failed to create Polarion report file: %s\n\t%s", reporter.filename, err.Error())
-		return
-	}
-	defer file.Close()
-	file.WriteString(xml.Header)
-	encoder := xml.NewEncoder(file)
-	encoder.Indent("  ", "    ")
-	err = encoder.Encode(reporter.suite)
-	if err != nil {
-		fmt.Printf("Failed to generate Polarion report\n\t%s", err.Error())
-	}
+
+	// generate polarion test cases XML file
+	polarion_xml.GeneratePolarionXmlFile(Polarion.filename, Polarion.suite)
 }
