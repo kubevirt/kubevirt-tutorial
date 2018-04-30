@@ -36,7 +36,7 @@ type TestCase struct {
 	Title                Title                `xml:"title"`
 	Description          Description          `xml:"description"`
 	TestCaseCustomFields TestCaseCustomFields `xml:"custom-fields"`
-	TestCaseSteps        *TestCaseSteps        `xml:"test-steps,omitempty"`
+	TestCaseSteps        *TestCaseSteps       `xml:"test-steps,omitempty"`
 }
 
 type Title struct {
