@@ -64,7 +64,7 @@ var _ = Describe("ginkgo_reporters", func() {
 					Value: "QE",
 				},
 				{
-					Name:  "polarion-testcase-lookup-method",
+					Name:  "polarion-lookup-method",
 					Value: "name",
 				},
 				{
