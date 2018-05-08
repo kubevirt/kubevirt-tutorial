@@ -1,0 +1,24 @@
+---
+- name: Create Workflow Template for Terminate
+  command: >
+    tower-cli workflow create
+      --name="{{ tower_workflow_template_terminate }}"
+      --description="{{ tower_workflow_template_terminate_description }}"
+      --organization="{{ tower_org }}"
+      {{ tower_cli_options }}
+
+- debug:
+    var: "{{ item }}"
+    verbosity: 2
+  with_items:
+    - tower_workflow_template_terminate
+    - tower_workflow_template_terminate_schema
+
+- name: Copy Workflow Template Schema for Terminate
+  template:
+    src: "{{ tower_workflow_template_terminate_schema_path }}"
+    dest: "/tmp/{{ tower_workflow_template_terminate_schema_path }}"
+
+- name: Create Workflow Schema for Terminate
+  command: tower-cli workflow schema {{ tower_workflow_template_terminate }} @/tmp/{{ tower_workflow_template_terminate_schema_path }} {{ tower_cli_options }}
+...

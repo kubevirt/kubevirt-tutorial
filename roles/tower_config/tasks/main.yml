@@ -1,0 +1,55 @@
+---
+- set_fact:
+    student_id: "{{ inventory_hostname_short.split('-')[1] + '-' +  inventory_hostname_short.split('-')[2] }}"
+  when: not student_id is defined
+
+- import_tasks: config_type.yml
+
+- import_tasks: cli_options.yml
+
+- import_tasks: prereqs.yml
+  when: tower_prereqs_config|bool == true
+  tags: prereqs
+
+- import_tasks: admin_password.yml
+  when: tower_admin_password |bool == true
+  tags: admin_password
+
+- import_tasks: auth.yml
+  when: tower_cli_credentials_config|bool == true
+  tags: auth
+
+- import_tasks: user.yml
+  when: tower_user_add|bool == true
+  tags: user
+
+- import_tasks: org.yml
+  when: tower_org_config|bool == true
+  tags: org
+
+- import_tasks: credentials.yml
+  tags: credentials
+
+- import_tasks: inventory.yml
+  when: tower_inventory_config|bool == true
+  tags: inventory
+
+- import_tasks: projects.yml
+  tags: projects
+
+- import_tasks: job_templates.yml
+  tags: job_templates
+
+- import_tasks: openshift_configs.yml
+  tags: openshift_configs
+
+- import_tasks: letsencrypt.yml
+  when: tower_ssl_config|bool == true
+
+- import_tasks: workflows.yml
+  tags: workflows
+
+- import_tasks: deauth.yml
+  when: not tower_cli_credentials_keep|bool == true
+  tags: deauth
+...

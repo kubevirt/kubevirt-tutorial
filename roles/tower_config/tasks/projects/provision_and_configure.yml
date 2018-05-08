@@ -1,0 +1,22 @@
+---
+- name: Configure Project for Provision and Configure
+  command: >
+    tower-cli project create 
+      --name "{{ tower_project_provision_and_configure }}" 
+      --description "{{ tower_project_provision_and_configure_description }}" 
+      --organization "{{ tower_org }}" 
+      --scm-type "{{ tower_project_provision_and_configure_type }}" 
+      --scm-url "{{ tower_project_provision_and_configure_url }}" 
+      --scm-branch "{{ tower_project_provision_and_configure_branch }}" 
+      --scm-clean "{{ tower_project_provision_and_configure_clean }}" 
+      --scm-update-on-launch "{{ tower_project_provision_and_configure_update_on_launch }}" 
+      --scm-delete-on-update "{{ tower_project_provision_and_configure_delete_on_update }}"
+      {{ tower_cli_options }}
+
+- name: Update Project for Provision and Configure
+  command: >
+    tower-cli project update
+      --name "{{ tower_project_provision_and_configure }}"
+      --wait
+      {{ tower_cli_options }}
+...

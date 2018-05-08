@@ -1,0 +1,20 @@
+---
+- name: Unset Tower CLI Host
+  command: >
+    tower-cli config
+      --unset host
+      {{ tower_cli_options }}
+
+- name: Unset Tower CLI Username
+  command: >
+    tower-cli config
+      --unset username
+      {{ tower_cli_options }}
+
+- name: Unset Tower CLI Password
+  command: >
+    tower-cli config
+      --unset password
+      {{ tower_cli_options }}
+  no_log: True
+...

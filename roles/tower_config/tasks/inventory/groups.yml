@@ -1,0 +1,86 @@
+---
+- set_fact:
+    filter: "{{ 'tag' + ':' + 'student_id=' + student_id }}"
+
+- name: Configure Tower Inventory Group
+  tower_group:
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    name: "{{ tower_inventory_group }}"
+    description: "{{ tower_inventory_group_description }}"
+    inventory: "{{ tower_inventory }}"
+    state: present
+
+- name: Register SSL Variables
+  stat:
+    path: "{{ item }}"
+  with_items:
+    - "{{ tower_openshift_letsencrypt_config_dir }}/{{ letsencrypt_crt_filename }}"
+    - "{{ tower_openshift_letsencrypt_config_dir }}/{{ letsencrypt_ca_filename }}"
+    - "{{ tower_openshift_letsencrypt_config_dir }}/{{ letsencrypt_key_filename }}"
+  register: tower_ssl_results
+
+- name: Debug SSL
+  debug:
+    var: item
+  with_items: tower_ssl_results.results
+
+- name: Set SSL Enabled Fact
+  set_fact:
+    ocp_ssl_enabled: true
+  when: item.stat.exists == true
+  with_items: "{{ tower_ssl_results.results }}"
+
+- name: Add OSEv3 Group
+  tower_group:
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    name: "{{ tower_openshift_install_group }}"
+    description: "{{ tower_openshift_install_group_description }}"
+    source: "manual"
+    inventory: "{{ tower_inventory }}"
+    state: present
+    variables: "{{ lookup('template', 'OSEv3.yml.j2') }}"
+  when: tower_openshift_install_group_config|bool == true
+
+- name: Add OSEv3 Children
+  tower_group:
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    name: "{{ item }}"
+    description: "{{ item + '_description' }}"
+    source: "manual"
+    inventory: "{{ tower_inventory }}"
+    state: present
+  with_items:
+    - "{{ tower_openshift_masters_group }}"
+    - "{{ tower_openshift_etcd_group }}"
+    - "{{ tower_openshift_nodes_group }}"
+    - "{{ tower_openshift_new_nodes_group }}"
+    - "{{ tower_master_tag }}"
+    - "{{ tower_node_tag }}"
+    - "{{ tower_new_node_tag }}"
+  when: 
+    - tower_openshift_masters_group_config|bool == true
+    - tower_openshift_etcd_group_config|bool == true
+    - tower_openshift_nodes_group_config|bool == true
+    - tower_openshift_new_nodes_group_config|bool == true
+
+- name: Associate OSEv3 Groups
+  command: >
+    tower-cli group associate
+      --group "{{ item.0 }}"
+      --parent "{{ item.1 }}"
+      --inventory "{{ tower_inventory }}"
+      {{ tower_cli_options }}
+  with_together:
+    - [ "{{ tower_openshift_nodes_group }}", "{{ tower_openshift_new_nodes_group }}", "{{ tower_new_node_tag }}", "{{ tower_node_tag }}", "{{ tower_openshift_masters_group }}", "{{ tower_master_tag }}", "{{ tower_openshift_etcd_group }}", "{{ tower_master_tag }}" ]
+    - [ "{{ tower_openshift_install_group }}", "{{ tower_openshift_install_group }}", "{{ tower_openshift_new_nodes_group }}", "{{ tower_openshift_nodes_group }}", "{{ tower_openshift_nodes_group }}", "{{ tower_openshift_masters_group }}", "{{ tower_openshift_masters_group }}", "{{ tower_openshift_etcd_group }}" ]
+  when: 
+    - tower_openshift_masters_group_config|bool == true
+    - tower_openshift_etcd_group_config|bool == true
+    - tower_openshift_nodes_group_config|bool == true
+    - tower_openshift_new_nodes_group_config|bool == true

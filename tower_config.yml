@@ -1,0 +1,15 @@
+---
+- name: Include tower_config role
+  hosts: tower_instances,tag_lab_role_tower
+  gather_facts: yes
+  vars:
+    - ansible_ssh_user: ec2-user
+  vars_files:
+    - aws_vars.yml
+  tasks:
+  - include_role:
+      name: tower_config
+    when: 
+      - not tower_config | default ('none', true) == 'none'
+      - tower_config is defined
+...

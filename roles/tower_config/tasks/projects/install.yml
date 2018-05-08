@@ -1,0 +1,34 @@
+---
+- name: Install playbooks for {{ tower_project_install }}
+  yum:
+    name: "{{ tower_project_install_package }}"
+    state: present
+  become: true
+
+- name: Create symbolic link to /usr/share
+  file:
+    src: /usr/share
+    dest: "{{ tower_projects_root }}/share"
+    owner: awx
+    group: awx
+    state: link
+  become: true
+
+- name: Copy Deploy Cluster Wrapper Playbook
+  become: true
+  copy:
+    src: deploy_cluster_wrapper.yml
+    dest: "{{ tower_projects_root }}/share/{{ tower_job_template_deploy_install_playbook }}"
+    owner: root
+    group: root
+
+- name: Add Tower Project for Install
+  command: >
+    tower-cli project create 
+      --name "{{ tower_project_install }}" 
+      --local-path "{{ tower_project_install_local_path }}"
+      --description "{{ tower_project_install_description }}" 
+      --organization "{{ tower_org }}" 
+      --scm-type "{{ tower_project_install_type }}" 
+      {{ tower_cli_options }}
+...

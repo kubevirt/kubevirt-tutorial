@@ -1,0 +1,19 @@
+---
+- name: Add user to manage Tower
+  command: >
+    tower-cli user create 
+      --username "{{ student_id }}"
+      --password "{{ tower_password }}"
+      --email "{{ student_id + '@example.org' }}"
+      --is-superuser true
+      {{ tower_cli_options }}
+
+- set_fact:
+    tower_username: "{{ student_id }}"
+
+# Re-run auth.yml which sets these options on the host since the user was added so it overwrites previous user of 'admin'
+- import_tasks: auth.yml
+
+# Reset cli_options using the newly created user
+- import_tasks: cli_options.yml
+...

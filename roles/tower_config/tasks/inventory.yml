@@ -1,0 +1,69 @@
+---
+- debug:
+    var: "{{ item }}"
+  with_items:
+    - tower_host
+    - tower_username
+    - tower_password
+    - tower_inventory
+    - tower_inventory_description
+    - tower_org
+    - tower_inventory_config
+
+- name: Add Tower inventory
+  tower_inventory:
+    name: "{{ tower_inventory }}"
+    description: "{{ tower_inventory_description }}"
+    organization: "{{ tower_org }}"
+    state: present
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+
+- name: Check for existing Tower Inventory Source
+  command: >
+    tower-cli inventory_source list
+      {{ tower_cli_options }}
+  register: tower_inventory_source_list
+
+- set_fact:
+    tower_inventory_source_exists: true
+  when: tower_inventory_group_source in tower_inventory_source_list.stdout
+
+- name: Modify Tower Inventory Source
+  command: >
+    tower-cli inventory_source modify
+      --name "{{ tower_inventory_group_source }}"
+      --instance-filters "{{ tower_inventory_group_source_filters }}"
+      --update-on-launch {{ tower_inventory_group_source_update_on_launch }}
+      --credential {{ tower_credential_cloud }}
+      --source {{ tower_inventory_group_source }}
+      --description "{{ tower_inventory_group_source_description }}"
+      --inventory "{{ tower_inventory }}"
+      --overwrite {{ tower_inventory_group_source_overwrite }}
+      --source-regions {{ aws_region }}
+      --overwrite-vars {{ tower_inventory_group_source_overwrite_vars }}
+      --source-vars "{{ tower_inventory_group_source_vars | to_yaml }}"
+      {{ tower_cli_options }}
+  when: tower_inventory_source_exists | default(False) | bool == True
+
+- name: Add Tower Inventory Source
+  command: >
+    tower-cli inventory_source create
+      --name "{{ tower_inventory_group_source }}"
+      --instance-filters "{{ tower_inventory_group_source_filters }}"
+      --update-on-launch {{ tower_inventory_group_source_update_on_launch }}
+      --credential {{ tower_credential_cloud }}
+      --source {{ tower_inventory_group_source }}
+      --description "{{ tower_inventory_group_source_description }}"
+      --inventory "{{ tower_inventory }}"
+      --overwrite {{ tower_inventory_group_source_overwrite }}
+      --source-regions {{ aws_region }}
+      --overwrite-vars {{ tower_inventory_group_source_overwrite_vars }}
+      --source-vars "{{ tower_inventory_group_source_vars | to_yaml }}"
+      {{ tower_cli_options }}
+  when: not tower_inventory_source_exists | default(False) | bool == True
+
+- import_tasks: inventory/groups.yml
+  when: tower_inventory_group_config|bool == true
+...

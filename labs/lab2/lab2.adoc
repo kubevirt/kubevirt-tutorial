@@ -1,0 +1,138 @@
+= Lab 2 - Exploring Ansible Tower Environment
+
+== Connectivity Details for This Lab
+
+image::../lab0/images/managing-ocp-overview/3.png[]
+
+[options="header"]
+|======================
+| *Item* | *URL* | *Access*
+| Ansible Tower|
+link:https://tower-<student_id>.labs.sysdeseng.com[https://tower-<student_id>.labs.sysdeseng.com] |
+Username: <student_id> +
+Password: INSTRUCTOR WILL PROVIDE
+| Linux SSH private key
+| link:https://instructor.labs.sysdeseng.com/summit/managing-ocp-install-beyond.pem[https://instructor.labs.sysdeseng.com/summit/managing-ocp-install-beyond.pem]
+| Username: student +
+Password: INSTRUCTOR WILL PROVIDE
+|======================
+
+== Overview
+
+With the installation of the OpenShift Container Platform started and an understanding of the environment as a whole, we are going to take time waiting for the installation to complete to explore the existing environment in further detail.
+
+=== Exploring Ansible Tower
+
+Ansible is an agentless automation engine that automates cloud provisioning, configuration management, application deployment, intra-service orchestration, along with many other IT needs. Ansible is used to provision, install and deploy the OpenShift Container Platform to a cluster of instances.
+
+Ansible Tower provides the central management of Ansible to enable complex workflows to efficiently manage environments big and small. The entire installation and management of the OpenShift Container Platform can be managed from a centralized Ansible Tower environment. In this lab, Ansible Tower is configured as a stand-alone VM on AWS.
+
+==== Accessing Ansible Tower CLI
+
+link:http://docs.ansible.com/ansible-tower/latest/html/towerapi/tower_cli.html[tower-cli] is a command line tool for Ansible Tower. It leverages the REST API to interact and manage Tower.
+
+First, connect to the Ansible Tower instance via SSH
+
+* Linux / macOS / Windows Subsystem for Linux
+
+Retrieve the `managing-ocp-install-beyond.pem` key from the instructor server so that you can _SSH_ into the instances by accessing the password protected directory from the table above. Download the _managing-ocp-install-beyond.pem_ file to your local machine and change the permissions of the file to 600.
+
+.workstation$
+[source, bash]
+----
+chmod 600 managing-ocp-install-beyond.pem
+ssh -i managing-ocp-install-beyond.pem ec2-user@tower-<student_id>.labs.sysdeseng.com
+----
+
+Once logged into Ansible Tower, explore the CLI.
+
+.tower$
+[source, bash]
+----
+tower-cli --help
+tower-cli version
+tower-cli host list
+tower-cli inventory list
+tower-cli job list
+tower-cli credential list
+tower-cli job_template list
+tower-cli group list
+tower-cli workflow list
+tower-cli project list
+----
+
+==== Accessing Ansible Tower Web Console
+
+From your workstation machine, open a web browser and navigate to link:https://tower-<student_id>.labs.sysdeseng.com[https://tower-<student_id>.labs.sysdeseng.com].
+
+Login with the provided credentials.
+
+If successful, you will then be placed at the Ansible Tower overview page:
+
+image::images/ansible-tower-overview.png[]
+
+====== Job Templates
+
+First, let's review the workflow job template that was just executed to provision the OpenShift Container Platform. This workflow template consists of three chained job templates:
+
+* 1-Deploy_OpenShift_on_AWS - Overall workflow template that ties the job templates together
+* Deploy-1-Provision - Job template that by provisions two AWS instances, a master and a node
+* Deploy-2-Prerequisites - Job template that installs OCP prerequisites onto the AWS instances
+* Deploy-3-Install - Job template that installs the OpenShift Container Platform on the instances provisioned previously
+* Deploy-4-Post-Install - Job template that customizes the OpenShift cluster for the lab
+
+Additional job templates relating to scaling the OpenShift environment and terminating the AWS instances have also been configured. A portion of these will be discussed in subsequent labs.
+
+===== Projects
+
+The Job Templates utilize Projects, or collections of Ansible playbooks, that in this lab are sourced from both a Git repository and the local file system on the Ansible Tower instance. To view the projects that are being utilized, select the **PROJECTS** link on the menu bar. Two projects are being leveraged:
+
+* Managing OCP from Install and Beyond - Customized Ansible tooling to perform pre and post installation steps sourced from a Git repository
+* openshift-ansible - Installs and configures the OpenShift Container Platform based on components from the `openshift-ansible-playbooks` rpm installed on the Tower machine
+
+image::images/ansible-tower-projects.png[]
+
+The configuration of each project can be viewed by selecting the pencil (edit) button under the _Actions_ column.
+
+===== Inventory
+
+An link:http://docs.ansible.com/ansible-tower/latest/html/userguide/inventories.html[inventory] within Ansible Tower is similar to a standalone inventory file and contains a collection of hosts in which jobs may be launched. The inventories defined within Tower can be accessed by clicking on the **INVENTORIES** link on the menu bar. Then click on the _OpenShift_ inventory.  Finally, click on the **GROUPS** box which  provides a top level container over several child groups, notably:
+
+* AWS - link:http://docs.ansible.com/ansible/latest/intro_dynamic_inventory.html[Dynamic inventory] used to populate group and host metadata retrieved from AWS
+* OSEv3 - Group utilized by the OpenShift Instllation. The instances being utilized are organized into _masters_ and _nodes_ child groups based on their overall role and purpose. Also included are child groups with the naming convention `tag_lab_role_*` that is populated with hosts from the AWS dynamic inventory. These tags are applied when the instances are created. To see how the tagging is accomplished view the task in the link:https://github.com/sabre1041/managing-ocp-install-beyond/blob/rhte/aws_create_hosts.yml#L16[provision playbook].
+
+image::images/ansible-tower-inventory.png[]
+
+Feel free to navigate through the various child groups within the _OSEv3_ group. Hosts and their attributes can also be shown to view the attributes retrieved from the AWS dynamic inventory.
+
+The most important component of the inventory for this usecase is the sets of inventory group variables defined within the _OSEv3_ group. These variables describe the state of the target OpenShift environment and drive the installation process. The variables can be seen by selecting the **Pencil** icon next to the OSEv3 group under the _Actions_ column.
+
+===== Credentials
+
+link:http://docs.ansible.com/ansible-tower/latest/html/userguide/credentials.html[Credentials] are a mechanism for authenticating against secure resources including target machines, inventory sources and projects leveraging version control systems. Every one of the previously explored areas makes use of a credential. Credentials are configured within the Ansible Tower settings and can be accessed by selecting the **Settings** icon (gear) on the menu bar. Once within the settings page, select the **Credentials** link. The following credentials have been defined:
+
+* AWS - Allows API access to link:http://docs.ansible.com/ansible-tower/latest/html/userguide/credentials.html#amazon-web-services[AWS] resources
+* SSH - Corresponds to the private key downloaded in lab0. Allows Tower to log in and configure instances running in AWS
+ platform
+
+image::images/ansible-tower-credentials.png[]
+
+===== Monitor the Progress of the OpenShift Installation
+
+While browsing through the features of Ansible Tower, keep an eye out on the progress of the job template executing the OpenShift installation. OpenShift will be successfully installed when the status of the _1-Deploy_OpenShift_on_AWS_ workflow job template reports as **Successful** from the **JOBS** page and the play recap reports no errors and appears similar to the following:
+
+image::images/ansible-tower-job-overview.png[]
+
+Further down, a visual depiction of the workflow can be seen. Click the **Details** link on each rectangle to see the details of each playbook. The overall workflow job is complete when all 3 playbooks are completed successfully.
+
+image::images/ansible-tower-workflow-diagram.png[]
+
+IMPORTANT: In the highly unlikely event that the installation of OpenShift Container Platform fails, it may be necessary to remove the OpenShift **master** and **node** instances and try _1-Deploy_OpenShift_on_AWS_ again. A job template named _Terminate-OCP_ can be executed to remove these instances which will allow you to attempt the workflow template again. However, be extremely careful not to launch _Terminate_All_ or _3-Terminate_All_ as this will also delete your Tower instance. If you need to do this, please raise your hand and inform one of the lab instructors. _If you do this too late into the lab you may not have enough time to finish_. See this table for a reference of typical times for the Tower jobs: <<Appendix D - Average Tower Job Times>>
+
+This lab is concluded when the Ansible Tower job is completed successfully.
+
+'''
+
+==== <<../lab1/lab1.adoc#lab1,Previous Lab: Ansible Tower Self-Configure and OCP Install>>
+==== <<../lab3/lab3.adoc#lab3,Next Lab: Reviewing OpenShift Installation>>
+==== <<../../README.adoc#lab1,Home>>
