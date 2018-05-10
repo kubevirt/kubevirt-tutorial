@@ -89,7 +89,7 @@ var _ = Describe("Test Case Generator", func() {
 		cmap := ast.NewCommentMap(fset, f, f.Comments)
 
 		testCases = &polarion_xml.TestCases{}
-		FillPolarionTestCases(f, testCases, &cmap)
+		FillPolarionTestCases(f, testCases, &cmap, "")
 
 		Expect(len(testCases.TestCases)).To(Equal(4))
 	})
@@ -239,6 +239,10 @@ var _ = Describe("Test Case Generator", func() {
 					{Content: "medium", ID: "caseimportance"},
 					{Content: "automated", ID: "caseautomation"},
 					{Content: "functional", ID: "testtype"},
+					{Content: "-", ID: "subtype1"},
+					{Content: "-", ID: "subtype2"},
+					{Content: "proposed", ID: "status-id"},
+					{Content: "", ID: "automation_script"},
 					{Content: "yes", ID: "upstream"},
 				},
 			},
@@ -248,6 +252,10 @@ var _ = Describe("Test Case Generator", func() {
 					{Content: "medium", ID: "caseimportance"},
 					{Content: "automated", ID: "caseautomation"},
 					{Content: "functional", ID: "testtype"},
+					{Content: "-", ID: "subtype1"},
+					{Content: "-", ID: "subtype2"},
+					{Content: "proposed", ID: "status-id"},
+					{Content: "", ID: "automation_script"},
 					{Content: "yes", ID: "upstream"},
 				},
 			},
@@ -255,6 +263,10 @@ var _ = Describe("Test Case Generator", func() {
 				CustomFields: []polarion_xml.TestCaseCustomField{
 					{Content: "automated", ID: "caseautomation"},
 					{Content: "functional", ID: "testtype"},
+					{Content: "-", ID: "subtype1"},
+					{Content: "-", ID: "subtype2"},
+					{Content: "proposed", ID: "status-id"},
+					{Content: "", ID: "automation_script"},
 					{Content: "yes", ID: "upstream"},
 					{Content: "critical", ID: "caseimportance"},
 					{Content: "negative", ID: "caseposneg"},
@@ -264,6 +276,10 @@ var _ = Describe("Test Case Generator", func() {
 				CustomFields: []polarion_xml.TestCaseCustomField{
 					{Content: "automated", ID: "caseautomation"},
 					{Content: "functional", ID: "testtype"},
+					{Content: "-", ID: "subtype1"},
+					{Content: "-", ID: "subtype2"},
+					{Content: "proposed", ID: "status-id"},
+					{Content: "", ID: "automation_script"},
 					{Content: "yes", ID: "upstream"},
 					{Content: "low", ID: "caseimportance"},
 				},
