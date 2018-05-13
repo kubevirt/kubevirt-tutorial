@@ -221,7 +221,6 @@ func parseTable(testcases *polarion_xml.TestCases, block *ginkgoBlock, exprs []a
 		addCustomField(&testCase.TestCaseCustomFields, "testtype", "functional")
 		addCustomField(&testCase.TestCaseCustomFields, "subtype1", "-")
 		addCustomField(&testCase.TestCaseCustomFields, "subtype2", "-")
-		addCustomField(&testCase.TestCaseCustomFields, "status-id", "proposed")
 		addCustomField(&testCase.TestCaseCustomFields, "automation_script", filename)
 		addCustomField(&testCase.TestCaseCustomFields, "upstream", "yes")
 		testcases.TestCases = append(testcases.TestCases, *testCase)
@@ -353,7 +352,6 @@ func FillPolarionTestCases(f *ast.File, testCases *polarion_xml.TestCases, comme
 				addCustomField(&customFields, "testtype", "functional")
 				addCustomField(&customFields, "subtype1", "-")
 				addCustomField(&customFields, "subtype2", "-")
-				addCustomField(&customFields, "status-id", "proposed")
 				addCustomField(&customFields, "automation_script", filename)
 				addCustomField(&customFields, "upstream", "yes")
 				testCase := polarion_xml.TestCase{
