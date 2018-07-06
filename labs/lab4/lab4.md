@@ -46,6 +46,6 @@ oc get route
 oc describe route ara
 ```
 
-==== <<../lab3/lab3.adoc#lab3,Previous Lab>>
-==== <<../lab5/lab5.adoc#lab5,Next Lab>>
-==== <<../../README.adoc#lab1,Home>>
+[Previous Lab](../lab3/lab3.md)\
+[Next Lab](../lab5/lab5.md)\
+[Home](../../README.md)

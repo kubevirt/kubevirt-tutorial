@@ -107,7 +107,6 @@ oc get project| grep golden
 oc get pods --namespace=golden-images
 ```
 
-==== <<../lab5/lab5.adoc#lab5,Previous Lab>>
-==== <<../lab7/lab7.adoc#lab6,Next Labs>>
-==== <<../../README.adoc#lab1,Home>>
-
+[Previous Lab](../lab5/lab5.md)\
+[Next Lab](../lab7/lab7.md)\
+[Home](../../README.md)

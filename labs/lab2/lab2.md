@@ -111,6 +111,6 @@ Persistent volumes are at host directory /root/openshift.local.clusterup/openshi
 Data will be discarded when cluster is destroyed
 ```
 
-==== <<../lab1/lab1.adoc#lab1,Previous Lab>>
-==== <<../lab3/lab3.adoc#lab3,Next Lab>>
-==== <<../../README.adoc#lab1,Home>>
+[Previous Lab](../lab1/lab1.md)\
+[Next Lab](../lab3/lab3.md)\
+[Home](../../README.md)

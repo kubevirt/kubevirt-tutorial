@@ -1,3 +1,5 @@
+## Conclusion
+
 Now that you have completed the lab, let's review what was covered here -
 
 * Deployed OCP with `oc cluster up`
@@ -12,5 +14,5 @@ Now that you have completed the lab, let's review what was covered here -
 
 Thanks for participating and don't forget to submit that PR if you find issues.
 
-==== <<../lab8/lab8.adoc#lab8,Previous Lab>>
-==== <<../../README.adoc#lab1,Home>>
+[Previous Lab](../lab8/lab8.md)\
+[Home](../../README.md)

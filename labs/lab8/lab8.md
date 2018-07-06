@@ -22,9 +22,7 @@ Click the `Virtualization` tab to see any VM templates you want to create.
 
 ![virt-tab](images/virtualization-tab.png)
 
-## Conclusion
-
-==== <<../lab7/lab7.adoc#lab7,Previous Lab>>
-==== <<../lab9/lab9.adoc#lab9,Next Lab>>
-==== <<../../README.adoc#lab1,Home>>
+[Previous Lab](../lab7/lab7.md)\
+[Next Lab](../lab9/lab9.md)\
+[Home](../../README.md)
 

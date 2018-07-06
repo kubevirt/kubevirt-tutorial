@@ -73,7 +73,6 @@ chmod -v +x virtctl
 ./virtctl --help
 ```
 
-
-==== <<../lab4/lab4.adoc#lab4,Previous Lab: Prometheus and Grafana>>
-==== <<../lab6/lab6.adoc#lab6,Next Lab: Building an Ansible Playbook Bundle to Aid in Cluster Management>>
-==== <<../../README.adoc#lab1,Home>>
+[Previous Lab](../lab4/lab4.md)\
+[Next Lab](../lab6/lab6.md)\
+[Home](../../README.md)

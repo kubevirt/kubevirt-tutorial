@@ -50,6 +50,6 @@ Finally, use the gathered ip to connect to the Virtual Machine, create some file
 ssh fedora@VM_IP
 ```
 
-==== <<../lab6/lab6.adoc#lab6,Previous Lab>>
-==== <<../lab8/lab8.adoc#lab8,Next Lab>>
-==== <<../../README.adoc#lab1,Home>>
+[Previous Lab](../lab6/lab6.md)\
+[Next Lab](../lab8/lab8.md)\
+[Home](../../README.md)

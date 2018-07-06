@@ -78,6 +78,6 @@ oc project myproject
 oc create -f https://raw.githubusercontent.com/scollier/demo/training/manifests/app-template.yaml
 ```
 
-==== <<../lab2/lab2.adoc#lab2,Previous Lab: Exploring Ansible Tower Environment>>
-==== <<../lab4/lab4.adoc#lab4,Next Lab: Prometheus and Grafana>>
-==== <<../../README.adoc#lab1,Home>>
+[Previous Lab](../lab2/lab2.md)\
+[Next Lab](../lab4/lab4.md)\
+[Home](../../README.md)
