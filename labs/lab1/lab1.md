@@ -1,5 +1,3 @@
-= Lab 1 - Ansible Tower Self-Configure and OCP Install
-
 ## Student Connection Process
 
 In this lab, we are going to leverage a process known as [`oc cluster up`](https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md). `oc cluster up` leverages the local docker daemon and enables us to quickly stand up a local OpenShift Container Platform to start our evaluation. The key result of `oc cluster up` is a reliable, reproducible OpenShift environment to iterate on.
@@ -27,5 +25,5 @@ This lab should be performed on **YOUR ASSIGNED GCP INSTANCE** as `cnv` user unl
 ssh -i cnv_rsa cnv@student<number>.cnvlab.gce.sysdeseng.com
 ```
 
-[Next Lab](../lab1/lab1.md)\
+[Next Lab](../lab2/lab2.md)\
 [Home](../../README.md)
