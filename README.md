@@ -1,7 +1,5 @@
 # Deploy and Explore KubeVirt
 
-:numbered!:
-
 [Lab Overview](labs/lab0/lab0.md)\
 [Introduction / Setup](labs/lab1/lab1.md)\
 [Deploy Kubernetes](labs/lab2/lab2.md)\
