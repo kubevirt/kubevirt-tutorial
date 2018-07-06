@@ -2,7 +2,7 @@
 
 :numbered!:
 
-=== <<labs/lab0/lab0.md#lab0,Lab 0 - Lab Overview>>
+[Lab Overview](labs/lab0/lab0.md)
 === <<labs/lab1/lab1.md#lab1,Lab 1 - Introduction / Setup>>
 === <<labs/lab2/lab2.md#lab2,Lab 2 - Deploy Kubernetes>>
 === <<labs/lab3/lab3.md#lab3,Lab 3 - Configure Storage>>
