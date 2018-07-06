@@ -59,7 +59,6 @@ source /etc/bash_completion.d/oc_completion
 oc # Try tabbing for auto-completion now
 ```
 
-
 #### Log into OpenShift
 
 ```
@@ -67,17 +66,6 @@ oc login -u system:admin
 oc whoami
 ```
 
-### Deploy a Container-based Application to OpenShift
-
-The purpose of this section is to deploy an example application on top of OpenShift and demonstrate how containers and virtual machines can be orchestrated side by side. We are going to use the existing project `myproject`.
-
-#### Move to Project and Add Template
-
-```
-oc project myproject
-oc create -f https://raw.githubusercontent.com/scollier/demo/training/manifests/app-template.yaml
-```
-
-[Previous Lab](../lab2/lab2.md)\
 [Next Lab](../lab4/lab4.md)\
+[Previous Lab](../lab2/lab2.md)\
 [Home](../../README.md)

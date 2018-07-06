@@ -71,6 +71,6 @@ Finally, use the gathered ip to connect to the Virtual Machine, create some file
 ssh fedora@VM_IP
 ```
 
-[Previous Lab](../lab6/lab6.md)\
 [Next Lab](../lab8/lab8.md)\
+[Previous Lab](../lab6/lab6.md)\
 [Home](../../README.md)

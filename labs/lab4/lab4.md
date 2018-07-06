@@ -1,3 +1,14 @@
+### Deploy a Container-based Application to OpenShift
+
+The purpose of this section is to deploy an example application on top of OpenShift and demonstrate how containers and virtual machines can be orchestrated side by side. We are going to use the existing project `myproject`.
+
+#### Move to Project and Add Template
+
+```
+oc project myproject
+oc create -f https://raw.githubusercontent.com/scollier/demo/training/manifests/app-template.yaml
+```
+
 #### Deploy Application
 
 The command below will deploy the application [ARA Records Ansible](https://github.com/openstack/ara) or ARA for short.
@@ -46,6 +57,6 @@ oc get route
 oc describe route ara
 ```
 
-[Previous Lab](../lab3/lab3.md)\
 [Next Lab](../lab5/lab5.md)\
+[Previous Lab](../lab3/lab3.md)\
 [Home](../../README.md)

@@ -22,7 +22,6 @@ Click the `Virtualization` tab to see any VM templates you want to create.
 
 ![virt-tab](images/virtualization-tab.png)
 
-[Previous Lab](../lab7/lab7.md)\
 [Next Lab](../lab9/lab9.md)\
+[Previous Lab](../lab7/lab7.md)\
 [Home](../../README.md)
-

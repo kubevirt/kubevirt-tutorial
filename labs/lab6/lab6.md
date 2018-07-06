@@ -92,21 +92,6 @@ oc delete vms testvm
 
 At a high level, a persistent volume claim (Pvc) is created. A custom controller watches for importer specific claims, and when discovered, starts an import process to create a raw image named *disk.img* with the desired content into the associated Pvc
 
-#### Install CDI
-
-to install the components, we will execute `cdi.sh` script in root home directory. Be sure to review the contents of this file first
-
-```
-~/cdi.sh
-```
-
-Review the objects that were added.
-
-```
-oc get project| grep golden
-oc get pods --namespace=golden-images
-```
-
-[Previous Lab](../lab5/lab5.md)\
 [Next Lab](../lab7/lab7.md)\
+[Previous Lab](../lab5/lab5.md)\
 [Home](../../README.md)
