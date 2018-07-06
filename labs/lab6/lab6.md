@@ -86,12 +86,6 @@ To delete a Virtual Machine:
 oc delete vms testvm
 ```
 
-## Experiment with CDI
-
-[CDI](https://github.com/kubevirt/containerized-data-importer) is an utility designed to import Virtual Machine images for use with Kubevirt. 
-
-At a high level, a persistent volume claim (Pvc) is created. A custom controller watches for importer specific claims, and when discovered, starts an import process to create a raw image named *disk.img* with the desired content into the associated Pvc
-
 [Next Lab](../lab7/lab7.md)\
 [Previous Lab](../lab5/lab5.md)\
 [Home](../../README.md)
