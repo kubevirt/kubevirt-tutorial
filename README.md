@@ -8,4 +8,5 @@
 [Explore KubeVirt](labs/lab5/lab5.md)\
 [Import a Virtual Machine](labs/lab6/lab6.md)\
 [Virtual Machine Ingress](labs/lab7/lab7.md)\
-[Where do we go from here?](labs/lab8/lab8.md)
+[Explore APBs and the Service Catalog](labs/lab8/lab8.md)
+[Conclusion](labs/lab9/lab9.md)
