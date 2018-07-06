@@ -27,6 +27,6 @@ This lab should be performed on **YOUR ASSIGNED GCP INSTANCE** as `cnv` user unl
 ssh -i cnv_rsa cnv@student<number>.cnvlab.gce.sysdeseng.com
 ```
 
-==== <<../lab0/lab0.adoc#lab0,Previous Lab>>
-==== <<../lab2/lab2.adoc#lab2,Next Lab>>
-==== <<../../README.adoc#lab1,Home>>
+[Previous Lab](../lab0/lab0.md)\
+[Next Lab](../lab1/lab1.md)\
+[Home](../../README.md)
