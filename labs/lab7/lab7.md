@@ -6,7 +6,7 @@ At a high level, a persistent volume claim (Pvc) is created. A custom controller
 
 #### Install CDI
 
-to install the components, we will execute `cdi.sh` script in root home directory. Be sure to review the contents of this file first
+To install the components, we will execute `cdi.sh` script in root home directory. Be sure to review the contents of this file first.
 
 ```
 ~/cdi.sh
@@ -21,14 +21,14 @@ oc get pods --namespace=golden-images
 
 #### Use CDI
 
-As an example, we will import a Fedora28 Cloud Image as a Pvc and launch a Virtual Machine making use of it
+As an example, we will import a Fedora28 Cloud Image as a Pvc and launch a Virtual Machine making use of it.
 
 ```
 oc project myproject
 oc create -f pvc_fedora.yml
 ```
 
-This will create the Pvc with a proper annotation so that CDI controller detects it and launches an importer pod to gather the image specified in the *kubevirt.io/storage.import.endpoint* annotation
+This will create the Pvc with a proper annotation so that CDI controller detects it and launches an importer pod to gather the image specified in the *kubevirt.io/storage.import.endpoint* annotation.
 
 ```
 oc get pvc fedora -o yaml
@@ -39,7 +39,7 @@ oc logs importer-fedora-pnbqh
 
 Once the importer pod completes, this Pvc is ready for use in kubevirt.
 
-Let's create a Virtual Machine making use of it. Review the file *vm1_pvc.yml*
+Let's create a Virtual Machine making use of it. Review the file *vm1_pvc.yml*.
 
 ```
 cat ~/vm1_pvc.yml
@@ -59,13 +59,13 @@ This will create and start a Virtual Machine named vm1. We can use the following
 oc get pod -o wide
 ```
 
-Since we are running an all in one setup, the corresponding Virtual Machine is actually running on the same node, we can check its qemu process
+Since we are running an all in one setup, the corresponding Virtual Machine is actually running on the same node, we can check its qemu process.
 
 ```
 ps -ef | grep qemu | grep vm1
 ```
 
-Finally, use the gathered ip to connect to the Virtual Machine, create some files, stop and restart the Virtual Machine with virtctl and check how data persists
+Finally, use the gathered ip to connect to the Virtual Machine, create some files, stop and restart the Virtual Machine with virtctl and check how data persists.
 
 ```
 ssh fedora@VM_IP
