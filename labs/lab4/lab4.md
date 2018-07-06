@@ -57,6 +57,8 @@ oc get route
 oc describe route ara
 ```
 
+This concludes this section of the lab.
+
 [Next Lab](../lab5/lab5.md)\
 [Previous Lab](../lab3/lab3.md)\
 [Home](../../README.md)

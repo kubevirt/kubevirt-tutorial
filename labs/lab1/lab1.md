@@ -25,5 +25,7 @@ This lab should be performed on **YOUR ASSIGNED GCP INSTANCE** as `cnv` user unl
 ssh -i cnv_rsa cnv@student<number>.cnvlab.gce.sysdeseng.com
 ```
 
+This concludes this section of the lab.
+
 [Next Lab](../lab2/lab2.md)\
 [Home](../../README.md)

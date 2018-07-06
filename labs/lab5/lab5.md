@@ -73,6 +73,8 @@ chmod -v +x virtctl
 ./virtctl --help
 ```
 
+This concludes this section of the lab.
+
 [Next Lab](../lab6/lab6.md)\
 [Previous Lab](../lab4/lab4.md)\
 [Home](../../README.md)

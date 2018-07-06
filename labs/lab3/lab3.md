@@ -66,6 +66,8 @@ oc login -u system:admin
 oc whoami
 ```
 
+This concludes this section of the lab.
+
 [Next Lab](../lab4/lab4.md)\
 [Previous Lab](../lab2/lab2.md)\
 [Home](../../README.md)

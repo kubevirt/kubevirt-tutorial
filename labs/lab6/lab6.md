@@ -86,6 +86,8 @@ To delete a Virtual Machine:
 oc delete vms testvm
 ```
 
+This concludes this section of the lab.
+
 [Next Lab](../lab7/lab7.md)\
 [Previous Lab](../lab5/lab5.md)\
 [Home](../../README.md)
