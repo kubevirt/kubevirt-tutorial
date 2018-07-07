@@ -41,7 +41,7 @@ oc get vms -o yaml testvm
 
 ### Accessing VMs (serial console & spice)
 
-Connect to the serial console of the Cirros VM. Hit return / enter a few times and login with the displayed username and password. Then disconnect from the virtual machine console by typing: `ctrl+]`.  
+Connect to the serial console of the Cirros VM. Hit return / enter a few times and login with the displayed username and password. 
 
 ```
 ./virtctl console testvm
@@ -51,16 +51,21 @@ Connect to the serial console of the Cirros VM. Hit return / enter a few times a
 
 While in the console of the `testvm` let's run `curl` to confirm our virtual machine
 can access the `Service` of the application deployment.
+
 ```
 curl ara.myproject.svc.cluster.local:8080
 ```
+
 The expected output from the curl command should be:
+
 ```
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <title>Redirecting...</title>
 <h1>Redirecting...</h1>
 <p>You should be redirected automatically to target URL: <a href="/about/">/about/</a>.  If not click the link.
 ```
+
+Disconnect from the virtual machine console by typing: `ctrl+]`.
 
 Connect to the graphical display.
 
