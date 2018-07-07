@@ -13,14 +13,8 @@ Apply the manifest to OpenShift.
 
 ```
 oc apply -f https://raw.githubusercontent.com/kubevirt/demo/master/manifests/vm.yaml
- virtualmachine.kubevirt.io "testvm" created
- virtualmachineinstancepreset.kubevirt.io "small" created
-```
-
-To start a Virtual Machine you can use:
-
-```
-./virtctl start testvm
+  virtualmachine.kubevirt.io "testvm" created
+  virtualmachineinstancepreset.kubevirt.io "small" created
 ```
 
 ### Manage Virtual Machines (optional):
@@ -32,8 +26,13 @@ oc get vms
 oc get vms -o yaml testvm
 ```
 
+To start a Virtual Machine you can use:
 
-To get a list of existing Virtual Machines. Note the `running` status.
+```
+./virtctl start testvm
+```
+
+Now that the Virtual Machine has been started, check the status. Note the `running` status.
 
 ```
 oc get vms
@@ -42,12 +41,11 @@ oc get vms -o yaml testvm
 
 ### Accessing VMs (serial console & spice)
 
-Connect to the serial console of the Cirros VM. Then disconnect from the virtual machine console `ctrl+]`.
+Connect to the serial console of the Cirros VM. Hit return / enter a few times and login with the displayed username and password. Then disconnect from the virtual machine console by typing: `ctrl+]`.  
 
 ```
 ./virtctl console testvm
 ```
-Hit return/enter a few times and login with the displayed username and password.
 
 ### Communication Between Application and Virtual Machine
 

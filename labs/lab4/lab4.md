@@ -1,6 +1,6 @@
 ### Deploy a Container-based Application to OpenShift
 
-The purpose of this section is to deploy an example application on top of OpenShift and demonstrate how containers and virtual machines can be orchestrated side by side. We are going to use the existing project `myproject`.
+The purpose of this section is to deploy an example application on top of OpenShift and demonstrate how containers and virtual machines can be orchestrated side by side within a single OpenShift cluster. We are going to use the existing project `myproject`.
 
 #### Move to Project and Add Template
 
@@ -29,8 +29,7 @@ The following objects will be created:
 #### Review Objects
 
 
-Let's show our `BuildConfig` and watch the container build log. The ara `BuildConfig` creates a new container
-image from the Dockerfile provided in our GitHub repository.
+Let's show our `BuildConfig` and watch the container build log. The ara `BuildConfig` creates a new container image from the Dockerfile provided in our GitHub repository. While this is running, feel free to explore the links above to learn more about these OpenShift objects.
 
 ```
 oc get bc

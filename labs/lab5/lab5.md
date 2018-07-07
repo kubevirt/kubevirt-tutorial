@@ -42,14 +42,14 @@ oc describe sa kubevirt-apiserver --namespace=kube-system # Please feel free to 
 oc get pods --namespace=kube-system
 oc describe pod -l kubevirt.io=virt-handler --namespace=kube-system
 # review the files on the root of the filesystem of the pod, see the virt-handler executable, after replacing the pod name with yours
-oc exec -it virt-handler-n9pxj --namespace=kube-system ls /  
+oc exec -it virt-handler-n9pxj --namespace=kube-system ls /  # Substitute your virt-handler pod name
 oc get svc --namespace=kube-system
 oc describe  svc virt-api --namespace=kube-system
 ```
 
 There are other services and objects to take a look at.
 
-To review the objects through the OpenShift web console, access the console and log in as the `developer` user at `https://student<number>.cnvlab.gce.sysdeseng.com:8443`
+To review the objects through the OpenShift web console, access the console and log in as the `developer` user at `https://student<number>.cnvlab.gce.sysdeseng.com:8443`. Remember, you can use `oc cluster status` to get your URL.
 
 Open that URL in a browser, log in as the `developer` user with a password of `developer`.
 
