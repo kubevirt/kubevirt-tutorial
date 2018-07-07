@@ -90,25 +90,25 @@ OK, so now that OpenShift is available, let's ask for a cluster status & take a 
 
 ```
 oc version
-oc v3.10.0-rc.0+c20e215
-kubernetes v1.10.0+b81c8f8
-features: Basic-Auth GSSAPI Kerberos SPNEGO
+ oc v3.10.0-rc.0+c20e215
+ kubernetes v1.10.0+b81c8f8
+ features: Basic-Auth GSSAPI Kerberos SPNEGO
 
-Server https://127.0.0.1:8443
-openshift v3.10.0-rc.0+ad6a1da-30
-kubernetes v1.10.0+b81c8f8
+ Server https://127.0.0.1:8443
+ openshift v3.10.0-rc.0+ad6a1da-30
+ kubernetes v1.10.0+b81c8f8
 ```
 
 The important item from the `oc cluster status` command output is the `Web console URL`.
 
 ```
 oc cluster status
-Web console URL: https://student002.cnvlab.gce.sysdeseng.com:8443/console/
-
-Config is at host directory 
-Volumes are at host directory 
-Persistent volumes are at host directory /root/openshift.local.clusterup/openshift.local.pv
-Data will be discarded when cluster is destroyed
+ Web console URL: https://student002.cnvlab.gce.sysdeseng.com:8443/console/
+  
+ Config is at host directory 
+ Volumes are at host directory 
+ Persistent volumes are at host directory /root/openshift.local.clusterup/openshift.local.pv
+ Data will be discarded when cluster is destroyed
 ```
 
 This concludes this section of the lab.
