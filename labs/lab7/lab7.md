@@ -2,11 +2,11 @@
 
 [CDI](https://github.com/kubevirt/containerized-data-importer) is an utility designed to import Virtual Machine images for use with Kubevirt. 
 
-At a high level, a persistent volume claim (Pvc) is created. A custom controller watches for importer specific claims, and when discovered, starts an import process to create a raw image named *disk.img* with the desired content into the associated Pvc
+At a high level, a persistent volume claim (PVC) is created. A custom controller watches for importer specific claims, and when discovered, starts an import process to create a raw image named *disk.img* with the desired content into the associated PVC
 
 #### Install CDI
 
-To install the components, we will first explore and then execute the `cdi.sh` script in root's home directory. Be sure to review the contents of this file first.
+To install the components, we will first explore and then execute the `cdi.sh` script in root's home directory. Be sure to review the contents of this file first. Notice that in the script you are downloading a few yaml files as well, which will be applied to OpenShift. Take a minute to review those files too.
 
 ```
 cat ~/cdi.sh
@@ -22,14 +22,14 @@ oc get pods --namespace=golden-images
 
 #### Use CDI
 
-As an example, we will import a Fedora28 Cloud Image as a Pvc and launch a Virtual Machine making use of it.
+As an example, we will import a Fedora28 Cloud Image as a PVC and launch a Virtual Machine making use of it.
 
 ```
 oc project myproject
 oc create -f pvc_fedora.yml
 ```
 
-This will create the Pvc with a proper annotation so that CDI controller detects it and launches an importer pod to gather the image specified in the *kubevirt.io/storage.import.endpoint* annotation.
+This will create the PVC with a proper annotation so that CDI controller detects it and launches an importer pod to gather the image specified in the *kubevirt.io/storage.import.endpoint* annotation.
 
 ```
 oc get pvc fedora -o yaml
@@ -38,7 +38,7 @@ oc get pod
 oc logs importer-fedora-pnbqh
 ```
 
-Once the importer pod completes, this Pvc is ready for use in kubevirt.
+Once the importer pod completes, this PVC is ready for use in kubevirt.
 
 Let's create a Virtual Machine making use of it. Review the file *vm1_pvc.yml*.
 
