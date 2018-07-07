@@ -6,9 +6,10 @@ At a high level, a persistent volume claim (Pvc) is created. A custom controller
 
 #### Install CDI
 
-To install the components, we will execute `cdi.sh` script in root home directory. Be sure to review the contents of this file first.
+To install the components, we will first explore and then execute the `cdi.sh` script in root's home directory. Be sure to review the contents of this file first.
 
 ```
+cat ~/cdi.sh
 ~/cdi.sh
 ```
 
