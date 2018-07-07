@@ -35,10 +35,10 @@ This will create the PVC with a proper annotation so that CDI controller detects
 oc get pvc fedora -o yaml
 oc get pod
 # replace with your importer pod name
-oc logs importer-fedora-pnbqh
+oc logs importer-fedora-pnbqh   # Substitute your importer-fedora pod name here.
 ```
 
-Once the importer pod completes, this PVC is ready for use in kubevirt.
+Notice that the importer downloaded the publically available Fedora Cloud qcow image. Once the importer pod completes, this PVC is ready for use in kubevirt.
 
 Let's create a Virtual Machine making use of it. Review the file *vm1_pvc.yml*.
 
@@ -54,7 +54,7 @@ sed -i "s%ssh-rsa.*%$PUBKEY%" vm1_pvc.yml
 oc create -f vm1_pvc.yml
 ```
 
-This will create and start a Virtual Machine named vm1. We can use the following command to check our Virtual Machine is running and to gather its ip.
+This will create and start a Virtual Machine named vm1. We can use the following command to check our Virtual Machine is running and to gather its IP. You are looking for the IP address beside the `virt launcher` pod.
 
 ```
 oc get pod -o wide
