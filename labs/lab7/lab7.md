@@ -54,7 +54,7 @@ sed -i "s%ssh-rsa.*%$PUBKEY%" vm1_pvc.yml
 oc create -f vm1_pvc.yml
 ```
 
-This will create and start a Virtual Machine named vm1. We can use the following command to check our Virtual Machine is running and to gather its IP. You are looking for the IP address beside the `virt launcher` pod.
+This will create and start a Virtual Machine named vm1. We can use the following command to check our Virtual Machine is running and to gather its IP. You are looking for the IP address beside the `virt-launcher` pod.
 
 ```
 oc get pod -o wide
