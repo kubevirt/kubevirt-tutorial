@@ -22,8 +22,9 @@ docker ps
 docker images
 ```
 
-### Label your Node.
+### Label your Node
 
+The OpenShift instance that you have started runs on a single node, localhost.
 Label your node so the virt-launcher pod can be scheduled correctly. Confirm the label was applied.
 
 ```
