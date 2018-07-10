@@ -1,0 +1,12 @@
+- hosts: all
+  remote_user: cnv
+  become: yes
+  vars:
+    package: docker
+  tasks:
+  - name: check if "{{ package }}" is installed
+    shell: "rpm -qa | grep {{ package }}"
+#  - name: report notdes where it s note
+#    debug:
+#       msg: "{{ inventory_hostname }}"
+#    when:  (found.results|length != 1)
