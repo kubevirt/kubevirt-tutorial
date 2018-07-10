@@ -1,0 +1,59 @@
+parameters:
+   kubevirt_version: v0.7.0
+   domain: cnvlab.gce.sysdeseng.com
+   openshift_version: '3.10'
+   cdi_version: v0.5.0
+   disk_size: 60
+   numcpus: 4
+   memory: 12288
+   nodes: 40
+   deploy: false
+   nested: true
+   keys:
+    - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5Qbj7vDf0uYQpeYb432g5R4YvYJaPfPA4EM4qc3lO62c7oUsWbZlZBl5neEWX41HGCIP4Zm1ybN9iiDyeIns6hg5OkU2vUGuPtV2KCAZOI7snzXeZxlrjsVMjMy/CYUlvIOAPxY4XzfzMMAJjIJni18R2PqVRI4f4SeSq3IIzpnOu2VQmqjFmmdybQY83BvBvWj6KLszAXkJk9LkZSAoktXimDBWFPQYikzZihLolRxwHzo21lXSw58D1N+6IeMudOviAte5yu6FBUN6dFYbt9dkLuH2/ONliFz/042n5UNp0wC5BLdpVwJpWqqrCVaeXBgla/gYm8YNZJIAlf8K5 kboumedh@vegeta.local
+    - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCq9Dr3eNBqaNXTZuHNTvWoaB/gLNpkKYk2AUSzyc6EOexFmXkSOH/3tGIFJINnJhx8YpfHXF+zsp7UfBmxVZQa7zBi7xKixkV7lIBlCD/ZD9LRV7WxBqi5Eb39YPnH1A6W6fwGrR+wQMkC299b2SF3zBzuQgAYdixSYzNDsB7rt89BNSgFmAkv6mL/tVpgVBV6ax6Bmn5XKEvFkHaC/i0YKIiqq+xtoa9w6jq7TQE5XDiAgx51S0uSLvxz+UkKxCbN1oo8FZ4cvGF3rL8NmigzFBzCpmLSUvF1qFbAeMQEEfmZBex5v1TrAbxaH3POBcApOKfEHvaUm9yY44zCXJU5 jcallen@jcallen
+   tags:
+    - cnvlab
+
+[% for node in range(0, nodes) %]
+student[[ "%03.d" | format(node+1) ]]:
+[% if nested %]
+ template: nested-centos7
+[% else %]
+ template: centos-7
+[% endif %]
+ numcpus: [[ numcpus ]]
+ memory: [[ memory ]]
+ tags: [[ tags ]]
+ keys: [[ keys ]]
+ domain: [[ domain ]]
+ reservedns: true
+ nets:
+  - name: default
+    alias: ['*']
+ disks:
+  - size: [[ disk_size ]]
+ pool: default
+ files: 
+  - path: /root/openshift.sh
+    origin: openshift.sh
+  - path: /root/kubevirt.sh
+    origin: kubevirt.sh
+  - path: /root/cdi.sh
+    origin: cdi.sh
+  - path: /root/pvc_fedora.yml
+    origin: pvc_fedora.yml
+  - path: /root/vm1_pvc.yml
+    origin: vm1_pvc.yml
+  - path: /root/vm1_registrydisk.yml
+    origin: vm1_registrydisk.yml
+  - path: /root/clean.sh
+    origin: clean.sh
+  - path: /root/requirements.sh
+    origin: requirements.sh
+ scripts:
+  - requirements.sh
+[% if deploy %]
+  - deploy.sh
+[% endif %]
+[% endfor %]
