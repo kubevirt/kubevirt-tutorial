@@ -1,5 +1,5 @@
 This page provides instructions on how to manually deploy the demo on 
-For an automated way using kcli, use [this](kcli) instead
+For an automated way using kcli, use [this](kcli/README.md) instead
 
 ## Requirements
 
