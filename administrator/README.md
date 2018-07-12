@@ -1,94 +1,23 @@
-
-This repository provides instructions on how to deploy an arbitrary number of vms on gcp with kubevirt, optionally with nested
+This page provides instructions on how to manually deploy the demo on 
+For an automated way using kcli, use [this](kcli) instead
 
 ## Requirements
 
-- a gcp account and the corresponding service account json file
-- an image with nested enabled (optional)
-- [*kcli*](https://github.com/karmab/kcli) tool ( configured to point to gcp) with version >= 12.0
-
-### Service account retrieval
-
-To gather your service account file:
-
-- Select the "IAM" → "Service accounts" section within the Google Cloud Platform console.
-- Select "Create Service account".
-- Select "Project" → "Editor" as service account Role.
-- Select "Furnish a new private key".
-- Select "Save"
-
-### Preparing a nested enabled image (Optional)
-
-```
-gcloud compute images create nested-centos7 --source-image-family centos-7 --source-image-project centos-cloud --licenses "https://www.googleapis.com/compute/v1/projects/vm-options/global/licenses/enable-vmx"
-```
-
-### Create a dns domain
-
-- Select the "Networking" → "Network Services" → "Cloud DNS"
-- Select "Create Zone"
-- Put the same name as your domain, but with '-' instead
-
-### kcli setup
+- a virtual machine (ideally with nested virtualization)
 
 #### Installation 
 
-```
-docker pull karmab/kcli
-echo alias kcli=\'docker run -it --rm -v ~/.kcli:/root/.kcli:Z -v $SSH_AUTH_SOCK:/ssh-agent --env SSH_AUTH_SOCK=/ssh-agent karmab/kcli\' >> $HOME.bashrc
-```
-
-#### Configuration
-
-- copy your service account json file location to .kcli directory ( to ease sharing the file with the container)
-- create a directory *.kcli* in your home directory and a file *config.yml* with the following content, specifying your serviceaccount json file location
+Run the following in your vm to move all artifacts under /root
 
 ```
-default:
- client: mygcp
-
-mygcp:
- type: gcp
- user: cnv
- credentials: ~/.kcli/myproject.json
- enabled: true
- project: myproject
- zone: us-central1-b
-
+git clone https://github.com/scollier/kubevirt-tutorial
+mv kubevirt-tutorial/administrator/* /root
 ```
 
-## How to use
+## Versions used
 
-the plan file  *kubevirt.yml* is the main artifact used to run the deployment
-
-```
-kcli plan -f kubevirt.yml -P nodes=10 cnvlab
-```
-
-this will create 10 vms, named student001,student002,...,student010 and populate them with scripts to deploy the corresponding feature
-an requisites.sh script will also be executed to install docker and pull relevant images
-
-- openshift.sh
-- kubevirt.sh
-- cdi.sh
-- clean.sh
-
-You can then use *
-- kcli list*
-- *kcli ssh $INSTANCE*
-- kcli plan -d cnvlab # for deletion
-- relaunch the same command with a different value for nodes so that extra instances get created
-
-## Available parameters:
-
-| Parameter        | Default Value            |
+| Component        | Version                  |
 |------------------|--------------------------|
-|domain            | cnvlab.gce.sysdeseng.com |
-|openshift_version | 3.10                     |
+|openshift         | 3.10                     |
 |kubevirt_version  | v0.7.0-alpha.2           |
-|disk_size         | 60                       |
-|numcpus           | 4                        |
-|memory            | 12288                    |
-|nodes             | 1                        |
-|deploy            | true                     |
-|nested            | true                     |
+|cdi_version       | 0.5.0                    |

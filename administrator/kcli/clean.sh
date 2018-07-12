@@ -13,4 +13,3 @@ if [ -d $OC_DIR ];
   else
     echo "System is clean."
 fi
-
