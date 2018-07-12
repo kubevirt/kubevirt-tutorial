@@ -16,7 +16,7 @@ Create an SSH key that you will be using later.
 ssh-keygen -t rsa -N '' -f /root/.ssh/id_rsa
 ```
 
-Review the `requirements.sh` file. This script does the following:
+Review the [`requirements.sh`](../../administrator/requirements.sh) file. This script does the following:
 
 - install *docker*, enable and start it as a service
 - install *oc* and *kubectl* client
