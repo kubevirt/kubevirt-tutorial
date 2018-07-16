@@ -5,7 +5,7 @@ wget https://github.com/kubevirt/kubevirt/releases/download/$VERSION/kubevirt.ya
 oc adm policy add-scc-to-user privileged -z kubevirt-privileged -n kube-system
 oc adm policy add-scc-to-user privileged -z kubevirt-controller -n kube-system
 [% if not nested %]
-oc create configmap -n kube-system kubevirt-config --from-literal debug.allowEmulation=true
+oc create configmap -n kube-system kubevirt-config --from-literal debug.useEmulation=true
 [% endif %]
 oc create -f kubevirt.yaml
 docker pull kubevirt/virt-launcher:$VERSION
