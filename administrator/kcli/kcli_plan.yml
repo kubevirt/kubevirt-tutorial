@@ -1,14 +1,17 @@
 parameters:
-   kubevirt_version: v0.7.0
+   template: nested-centos7
+   kubevirt_version: v0.7.0-alpha.2
    domain: cnvlab.gce.sysdeseng.com
    openshift_version: '3.10'
+   kubernetes_version: '1.10.5'
+   openshift: true
    cdi_version: v0.5.0
    disk_size: 60
    numcpus: 4
    memory: 12288
    nodes: 40
    deploy: false
-   nested: true
+   emulation: false
    keys:
     - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5Qbj7vDf0uYQpeYb432g5R4YvYJaPfPA4EM4qc3lO62c7oUsWbZlZBl5neEWX41HGCIP4Zm1ybN9iiDyeIns6hg5OkU2vUGuPtV2KCAZOI7snzXeZxlrjsVMjMy/CYUlvIOAPxY4XzfzMMAJjIJni18R2PqVRI4f4SeSq3IIzpnOu2VQmqjFmmdybQY83BvBvWj6KLszAXkJk9LkZSAoktXimDBWFPQYikzZihLolRxwHzo21lXSw58D1N+6IeMudOviAte5yu6FBUN6dFYbt9dkLuH2/ONliFz/042n5UNp0wC5BLdpVwJpWqqrCVaeXBgla/gYm8YNZJIAlf8K5 kboumedh@vegeta.local
    tags:
@@ -16,13 +19,7 @@ parameters:
 
 [% for node in range(0, nodes) %]
 student[[ "%03.d" | format(node+1) ]]:
-[% if nested and type == 'gcp'%]
- template: nested-centos7
-[% elif type == 'gcp' %]
- template: centos-7
-[% else %]
- template: CentOS-7-x86_64-GenericCloud.qcow2
-[% endif %]
+ template: [[ template ]]
  numcpus: [[ numcpus ]]
  memory: [[ memory ]]
  tags: [[ tags ]]
@@ -36,10 +33,23 @@ student[[ "%03.d" | format(node+1) ]]:
   - size: [[ disk_size ]]
  pool: default
  files: 
+[% if openshift %]
   - path: /root/openshift.sh
     origin: openshift.sh
   - path: /root/kubevirt.sh
-    origin: kubevirt.sh
+    origin: kubevirt_openshift.sh
+[% else %]
+  - path: /root/kubernetes.sh
+    origin: kubernetes.sh
+  - path: /root/kubevirt.sh
+    origin: kubevirt_kubernetes.sh
+  - path: /etc/yum.repos.d/kubernetes.repo
+    origin: kubernetes.repo
+  - path: /root/kube-flannel.yml
+    origin: kube-flannel.yml
+  - path: /root/kube-flannel-rbac.yml
+    origin: kube-flannel-rbac.yml
+[% endif %]
   - path: /root/cdi.sh
     origin: cdi.sh
   - path: /root/pvc_fedora.yml
@@ -49,11 +59,23 @@ student[[ "%03.d" | format(node+1) ]]:
   - path: /root/vm1_registrydisk.yml
     origin: vm1_registrydisk.yml
   - path: /root/clean.sh
-    origin: clean.sh
+[% if openshift %]
+    origin: clean_openshift.sh
+[% else %]
+    origin: clean_kubernetes.sh
+[% endif %]
   - path: /root/requirements.sh
-    origin: requirements.sh
+[% if openshift %]
+    origin: requirements_openshift.sh
+[% else %]
+    origin: requirements_kubernetes.sh
+[% endif %]
  scripts:
-  - requirements.sh
+[% if openshift %]
+  - requirements_openshift.sh
+[% else %]
+  - requirements_kubernetes.sh
+[% endif %]
 [% if deploy %]
   - deploy.sh
 [% endif %]
