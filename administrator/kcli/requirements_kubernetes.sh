@@ -1,3 +1,4 @@
+sleep 60
 docker ps && echo Requirements already installed && exit 0
 echo net.bridge.bridge-nf-call-iptables=1 >> /etc/sysctl.d/99-sysctl.conf
 sysctl -p

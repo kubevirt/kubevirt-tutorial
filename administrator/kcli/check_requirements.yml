@@ -1,4 +1,4 @@
-- hosts: all
+- hosts: cnvlab
   remote_user: cnv
   become: yes
   vars:
@@ -6,6 +6,7 @@
   tasks:
   - name: check if "{{ package }}" is installed
     shell: "rpm -qa | grep {{ package }}"
+#    register: found
 #  - name: report notdes where it s note
 #    debug:
 #       msg: "{{ inventory_hostname }}"

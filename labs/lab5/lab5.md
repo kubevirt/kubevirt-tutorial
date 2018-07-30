@@ -30,7 +30,7 @@ oc adm policy add-scc-to-user privileged -n kube-system -z kubevirt-apiserver
 Give permissions to the qemu user for persistent volume claims 
 
 ```
-setfacl -m user:107:rwx /root/openshift.local.clusterup/openshift.local.pv/pv*
+setfacl -m user:107:rwx /root/openshift.local.pv/pv*
 ```
 
 

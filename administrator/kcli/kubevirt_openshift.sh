@@ -13,5 +13,5 @@ wget https://github.com/kubevirt/kubevirt/releases/download/$VERSION/virtctl-$VE
 mv virtctl-$VERSION-linux-amd64 /usr/bin/virtctl
 chmod u+x /usr/bin/virtctl
 ssh-keygen -t rsa -N '' -f /root/.ssh/id_rsa
-setfacl -m user:107:rwx /root/openshift.local.clusterup/openshift.local.pv/pv*
+setfacl -m user:107:rwx /root/openshift.local.pv/pv*
 oc adm policy add-scc-to-user privileged -z kubevirt-controller -n kube-system
