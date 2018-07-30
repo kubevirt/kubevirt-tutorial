@@ -3,6 +3,9 @@
                   '3.10' : 'v3.10.0-rc.0/openshift-origin-client-tools-v3.10.0-rc.0-c20e215',
                }
 -%]
+[% if not deploy %] 
+sleep 60
+[% endif %]
 docker ps && echo Requirements already installed && exit 0
 yum -y install wget docker git bash-completion qemu-img
 systemctl enable docker
