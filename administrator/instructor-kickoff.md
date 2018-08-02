@@ -1,5 +1,5 @@
 * Set expectations for attendees
-  * This is targeted towards engineers who don’t have OCPB or KubeVirt experience.  If they have a lot of OCP, this will be some review.  The goal is to show them how to run KubeVirt locally and get a bit familiar with it.
+  * This is targeted towards engineers who don’t have OCP or KubeVirt experience.  If they have a lot of OCP, this will be some review.  The goal is to show them how to run KubeVirt locally and get a bit familiar with it.
 * Temp check
   *  How many have used OpenShift?
   *  How many have used KubeVirt?
@@ -22,7 +22,7 @@
   *  Deployed CDI
   *  Deployed APB
 * This is a self paced lab, not instructor interrupt driven
-*  They have ~ 1 hour
+*  They have 2 hours
 * If they don’t get through it all, we can leave the VM up for them or spin one up for them later
 * Take away: for you to be able to run through this yourself.  All scripts are on Github.
 * Share out the URL for the github repo
@@ -30,4 +30,4 @@
 * We can redeliver this at anytime, spread the word.
 * Assign student IDs
 * Turn them loose, start the lab
-
+* Check in on the students after 10 minutes to make sure everyone got logged in.
