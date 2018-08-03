@@ -37,15 +37,27 @@ student[[ "%03.d" | format(node+1) ]]:
  pool: default
  files: 
 [% if openshift %]
+  - path: /root/requirements.sh
+    origin: requirements_openshift.sh
   - path: /root/openshift.sh
     origin: openshift.sh
   - path: /root/kubevirt.sh
     origin: kubevirt_openshift.sh
+  - path: /root/cdi.sh
+    origin: cdi_openshift.sh
+  - path: /root/clean.sh
+    origin: clean_openshift.sh
 [% else %]
+  - path: /root/requirements.sh
+    origin: requirements_kubernetes.sh
   - path: /root/kubernetes.sh
     origin: kubernetes.sh
   - path: /root/kubevirt.sh
     origin: kubevirt_kubernetes.sh
+  - path: /root/cdi.sh
+    origin: cdi_kubernetes.sh
+  - path: /root/clean.sh
+    origin: clean_kubernetes.sh
   - path: /etc/yum.repos.d/kubernetes.repo
     origin: kubernetes.repo
   - path: /root/kube-flannel.yml
@@ -53,26 +65,12 @@ student[[ "%03.d" | format(node+1) ]]:
   - path: /root/kube-flannel-rbac.yml
     origin: kube-flannel-rbac.yml
 [% endif %]
-  - path: /root/cdi.sh
-    origin: cdi.sh
   - path: /root/pvc_fedora.yml
     origin: pvc_fedora.yml
   - path: /root/vm1_pvc.yml
     origin: vm1_pvc.yml
   - path: /root/vm1_registrydisk.yml
     origin: vm1_registrydisk.yml
-  - path: /root/clean.sh
-[% if openshift %]
-    origin: clean_openshift.sh
-[% else %]
-    origin: clean_kubernetes.sh
-[% endif %]
-  - path: /root/requirements.sh
-[% if openshift %]
-    origin: requirements_openshift.sh
-[% else %]
-    origin: requirements_kubernetes.sh
-[% endif %]
  scripts:
 [% if openshift %]
   - requirements_openshift.sh
