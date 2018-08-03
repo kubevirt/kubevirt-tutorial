@@ -39,24 +39,24 @@ gcloud compute images create nested-centos7 --source-image-family centos-7 --sou
 
 ```
 docker pull karmab/kcli
-echo alias kcli=\'docker run -it --rm -v ~/.kcli:/root/.kcli:Z -v $SSH_AUTH_SOCK:/ssh-agent --env SSH_AUTH_SOCK=/ssh-agent karmab/kcli\' >> $HOME.bashrc
+echo alias kcli=\'docker run -it --rm --security-opt label:disable -v ~/.kcli:/root/.kcli -v ~/.ssh:/root/.ssh -v $PWD:/plans karmab/kcli\' >> $HOME.bashrc
 ```
 
 #### Configuration
 
-- copy your service account json file location to .kcli directory ( to ease sharing the file with the container)
+- copy your service account json file location to .kcli directory
 - create a directory *.kcli* in your home directory and a file *config.yml* with the following content, specifying your serviceaccount json file location
 
 ```
 default:
- client: mygcp
+ client: cnvlab
 
-mygcp:
+cnvlab:
  type: gcp
  user: cnv
  credentials: ~/.kcli/myproject.json
  enabled: true
- project: myproject
+ project: cnvlab-209908
  zone: us-central1-b
 
 ```
@@ -65,10 +65,11 @@ The user indicated in the conf is the one that will be used for ssh access
 
 ## How to use
 
-the plan file  *kcli_plan.yml* is the main artifact used to run the deployment
+the plan file  *kcli_plan.yml* is the main artifact used to run the deployment.
+Run the following command from this same directory
 
 ```
-kcli plan -P nodes=10 cnvlab
+kcli plan -f /plans/kcli_plan.yml -P nodes=10 cnvlab
 ```
 
 this will create 10 vms, named student001,student002,...,student010 and populate them with scripts to deploy the corresponding features
@@ -82,7 +83,7 @@ a requisites.sh script will also be executed to install docker and pull relevant
 To launch the plan for kubernetes instead, run this (we can actually use latest kubevirt on this platform)
 
 ```
-kcli plan -P nodes=10 -P openshift=false -P kubevirt_version=v0.7.0 cnvlab
+kcli plan -P nodes=10 -P openshift=false -P kubevirt_version=v0.7.0 -f /plans/kcli_plan.yml cnvlab
 ```
 
 You can then use *
