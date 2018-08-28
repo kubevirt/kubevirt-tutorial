@@ -17,6 +17,7 @@ parameters:
     - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/AvM9VbO2yiIb9AillBp/kTr8jqIErRU1LFKqhwPTm4AtVIjFSaOuM4AlspfCUIz9IHBrDcZmbcYKai3lC3JtQic7M/a1OWUjWE1ML8CEvNsGPGu5yNVUQoWC0lmW5rzX9c6HvH8AcmfMmdyQ7SgcAnk0zir9jw8ed2TRAzHn3vXFd7+saZLihFJhXG4zB8vh7gJHjLfjIa3JHptWzW9AtqF9QsoBY/iu58Rf/hRnrfWscyN3x9pGCSEqdLSDv7HFuH2EabnvNFFQZr4J1FYzH/fKVY3Ppt3rf64UWCztDu7L44fPwwkI7nAzdmQVTaMoD3Ej8i7/OSFZsC2V5IBT kboumedh@bumblefoot
     - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCq9Dr3eNBqaNXTZuHNTvWoaB/gLNpkKYk2AUSzyc6EOexFmXkSOH/3tGIFJINnJhx8YpfHXF+zsp7UfBmxVZQa7zBi7xKixkV7lIBlCD/ZD9LRV7WxBqi5Eb39YPnH1A6W6fwGrR+wQMkC299b2SF3zBzuQgAYdixSYzNDsB7rt89BNSgFmAkv6mL/tVpgVBV6ax6Bmn5XKEvFkHaC/i0YKIiqq+xtoa9w6jq7TQE5XDiAgx51S0uSLvxz+UkKxCbN1oo8FZ4cvGF3rL8NmigzFBzCpmLSUvF1qFbAeMQEEfmZBex5v1TrAbxaH3POBcApOKfEHvaUm9yY44zCXJU5 jcallen@jcallen
     - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDMBW0X4Y3lulk5VfxXp88wBdwrhieAG/iO75GTx33Q/stGlFV1oj6AIf38+Cwdn/uyBbTL/oDR+11rQRIv4xK6B/OOltJv/pQSTWixF15pJ9AUIwwKqriSeBFztBtGrbtj4UeJ4PX/iklROLsjMwRoHkn3jP6C4HEBjdHY9QUurMc2o4UL7rEPFqgGJu1QCeprBaJLpXzYWE03TH3CpNMYawGMIIvv75R7rdZg1qhtkVBvi5tAjPa+mfdnqw51U8P2lYvnFg/JfP2HjXcdBvKCotXH3OaMGmKhEfyEZP2awq6iNRkuFzy3Q9bM9wDt/welJYnQcGXwA0tiuj8n0/hz scollier@scollier
+    - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD0IFmpMQHlk87299njLxEgMJ3BAVN0zXlPQvE/vT1rHrluD+/vosXNdpzCEMSd3VQHduzXTOhNxYYAEgL3vy9EgCWnofJ96aPTLUz6aNdviltkfwtn8npPQ7ojnsa02ATHUjqI5ZbiQo2BcJScx3bEr/nvlczcuV6QF0EmKTPAEYRM1QQtE3TpozEAjOzElQkMepZc+RxI9k3HoSlWRiZK9o2mu96Y+aaCs9hXlmiYL7fbPVMnN83U3NMAAGqzUXT0QXjdVIuxEEvRYX2vE4LqjAopmTvfLy6c3VvO88w/0nbabQCoiWSTkZ/Wh4Pv0WVAyuahnr99sURQ5j2Zmd2f jparrill@deimos.localdomain
    tags:
     - cnvlab
 
@@ -37,15 +38,27 @@ student[[ "%03.d" | format(node+1) ]]:
  pool: default
  files: 
 [% if openshift %]
+  - path: /root/requirements.sh
+    origin: requirements_openshift.sh
   - path: /root/openshift.sh
     origin: openshift.sh
   - path: /root/kubevirt.sh
     origin: kubevirt_openshift.sh
+  - path: /root/cdi.sh
+    origin: cdi_openshift.sh
+  - path: /root/clean.sh
+    origin: clean_openshift.sh
 [% else %]
+  - path: /root/requirements.sh
+    origin: requirements_kubernetes.sh
   - path: /root/kubernetes.sh
     origin: kubernetes.sh
   - path: /root/kubevirt.sh
     origin: kubevirt_kubernetes.sh
+  - path: /root/cdi.sh
+    origin: cdi_kubernetes.sh
+  - path: /root/clean.sh
+    origin: clean_kubernetes.sh
   - path: /etc/yum.repos.d/kubernetes.repo
     origin: kubernetes.repo
   - path: /root/kube-flannel.yml
@@ -53,26 +66,12 @@ student[[ "%03.d" | format(node+1) ]]:
   - path: /root/kube-flannel-rbac.yml
     origin: kube-flannel-rbac.yml
 [% endif %]
-  - path: /root/cdi.sh
-    origin: cdi.sh
   - path: /root/pvc_fedora.yml
     origin: pvc_fedora.yml
   - path: /root/vm1_pvc.yml
     origin: vm1_pvc.yml
   - path: /root/vm1_registrydisk.yml
     origin: vm1_registrydisk.yml
-  - path: /root/clean.sh
-[% if openshift %]
-    origin: clean_openshift.sh
-[% else %]
-    origin: clean_kubernetes.sh
-[% endif %]
-  - path: /root/requirements.sh
-[% if openshift %]
-    origin: requirements_openshift.sh
-[% else %]
-    origin: requirements_kubernetes.sh
-[% endif %]
  scripts:
 [% if openshift %]
   - requirements_openshift.sh
