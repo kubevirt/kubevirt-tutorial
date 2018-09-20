@@ -1,5 +1,7 @@
-[% if type in ['gcp', 'aws'] %]
+[% if type == 'gcp' %]
 PUBLICNAME=`hostname`.[[ domain ]]
+[% elif type == 'aws' %]
+PUBLICNAME=`hostname`
 [% else %]
 IP=`ip a l  eth0 | grep 'inet ' | cut -d' ' -f6 | awk -F'/' '{ print $1}'`
 PUBLICNAME=$IP.xip.io
