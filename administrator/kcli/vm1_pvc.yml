@@ -11,6 +11,7 @@ spec:
   template:
     metadata:
       creationTimestamp: null
+      kubevirt.io/domain: vm1
     spec:
       domain:
         cpu:

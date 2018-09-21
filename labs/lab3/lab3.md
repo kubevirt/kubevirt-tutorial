@@ -48,7 +48,6 @@ oc get pods
 oc describe pod <pod id>
 oc logs -f router-<rest of pod id>
 oc types
-oc logout
 ```
 
 Enable oc bash auto-completion. Try to use tab completion with the `oc` command before and after the next activity.
@@ -63,9 +62,12 @@ oc # Try tabbing for auto-completion now
 #### Log into OpenShift
 
 ```
+oc logout
 oc login -u system:admin
 oc whoami
 ```
+
+Make sure you are logged in for the remainder of the lab ;)
 
 This concludes this section of the lab.
 

@@ -1,13 +1,14 @@
 
 This repository provides instructions on how to deploy an arbitrary number of vms on gcp with kubevirt, optionally with nested
+You can find similar information for aws [here](aws.md)
 
 ## Requirements
 
+- [*kcli*](https://github.com/karmab/kcli) tool ( configured to point to gcp) with version >= 12.8
 - a gcp account and the corresponding service account json file
 - an image with nested enabled (optional)
-- vpc firewall rules allowing tcp:22, tcp:80, tcp:8443 (for openshift)
+- vpc firewall rule allowing tcp:22, tcp:80, tcp:8443 (for openshift) and tcp:30000 for vms tagged with cnvlab
 - a google cloud DNS domain registered
-- [*kcli*](https://github.com/karmab/kcli) tool ( configured to point to gcp) with version >= 12.0
 
 ### Service account retrieval
 
@@ -39,7 +40,7 @@ gcloud compute images create nested-centos7 --source-image-family centos-7 --sou
 
 ```
 docker pull karmab/kcli
-echo alias kcli=\'docker run -it --rm --security-opt label:disable -v ~/.kcli:/root/.kcli -v ~/.ssh:/root/.ssh -v $PWD:/plans karmab/kcli\' >> $HOME.bashrc
+echo alias kcli=\'docker run -it --rm --security-opt label:disable -v ~/.kcli:/root/.kcli -v ~/.ssh:/root/.ssh -v $PWD:/workdir karmab/kcli\' >> $HOME.bashrc
 ```
 
 #### Configuration
@@ -69,7 +70,7 @@ the plan file  *kcli_plan.yml* is the main artifact used to run the deployment.
 Run the following command from this same directory
 
 ```
-kcli plan -f /plans/kcli_plan.yml -P nodes=10 cnvlab
+kcli plan -P nodes=10 cnvlab
 ```
 
 this will create 10 vms, named student001,student002,...,student010 and populate them with scripts to deploy the corresponding features
@@ -80,17 +81,15 @@ a requisites.sh script will also be executed to install docker and pull relevant
 - cdi.sh
 - clean.sh
 
-To launch the plan for kubernetes instead, run this (we can actually use latest kubevirt on this platform)
+To launch the plan for kubernetes instead
 
 ```
-kcli plan -P nodes=10 -P openshift=false -P kubevirt_version=v0.7.0 -f /plans/kcli_plan.yml cnvlab
+kcli plan -P nodes=10 -P openshift=false cnvlab
 ```
 
-You can then use *
-- kcli list*
-- *kcli ssh $INSTANCE*
-- kcli plan -d cnvlab # for deletion
-- relaunch the same command with a different value for nodes so that extra instances get created
+You can relaunch the same command with a different value for nodes so that extra instances get created
+
+Vms will be accessible using the injected keys and using their fqdn
 
 ## Available parameters:
 
@@ -107,5 +106,11 @@ You can then use *
 |emulation          | false                    |
 |openshift_version  | 3.10                     |
 |kubernetes_version | 1.10.5                   |
-|kubevirt_version   | v0.7.0-alpha.2           |
+|kubevirt_version   | v0.8.0                   |
 |cdi_version        | v0.5.0                   |
+
+## Clean up
+
+```
+kcli plan --yes -d cnvlab
+```

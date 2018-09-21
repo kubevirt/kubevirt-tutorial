@@ -4,5 +4,5 @@ sh /root/openshift.sh
 [% else %]
 sh /root/kubernetes.sh
 [% endif %]
-sh /root/kubevirt.sh
+sh /root/.kubevirt.sh
 sh /root/cdi.sh
