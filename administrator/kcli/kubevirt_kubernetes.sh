@@ -1,6 +1,6 @@
 VERSION="[[ kubevirt_version ]]"
 yum -y install xorg-x11-xauth virt-viewer
-[% if emulation %]
+[% if emulation or type == 'aws' %]
 kubectl create configmap -n kube-system kubevirt-config --from-literal debug.useEmulation=true
 [% endif %]
 wget https://github.com/kubevirt/kubevirt/releases/download/$VERSION/kubevirt.yaml

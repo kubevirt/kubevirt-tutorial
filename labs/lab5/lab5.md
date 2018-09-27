@@ -3,7 +3,23 @@
 In this section, download the `kubevirt.yaml` file and explore it.  Then, apply it from the upstream github repo.
 
 ```
-export VERSION=v0.7.0-alpha.2
+export VERSION=v0.8.0
+```
+
+As there is currently a [bug](https://github.com/openshift/origin/pull/20351) with oc version, we will apply the following workaround
+to expose kubevirt device plugins to the origin container
+
+```
+KUBELET_ROOTFS=$(docker inspect $(docker ps | grep kubelet | cut -d" " -f1) | grep MergedDir | cut -d: -f2 | sed 's/"//g' | sed 's/,//')
+mkdir -p /var/lib/kubelet/device-plugins $KUBELET_ROOTFS/var/lib/kubelet/device-plugins
+mount -o bind $KUBELET_ROOTFS/var/lib/kubelet/device-plugins /var/lib/kubelet/device-plugins
+```
+
+We will also precreate a specific configmap in the kube-system namespace in case nested virtualization is not enabled.
+This allows kubevirt to use emulation mode in this case
+
+```
+grep -q vmx /proc/cpuinfo || oc create configmap -n kube-system kubevirt-config --from-literal debug.useEmulation=true
 ```
 
 Grab the kubevirt.yaml file to explore. Review the ClusterRole's, CRDs, ServiceAccounts, DaemonSets, Deployments, and Services.
@@ -33,18 +49,19 @@ Give permissions to the qemu user for persistent volume claims
 setfacl -m user:107:rwx /root/openshift.local.pv/pv*
 ```
 
-
 Review the objects that KubeVirt added.
 
 ```
-oc get sa --all-namespaces | grep kubevirt
-oc describe sa kubevirt-apiserver --namespace=kube-system # Please feel free to explore the other objects as well. Get a feel for the expected output.
-oc get pods --namespace=kube-system
-oc describe pod -l kubevirt.io=virt-handler --namespace=kube-system
-# review the files on the root of the filesystem of the pod, see the virt-handler executable, after replacing the pod name with yours
-oc exec -it virt-handler-n9pxj --namespace=kube-system ls /  # Substitute your virt-handler pod name
-oc get svc --namespace=kube-system
-oc describe  svc virt-api --namespace=kube-system
+oc project kube-system
+oc get sa | grep kubevirt
+oc describe sa kubevirt-apiserver # Please feel free to explore the other objects as well. Get a feel for the expected output.
+oc get pod
+HANDLER_POD=$(oc get  pod -l kubevirt.io=virt-handler -o=custom-columns=NAME:.metadata.name --no-headers=true)
+oc describe pod $HANDLER_POD
+# review the files on the root of the filesystem of the pod, see the virt-handler executable
+oc exec -it $HANDLER_POD ls /
+oc get svc
+oc describe svc virt-api
 ```
 
 There are other services and objects to take a look at.
@@ -68,6 +85,7 @@ Browse to the `kube-system` project and explore the objects. Click on the differ
 Return to the CLI and install virtctl. This tool provides quick access to the serial and graphical ports of a VM, and handle start/stop operations. Also run `virtctl` to get an idea of it's options.
 
 ```
+export VERSION=v0.8.0
 curl -L -o virtctl https://github.com/kubevirt/kubevirt/releases/download/$VERSION/virtctl-$VERSION-linux-amd64
 chmod -v +x virtctl
 ./virtctl --help

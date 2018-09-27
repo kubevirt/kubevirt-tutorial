@@ -34,8 +34,8 @@ This will create the PVC with a proper annotation so that CDI controller detects
 ```
 oc get pvc fedora -o yaml
 oc get pod
-# replace with your importer pod name
-oc logs importer-fedora-pnbqh   # Substitute your importer-fedora pod name here.
+IMPORTER_POD=$(oc get pod -l app=containerized-data-importer -o=custom-columns=NAME:.metadata.name --no-headers=true)
+oc logs $IMPORTER_POD
 ```
 
 Notice that the importer downloaded the publically available Fedora Cloud qcow image. Once the importer pod completes, this PVC is ready for use in kubevirt.

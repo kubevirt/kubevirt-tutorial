@@ -75,6 +75,21 @@ Note: Requires `remote-viewer` from the `virt-viewer` package. This is out of sc
 ./virtctl vnc testvm
 ```
 
+Connect using service 
+
+We can "expose" any port of the vm so that we can access it from the outside.
+For instance, run the following to expose the ssh port of your vm
+
+```
+./virtctl expose vm testvm --port=22 --node-port=30000 --target-port=22 --name=testvm-ssh --type=NodePort
+```
+
+You can then access to your vm from the outside
+
+```
+ssh -p 30000 cirros@student<number>.cnvlab.gce.sysdeseng.com
+```
+
 ### Controlling the State of the VM
 
 To shut it down:

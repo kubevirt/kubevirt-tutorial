@@ -84,7 +84,7 @@ origin
 cluster role "cluster-admin" added: "developer"
 ```
 
-The expected results here are that you recieved quite a bit of output. If you received something other than what is reported above, notify an instructor.
+The expected results here are that you received quite a bit of output. If you received something other than what is reported above, notify an instructor.
 
 OK, so now that OpenShift is available, let's ask for a cluster status & take a look at our running containers:
 
