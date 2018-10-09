@@ -4,6 +4,7 @@
                }
 -%]
 sleep 60
+sysctl -w net.ipv4.conf.all.forwarding=1
 docker ps && echo Requirements already installed && exit 0
 yum -y install wget docker git bash-completion qemu-img
 systemctl enable docker

@@ -1,7 +1,7 @@
 sleep 60
 docker ps && echo Requirements already installed && exit 0
-echo net.bridge.bridge-nf-call-iptables=1 >> /etc/sysctl.d/99-sysctl.conf
-sysctl -p
+sysctl -w net.ipv4.conf.all.forwarding=1
+sysctl -w net.bridge.bridge-nf-call-iptables=1
 setenforce 0
 sed -i "s/SELINUX=enforcing/SELINUX=permissive/" /etc/selinux/config
 yum install -y wget docker kubelet-[[ kubernetes_version ]] kubectl-[[ kubernetes_version ]] kubeadm-[[ kubernetes_version ]]
