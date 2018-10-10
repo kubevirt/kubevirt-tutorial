@@ -4,7 +4,7 @@
                }
 -%]
 sleep 60
-sysctl -w net.ipv4.conf.all.forwarding=1
+sysctl -w net.ipv4.ip_forward=1
 docker ps && echo Requirements already installed && exit 0
 yum -y install wget docker git bash-completion qemu-img
 systemctl enable docker
@@ -21,4 +21,6 @@ sed -i "s@OPTIONS=.*@OPTIONS='--selinux-enabled --insecure-registry 172.30.0.0/1
 systemctl start docker --ignore-dependencies
 IMAGES="docker.io/openshift/origin-node:v3.10 docker.io/openshift/origin-control-plane:v3.10 docker.io/openshift/origin:v3.10 docker.io/openshift/origin-hypershift:v3.10 docker.io/openshift/origin-hyperkube:v3.10 docker.io/openshift/origin-pod:v3.10 docker.io/automationbroker/automation-broker-apb:latest docker.io/openshift/origin-cli:v3.10 quay.io/coreos/etcd:v3.3 docker.io/openshift/origin-service-catalog:v3.10 docker.io/openshift/origin-template-service-broker:v3.10 docker.io/ansibleplaybookbundle/origin-ansible-service-broker:latest docker.io/openshift/origin-web-console:v3.10 docker.io/openshift/origin-docker-registry:v3.10 docker.io/openshift/jenkins-2-centos7:v3.10 docker.io/centos/nodejs-6-centos7:latest"
 for image in $IMAGES; do docker pull $image ; done
+KUBEVIRT_IMAGES="docker.io/kubevirt/virt-api:[[ kubevirt_version]] docker.io/kubevirt/virt-controller:[[ kubevirt_version]] docker.io/kubevirt/virt-handler:[[ kubevirt_version]] docker.io/kubevirt/virt-launcher:[[ kubevirt_version]]"
+for image in $KUBEVIRT_IMAGES; do docker pull $image ; done
 sed -i "/sleep 60/d" /root/requirements.sh

@@ -67,7 +67,7 @@ The expected output from the curl command should be:
 
 Disconnect from the virtual machine console by typing: `ctrl+]`.
 
-Connect to the graphical display.
+### Connect to the graphical display.
 
 Note: Requires `remote-viewer` from the `virt-viewer` package. This is out of scope for this lab. 
 
@@ -75,7 +75,7 @@ Note: Requires `remote-viewer` from the `virt-viewer` package. This is out of sc
 ./virtctl vnc testvm
 ```
 
-Connect using service 
+### Connect using service 
 
 We can "expose" any port of the vm so that we can access it from the outside.
 For instance, run the following to expose the ssh port of your vm
