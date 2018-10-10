@@ -10,14 +10,14 @@ To install the components, we will first explore and then execute the `cdi.sh` s
 
 ```
 cat ~/cdi.sh
-~/cdi.sh
+sh ~/cdi.sh
 ```
 
 Review the objects that were added.
 
 ```
 oc get project| grep golden
-oc get pods --namespace=golden-images
+oc get pods --namespace=golden
 ```
 
 #### Use CDI

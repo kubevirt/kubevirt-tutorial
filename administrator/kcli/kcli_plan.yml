@@ -5,7 +5,7 @@ parameters:
    openshift_version: '3.10'
    kubernetes_version: '1.10.5'
    openshift: true
-   cdi_version: v0.5.0
+   cdi_version: v1.2.0
    disk_size: 60
    numcpus: 4
    memory: 12288

@@ -1,26 +1,29 @@
 ## APBs and the Service Catalog
 
-You can provision KubeVirt using APBs through the Service Catalog.
+You can provision Virtual Machines using a dedicated APB through the Service Catalog, who leverages kubevirt and cdi
 
 Navigate to `https://student<number>.cnvlab.gce.sysdeseng.com:8443` in your browser.
 
 ![catalog-home](images/catalog-home.png)
 
-Click the `Kubevirt` icon in the catalog to pull up the info page, then click `Next`.
 
-![apb-info](images/kubevirt-apb-info.png)
+Click the `Import Virtual Machine` icon in the catalog to pull up the info page, then click `Next`.
 
-Configure KubeVirt.  Enter a user and password of an admin user (user: `developer` password: <any>) and fill out any fields.
+![apb-info](images/import-vm-apb-info.png)
 
-![apb-config](images/kubevirt-apb-config.png)
 
-Enter the namespace where you launched kubevirt and watch it get provisioned.
+Select the plan `Import from URL`
 
-![provisioned-kubevirt](images/provisioned-kubevirt.png)
+![apb-config](images/import-vm-apb-config.png)
 
-Click the `Virtualization` tab to see any VM templates you want to create.
+Fill the form with the following data:
 
-![virt-tab](images/virtualization-tab.png)
+- Add to Project `myproject` 
+- Disk Image URL `http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img`
+- Operating system type `linux`
+- Virtual Machine Name `cirrosapb`
+
+![apb-config2](images/import-vm-apb-config2.png)
 
 This concludes this section of the lab.
 
