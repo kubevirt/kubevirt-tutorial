@@ -66,10 +66,10 @@ Since we are running an all in one setup, the corresponding Virtual Machine is a
 ps -ef | grep qemu | grep vm1
 ```
 
-Finally, use the gathered ip to connect to the Virtual Machine, create some files, stop and restart the Virtual Machine with virtctl and check how data persists.
+Finally, use the gathered ip to connect to the Virtual Machine, create some files, stop and restart the Virtual Machine with virtctl and check how data persists.( Password is `gocubsgo`)
 
 ```
-ssh fedora@VM_IP
+ssh cirros@VM_IP
 ```
 
 This concludes this section of the lab.
