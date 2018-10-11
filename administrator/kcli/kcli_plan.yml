@@ -66,8 +66,8 @@ student[[ "%03.d" | format(node+1) ]]:
   - path: /root/kube-flannel-rbac.yml
     origin: kube-flannel-rbac.yml
 [% endif %]
-  - path: /root/pvc_fedora.yml
-    origin: pvc_fedora.yml
+  - path: /root/pvc_cirros.yml
+    origin: pvc_cirros.yml
   - path: /root/vm1_pvc.yml
     origin: vm1_pvc.yml
   - path: /root/vm1_registrydisk.yml
