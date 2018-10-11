@@ -26,13 +26,13 @@ As an example, we will import a Fedora28 Cloud Image as a PVC and launch a Virtu
 
 ```
 oc project myproject
-oc create -f pvc_fedora.yml
+oc create -f pvc_cirros.yml
 ```
 
-This will create the PVC with a proper annotation so that CDI controller detects it and launches an importer pod to gather the image specified in the *kubevirt.io/storage.import.endpoint* annotation.
+This will create the PVC with a proper annotation so that CDI controller detects it and launches an importer pod to gather the image specified in the *cdi.kubevirt.io/storage.import.endpoint* annotation.
 
 ```
-oc get pvc fedora -o yaml
+oc get pvc cirros -o yaml
 oc get pod
 IMPORTER_POD=$(oc get pod -l app=containerized-data-importer -o=custom-columns=NAME:.metadata.name --no-headers=true)
 oc logs $IMPORTER_POD

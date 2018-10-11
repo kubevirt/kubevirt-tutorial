@@ -11,7 +11,6 @@ spec:
   template:
     metadata:
       creationTimestamp: null
-      kubevirt.io/domain: vm1
     spec:
       domain:
         cpu:
@@ -35,7 +34,7 @@ spec:
       volumes:
       - name: vm1-vol0
         persistentVolumeClaim:
-          claimName: fedora
+          claimName: cirros
       - cloudInitNoCloud:
           userData: |
             #cloud-config

@@ -34,7 +34,7 @@ spec:
       volumes:
       - name: vm1-vol0
         persistentVolumeClaim:
-          claimName: fedora
+          claimName: cirros
       - cloudInitNoCloud:
           userData: |
             #cloud-config
