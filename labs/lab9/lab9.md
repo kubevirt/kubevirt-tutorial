@@ -1,18 +1,25 @@
-## Conclusion
+## Kubevirt UI
 
-Now that you have completed the lab, let's review what was covered here -
+You can also interact with kubevirt using the dedicated UI
 
-* Deployed OCP with `oc cluster up`
-* Explored the environment and some basic OpenShift commands
-* Deployed an application on OpenShift
-* Deployed and explored KubeVirt
-* Explored OCP web console
-* Deployed a virtual machine on OCP
-* Accessed the virtual machine
-* Deployed CDI
-* Deployed APB
+First Install it
 
-Thanks for participating and don't forget to submit that PR if you find issues. :+1:
+```
+oc new-project kweb-ui
+oc apply -f kubevirt-web-ui.yaml
+oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:kweb-ui:default
+```
 
+You can then access it at `kubevirt-web-ui-kweb-ui.student<number>.cnvlab.gce.sysdeseng.com` and use it to 
+
+- stop/start/delete vms
+- create ones
+- access vm console through your browser
+
+![kubevirt-ui](images/ui.png)
+
+This concludes this section of the lab.
+
+[Next Lab](../lab10/lab10.md)\
 [Previous Lab](../lab8/lab8.md)\
 [Home](../../README.md)
