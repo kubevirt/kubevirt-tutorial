@@ -10,6 +10,8 @@ spec:
   running: true
   template:
     metadata:
+      labels:
+        kubevirt.io/domain: vm1
       creationTimestamp: null
     spec:
       domain:
@@ -26,15 +28,21 @@ spec:
               readonly: true
             name: cloudinitdisk
             volumeName: cloudinitvolume
+          interfaces:
+          - bridge: {}
+            name: default
         machine:
           type: q35
         resources:
           requests:
             memory: 1024M
+      networks:
+      - name: default
+        pod: {}
       volumes:
       - name: vm1-vol0
-        persistentVolumeClaim:
-          claimName: cirros
+        registryDisk:
+          image: kubevirt/fedora-cloud-registry-disk-demo
       - cloudInitNoCloud:
           userData: |
             #cloud-config

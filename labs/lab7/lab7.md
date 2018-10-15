@@ -40,21 +40,21 @@ oc logs $IMPORTER_POD
 
 Notice that the importer downloaded the publically available Fedora Cloud qcow image. Once the importer pod completes, this PVC is ready for use in kubevirt.
 
-Let's create a Virtual Machine making use of it. Review the file *vm1_pvc.yml*.
+Let's create a Virtual Machine making use of it. Review the file *vm_pvc.yml*.
 
 ```
-cat ~/vm1_pvc.yml
+cat ~/vm_pvc.yml
 ```
 
 We change the yaml definition of this Virtual Machine to inject the default public key of root user in the GCP Virtual Machine.
 
 ```
 PUBKEY=`cat ~/.ssh/id_rsa.pub`
-sed -i "s%ssh-rsa.*%$PUBKEY%" vm1_pvc.yml
-oc create -f vm1_pvc.yml
+sed -i "s%ssh-rsa.*%$PUBKEY%" vm_pvc.yml
+oc create -f vm_pvc.yml
 ```
 
-This will create and start a Virtual Machine named vm1. We can use the following command to check our Virtual Machine is running and to gather its IP. You are looking for the IP address beside the `virt-launcher` pod.
+This will create and start a Virtual Machine named vm2. We can use the following command to check our Virtual Machine is running and to gather its IP. You are looking for the IP address beside the `virt-launcher` pod.
 
 ```
 oc get pod -o wide
@@ -63,7 +63,7 @@ oc get pod -o wide
 Since we are running an all in one setup, the corresponding Virtual Machine is actually running on the same node, we can check its qemu process.
 
 ```
-ps -ef | grep qemu | grep vm1
+ps -ef | grep qemu | grep vm2
 ```
 
 Finally, use the gathered ip to connect to the Virtual Machine, create some files, stop and restart the Virtual Machine with virtctl and check how data persists.( Password is `gocubsgo`)

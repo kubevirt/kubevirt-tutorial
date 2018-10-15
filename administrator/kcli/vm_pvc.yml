@@ -5,10 +5,12 @@ metadata:
   generation: 1
   labels:
     kubevirt.io/os: linux
-  name: vm1
+  name: vm2
 spec:
   running: true
   template:
+    labels:
+      kubevirt.io/domain: vm2
     metadata:
       creationTimestamp: null
     spec:
@@ -20,7 +22,7 @@ spec:
           - disk:
               bus: virtio
             name: disk0
-            volumeName: vm1-vol0
+            volumeName: vm2-vol0
           - cdrom:
               bus: sata
               readonly: true
@@ -32,13 +34,13 @@ spec:
           requests:
             memory: 1024M
       volumes:
-      - name: vm1-vol0
-        registryDisk:
-          image: kubevirt/fedora-cloud-registry-disk-demo
+      - name: vm2-vol0
+        persistentVolumeClaim:
+          claimName: cirros
       - cloudInitNoCloud:
           userData: |
             #cloud-config
-            hostname: vm1
+            hostname: vm2
             ssh_pwauth: True
             disable_root: false
             ssh_authorized_keys:
