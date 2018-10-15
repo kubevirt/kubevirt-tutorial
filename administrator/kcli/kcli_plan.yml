@@ -1,8 +1,8 @@
 parameters:
    template: nested-centos7
-   kubevirt_version: v0.8.0
+   kubevirt_version: v0.9.1
    domain: cnvlab.gce.sysdeseng.com
-   openshift_version: '3.10'
+   openshift_version: '3.11'
    kubernetes_version: '1.10.5'
    openshift: true
    cdi_version: v1.2.0
