@@ -1,8 +1,8 @@
 VERSION="[[ kubevirt_version ]]"
-KUBELET_ROOTFS=$(docker inspect $(docker ps | grep kubelet | cut -d" " -f1) | grep MergedDir | cut -d: -f2 | sed 's/"//g' | sed 's/,//')
-[ -z $KUBELET_ROOTFS ] && KUBELET_ROOTFS=/var/lib/docker/devicemapper/mnt/$(docker inspect $(docker ps | grep kubelet | cut -d" " -f1) | grep DeviceName  | awk -F- '{print $4}' | sed 's/",//')/rootfs
-mkdir -p /var/lib/kubelet/device-plugins $KUBELET_ROOTFS/var/lib/kubelet/device-plugins
-mount -o bind $KUBELET_ROOTFS/var/lib/kubelet/device-plugins /var/lib/kubelet/device-plugins
+#KUBELET_ROOTFS=$(docker inspect $(docker ps | grep kubelet | cut -d" " -f1) | grep MergedDir | cut -d: -f2 | sed 's/"//g' | sed 's/,//')
+#[ -z $KUBELET_ROOTFS ] && KUBELET_ROOTFS=/var/lib/docker/devicemapper/mnt/$(docker inspect $(docker ps | grep kubelet | cut -d" " -f1) | grep DeviceName  | awk -F- '{print $4}' | sed 's/",//')/rootfs
+#mkdir -p /var/lib/kubelet/device-plugins $KUBELET_ROOTFS/var/lib/kubelet/device-plugins
+#mount -o bind $KUBELET_ROOTFS/var/lib/kubelet/device-plugins /var/lib/kubelet/device-plugins
 yum -y install xorg-x11-xauth virt-viewer
 oc project kube-system
 oc adm policy add-scc-to-user privileged -z kubevirt-privileged -n kube-system

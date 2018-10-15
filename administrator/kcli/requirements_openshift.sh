@@ -1,6 +1,6 @@
 [%- set releaseurls = {
-                  '3.9'  : 'v3.9.0/openshift-origin-client-tools-v3.9.0-191fece',
                   '3.10' : 'v3.10.0-rc.0/openshift-origin-client-tools-v3.10.0-rc.0-c20e215',
+                  '3.11' : 'v3.11.0/openshift-origin-client-tools-v3.11.0-0cbc58b',
                }
 -%]
 sleep 60
