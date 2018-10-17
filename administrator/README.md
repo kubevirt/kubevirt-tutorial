@@ -18,6 +18,6 @@ mv kubevirt-tutorial/administrator/* /root
 
 | Component        | Version                  |
 |------------------|--------------------------|
-|openshift         | 3.10                     |
-|kubevirt_version  | v0.7.0-alpha.2           |
-|cdi_version       | 0.5.0                    |
+|openshift         | 3.11                     |
+|kubevirt_version  | v0.9.1                   |
+|cdi_version       | 1.2.0                    |

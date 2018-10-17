@@ -2,19 +2,17 @@
 
 ### Create a Virtual Machine
 
-Download the VM manifest and explore it. Note it uses a [registry disk](https://kubevirt.io/user-guide/#/workloads/virtual-machines/disks-and-volumes?id=registrydisk) and as such doesn't persist data. Such registry disks currently exist for alpine, cirros and fedora.
+explore The VM Manifest. Note it uses a [registry disk](https://kubevirt.io/user-guide/#/workloads/virtual-machines/disks-and-volumes?id=registrydisk) and as such doesn't persist data. Such registry disks currently exist for alpine, cirros and fedora.
 
 ```
-wget https://raw.githubusercontent.com/kubevirt/demo/master/manifests/vm.yaml
-less vm.yaml
+cat vm_registrydisk.yml
 ```
 
 Apply the manifest to OpenShift.
 
 ```
-oc apply -f https://raw.githubusercontent.com/kubevirt/demo/master/manifests/vm.yaml
-  virtualmachine.kubevirt.io "testvm" created
-  virtualmachineinstancepreset.kubevirt.io "small" created
+oc apply -f vm_registrydisk.yml
+  virtualmachine.kubevirt.io "vm1" created
 ```
 
 ### Manage Virtual Machines (optional):
@@ -23,20 +21,20 @@ To get a list of existing Virtual Machines. Note the `running` status.
 
 ```
 oc get vms
-oc get vms -o yaml testvm
+oc get vms -o yaml vm1
 ```
 
 To start a Virtual Machine you can use:
 
 ```
-./virtctl start testvm
+./virtctl start vm1
 ```
 
 Now that the Virtual Machine has been started, check the status. Note the `running` status.
 
 ```
 oc get vms
-oc get vms -o yaml testvm
+oc get vms -o yaml vm1
 ```
 
 ### Accessing VMs (serial console & spice)
@@ -44,12 +42,12 @@ oc get vms -o yaml testvm
 Connect to the serial console of the Cirros VM. Hit return / enter a few times and login with the displayed username and password. 
 
 ```
-./virtctl console testvm
+./virtctl console vm1
 ```
 
 ### Communication Between Application and Virtual Machine
 
-While in the console of the `testvm` let's run `curl` to confirm our virtual machine
+While in the console of the `vm1` let's run `curl` to confirm our virtual machine
 can access the `Service` of the application deployment.
 
 ```
@@ -72,7 +70,7 @@ Disconnect from the virtual machine console by typing: `ctrl+]`.
 Note: Requires `remote-viewer` from the `virt-viewer` package. This is out of scope for this lab. 
 
 ```
-./virtctl vnc testvm
+./virtctl vnc vm1
 ```
 
 ### Connect using service 
@@ -81,7 +79,7 @@ We can "expose" any port of the vm so that we can access it from the outside.
 For instance, run the following to expose the ssh port of your vm
 
 ```
-./virtctl expose vm testvm --port=22 --node-port=30000 --target-port=22 --name=testvm-ssh --type=NodePort
+./virtctl expose vm vm1 --port=22 --node-port=30000 --target-port=22 --name=vm1-ssh --type=NodePort
 ```
 
 You can then access to your vm from the outside
@@ -95,13 +93,13 @@ ssh -p 30000 cirros@student<number>.cnvlab.gce.sysdeseng.com
 To shut it down:
 
 ```
-./virtctl stop testvm
+./virtctl stop vm1
 ```
 
 To delete a Virtual Machine:
 
 ```
-oc delete vms testvm
+oc delete vms vm1
 ```
 
 This concludes this section of the lab.

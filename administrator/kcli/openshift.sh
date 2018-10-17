@@ -10,3 +10,4 @@ oc cluster up --public-hostname $PUBLICNAME --routing-suffix $PUBLICNAME --enabl
 oc login -u system:admin
 docker update --restart=always origin
 oc adm policy add-cluster-role-to-user cluster-admin developer
+oc adm policy add-scc-to-user privileged system:serviceaccount:myvms:default

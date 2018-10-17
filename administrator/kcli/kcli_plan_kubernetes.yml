@@ -2,7 +2,7 @@ parameters:
    template: nested-centos7
    kubevirt_version: v0.9.1
    domain: cnvlab.gce.sysdeseng.com
-   openshift_version: v3.11
+   kubernetes_version: '1.10.5'
    cdi_version: v1.2.0
    disk_size: 60
    numcpus: 4
@@ -37,15 +37,21 @@ student[[ "%03.d" | format(node+1) ]]:
  pool: default
  files: 
   - path: /root/requirements.sh
-    origin: requirements_openshift.sh
-  - path: /root/openshift.sh
-    origin: openshift.sh
+    origin: requirements_kubernetes.sh
+  - path: /root/kubernetes.sh
+    origin: kubernetes.sh
   - path: /root/.kubevirt.sh
-    origin: kubevirt_openshift.sh
+    origin: kubevirt_kubernetes.sh
   - path: /root/cdi.sh
-    origin: cdi_openshift.sh
+    origin: cdi_kubernetes.sh
   - path: /root/clean.sh
-    origin: clean_openshift.sh
+    origin: clean_kubernetes.sh
+  - path: /etc/yum.repos.d/kubernetes.repo
+    origin: kubernetes.repo
+  - path: /root/kube-flannel.yml
+    origin: kube-flannel.yml
+  - path: /root/kube-flannel-rbac.yml
+    origin: kube-flannel-rbac.yml
   - path: /root/pvc_cirros.yml
     origin: pvc_cirros.yml
   - path: /root/vm_pvc.yml
@@ -55,8 +61,8 @@ student[[ "%03.d" | format(node+1) ]]:
   - path: /root/kubevirt-web-ui.yaml
     origin: kubevirt-web-ui.yaml
  scripts:
-  - requirements_openshift.sh
+  - requirements_kubernetes.sh
 [% if deploy %]
-  - deploy_openshift.sh
+  - deploy_kubernetes.sh
 [% endif %]
 [% endfor %]

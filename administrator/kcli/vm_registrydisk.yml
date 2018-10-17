@@ -9,6 +9,8 @@ metadata:
 spec:
   running: true
   template:
+    labels:
+      kubevirt.io/domain: vm1
     metadata:
       creationTimestamp: null
     spec:
@@ -33,8 +35,8 @@ spec:
             memory: 1024M
       volumes:
       - name: vm1-vol0
-        persistentVolumeClaim:
-          claimName: cirros
+        registryDisk:
+          image: kubevirt/fedora-cloud-registry-disk-demo
       - cloudInitNoCloud:
           userData: |
             #cloud-config

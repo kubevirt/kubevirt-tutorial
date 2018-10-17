@@ -3,19 +3,10 @@
 In this section, download the `kubevirt.yaml` file and explore it.  Then, apply it from the upstream github repo.
 
 ```
-export VERSION=v0.8.0
+export VERSION=v0.9.1
 ```
 
-As there is currently a [bug](https://github.com/openshift/origin/pull/20351) with oc version, we will apply the following workaround
-to expose kubevirt device plugins to the origin container
-
-```
-KUBELET_ROOTFS=$(docker inspect $(docker ps | grep kubelet | cut -d" " -f1) | grep MergedDir | cut -d: -f2 | sed 's/"//g' | sed 's/,//')
-mkdir -p /var/lib/kubelet/device-plugins $KUBELET_ROOTFS/var/lib/kubelet/device-plugins
-mount -o bind $KUBELET_ROOTFS/var/lib/kubelet/device-plugins /var/lib/kubelet/device-plugins
-```
-
-We will also precreate a specific configmap in the kube-system namespace in case nested virtualization is not enabled.
+We will precreate a specific configmap in the kube-system namespace in case nested virtualization is not enabled.
 This allows kubevirt to use emulation mode in this case
 
 ```
@@ -85,7 +76,7 @@ Browse to the `kube-system` project and explore the objects. Click on the differ
 Return to the CLI and install virtctl. This tool provides quick access to the serial and graphical ports of a VM, and handle start/stop operations. Also run `virtctl` to get an idea of it's options.
 
 ```
-export VERSION=v0.8.0
+export VERSION=v0.9.1
 curl -L -o virtctl https://github.com/kubevirt/kubevirt/releases/download/$VERSION/virtctl-$VERSION-linux-amd64
 chmod -v +x virtctl
 ./virtctl --help
