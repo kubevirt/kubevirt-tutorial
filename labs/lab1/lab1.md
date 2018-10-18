@@ -17,12 +17,12 @@ chmod 600 cnv_rsa
 ```
 
 ### Connecting to your GCP Instance
-This lab should be performed on **YOUR ASSIGNED GCP INSTANCE** as `cnv` user unless otherwise instructed.
+This lab should be performed on **YOUR ASSIGNED GCP INSTANCE** as `centos` user unless otherwise instructed.
 
 **_NOTE_**: Please be respectful and only connect to your assigned instance. Every instance for this lab uses the same public key so you could accidentally (or with malicious intent) connect to the wrong system. If you have any issues, please inform an instructor.
 
 ```
-ssh -i cnv_rsa cnv@student<number>.cnvlab.gce.sysdeseng.com
+ssh -i cnv_rsa centos@student<number>.cnvlab.gce.sysdeseng.com
 ```
 
 This concludes this section of the lab.

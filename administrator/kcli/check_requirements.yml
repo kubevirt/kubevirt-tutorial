@@ -1,5 +1,5 @@
 - hosts: cnvlab
-  remote_user: cnv
+  remote_user: centos
   become: yes
   vars:
     package: docker
