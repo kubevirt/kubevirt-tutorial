@@ -1,4 +1,4 @@
-VERSION="v0.9.1"
+VERSION="v0.9.5"
 yum -y install xorg-x11-xauth virt-viewer
 oc project kube-system
 wget https://github.com/kubevirt/kubevirt/releases/download/$VERSION/kubevirt.yaml
