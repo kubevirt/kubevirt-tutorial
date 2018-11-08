@@ -1,9 +1,9 @@
 parameters:
    template: nested-centos7
-   kubevirt_version: v0.9.1
+   kubevirt_version: v0.9.5
    domain: cnvlab.gce.sysdeseng.com
    openshift_version: v3.11
-   cdi_version: v1.2.0
+   cdi_version: v1.3.0
    disk_size: 60
    numcpus: 4
    memory: 12288
