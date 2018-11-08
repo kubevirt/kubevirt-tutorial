@@ -4,7 +4,7 @@ You can find similar information for aws [here](aws.md)
 
 ## Requirements
 
-- [*kcli*](https://github.com/karmab/kcli) tool ( configured to point to gcp) with version >= 12.8
+- [*kcli*](https://github.com/karmab/kcli) tool ( configured to point to gcp) with version >= 13.4
 - a gcp account and the corresponding service account json file
 - an image with nested enabled (optional)
 - vpc firewall rule allowing tcp:22, tcp:80, tcp:8443 (for openshift) and tcp:30000 for vms tagged with cnvlab
@@ -54,15 +54,12 @@ default:
 
 cnvlab:
  type: gcp
- user: cnv
  credentials: ~/.kcli/myproject.json
  enabled: true
  project: cnvlab-209908
  zone: us-central1-b
 
 ```
-
-The user indicated in the conf is the one that will be used for ssh access
 
 ## How to use
 
