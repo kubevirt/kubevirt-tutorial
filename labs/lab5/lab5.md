@@ -3,7 +3,7 @@
 In this section, download the `kubevirt.yaml` file and explore it.  Then, apply it from the upstream github repo.
 
 ```
-export VERSION=v0.9.1
+export VERSION=v0.10.0
 ```
 
 We will precreate a specific configmap in the kube-system namespace in case nested virtualization is not enabled.
@@ -76,7 +76,7 @@ Browse to the `kube-system` project and explore the objects. Click on the differ
 Return to the CLI and install virtctl. This tool provides quick access to the serial and graphical ports of a VM, and handle start/stop operations. Also run `virtctl` to get an idea of it's options.
 
 ```
-export VERSION=v0.9.1
+export VERSION=v0.10.0
 curl -L -o virtctl https://github.com/kubevirt/kubevirt/releases/download/$VERSION/virtctl-$VERSION-linux-amd64
 chmod -v +x virtctl
 ./virtctl --help

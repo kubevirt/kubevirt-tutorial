@@ -9,10 +9,10 @@ metadata:
 spec:
   running: true
   template:
-    labels:
-      kubevirt.io/domain: vm2
     metadata:
       creationTimestamp: null
+      labels:
+        kubevirt.io/domain: vm2
     spec:
       domain:
         cpu:
