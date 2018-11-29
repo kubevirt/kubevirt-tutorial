@@ -1,13 +1,13 @@
-VERSION="[[ kubevirt_version ]]"
+VERSION="{{ kubevirt_version }}"
 yum -y install xorg-x11-xauth virt-viewer
 oc project kube-system
 oc adm policy add-scc-to-user privileged -z kubevirt-privileged -n kube-system
 oc adm policy add-scc-to-user privileged -z kubevirt-controller -n kube-system
 oc adm policy add-scc-to-user privileged -n kube-system -z kubevirt-apiserver
 
-[% if emulation or type == 'aws' %]
+{% if emulation or type == 'aws' %}
 oc create configmap -n kube-system kubevirt-config --from-literal debug.useEmulation=true
-[% endif %]
+{% endif %}
 wget https://github.com/kubevirt/kubevirt/releases/download/$VERSION/kubevirt.yaml
 oc create -f kubevirt.yaml
 docker pull kubevirt/virt-launcher:$VERSION

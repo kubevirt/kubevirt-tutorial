@@ -20,20 +20,20 @@ parameters:
     - cnvlab
    ui_container: docker.io/mareklibra/kubevirt-web-ui:v1.3-8
 
-[% for node in range(0, nodes) %]
-student[[ "%03.d" | format(node+1) ]]:
- template: [[ template ]]
- numcpus: [[ numcpus ]]
- memory: [[ memory ]]
- tags: [[ tags ]]
- keys: [[ keys ]]
- domain: [[ domain ]]
+{% for node in range(0, nodes) %}
+student{{ "%03.d" | format(node+1) }}:
+ template: {{ template }}
+ numcpus: {{ numcpus }}
+ memory: {{ memory }}
+ tags: {{ tags }}
+ keys: {{ keys }}
+ domain: {{ domain }}
  reservedns: true
  nets:
   - name: default
     alias: ['*']
  disks:
-  - size: [[ disk_size ]]
+  - size: {{ disk_size }}
  pool: default
  files: 
   - path: /root/requirements.sh
@@ -56,7 +56,7 @@ student[[ "%03.d" | format(node+1) ]]:
     origin: kubevirt-web-ui.yaml
  scripts:
   - requirements_openshift.sh
-[% if deploy %]
+{% if deploy %}
   - deploy_openshift.sh
-[% endif %]
-[% endfor %]
+{% endif %}
+{% endfor %}
