@@ -35,8 +35,8 @@ spec:
             memory: 1024M
       volumes:
       - name: vm1-vol0
-        registryDisk:
-          image: kubevirt/fedora-cloud-registry-disk-demo
+        containerDisk:
+          image: kubevirt/fedora-cloud-container-disk-demo
       - cloudInitNoCloud:
           userData: |
             #cloud-config
