@@ -9,7 +9,8 @@ This tool will parse tests files in ginkgo format and extract
 ### Usage
 ```bash
 make
-polarion-generator --tests-dir=tests/ --output-file=polarion.xml --project-id=QE
+cd ~/go/bin
+polarion-generator --tests-dir=path_to_tests/ --output-file=polarion.xml --project-id=QE
 ```
 It will generate `polarion.xml` file under the work directory that can be imported into polarion.
 
