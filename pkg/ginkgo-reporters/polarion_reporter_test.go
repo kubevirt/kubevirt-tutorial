@@ -65,7 +65,7 @@ var _ = Describe("ginkgo_reporters", func() {
 				},
 				{
 					Name:  "polarion-lookup-method",
-					Value: "name",
+					Value: "id",
 				},
 				{
 					Name:  "polarion-custom-plannedin",
@@ -98,7 +98,7 @@ var _ = Describe("ginkgo_reporters", func() {
 			reporter        PolarionReporter
 		)
 		specSummaryPass = &types.SpecSummary{
-			ComponentTexts: []string{"THIS", "IS", "A PASSING", "TEST"},
+			ComponentTexts: []string{"THIS", "IS", "[test_id:123]A PASSING", "TEST"},
 			State:          types.SpecStatePassed,
 			CapturedOutput: "Test output",
 		}
@@ -125,17 +125,26 @@ var _ = Describe("ginkgo_reporters", func() {
 		skipMessage := JUnitSkipped{}
 
 		specSummarySkip = &types.SpecSummary{
-			ComponentTexts: []string{"THIS", "IS", "A SKIPPING", "TEST"},
+			ComponentTexts: []string{"THIS", "IS", "[test_id:789]A SKIPPING", "TEST"},
 			State:          types.SpecStateSkipped,
 			CapturedOutput: "Test output",
 		}
 
 		testcases := []PolarionTestCase{
 			{
-				Name: fmt.Sprintf("%s: %s", "IS", "A PASSING TEST"),
+				Name: fmt.Sprintf("%s: %s", "IS", "[test_id:123]A PASSING TEST"),
+				Properties: PolarionProperties{
+					Property: []PolarionProperty{
+						{
+							Name:  "polarion-project-id",
+							Value: "QE-123",
+						},
+					},
+				},
 			},
 			{
-				Name:      fmt.Sprintf("%s: %s", "IS", "A FAILING TEST"),
+				Name: fmt.Sprintf("%s: %s", "IS", "A FAILING TEST"),
+				Properties: PolarionProperties{},
 				SystemOut: "Test output",
 				FailureMessage: &JUnitFailureMessage{
 					Type:    "Failure",
@@ -143,7 +152,15 @@ var _ = Describe("ginkgo_reporters", func() {
 				},
 			},
 			{
-				Name:    fmt.Sprintf("%s: %s", "IS", "A SKIPPING TEST"),
+				Name: fmt.Sprintf("%s: %s", "IS", "[test_id:789]A SKIPPING TEST"),
+				Properties: PolarionProperties{
+					Property: []PolarionProperty{
+						{
+							Name:  "polarion-project-id",
+							Value: "QE-789",
+						},
+					},
+				},
 				Skipped: &skipMessage,
 			},
 		}
