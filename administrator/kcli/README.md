@@ -71,17 +71,12 @@ kcli plan -P nodes=10 cnvlab
 ```
 
 this will create 10 vms, named student001,student002,...,student010 and populate them with scripts to deploy the corresponding features
-a requisites.sh script will also be executed to install docker and pull relevant images
-
-- openshift.sh/kubernetes.sh
-- kubevirt.sh
-- cdi.sh
-- clean.sh
+requisites.sh and openshift.sh scripts will also be executed to install docker, pull relevant images, and deploy openshift through `oc cluster up`
 
 To launch the plan for kubernetes instead
 
 ```
-kcli plan -P nodes=10 -P openshift=false cnvlab
+kcli plan -f kcli_plan_kubernetes.yml -P nodes=10 cnvlab
 ```
 
 You can relaunch the same command with a different value for nodes so that extra instances get created
@@ -99,12 +94,11 @@ Vms will be accessible using the injected keys and using their fqdn
 |numcpus            | 4                        |
 |memory             | 12288                    |
 |nodes              | 40                       |
-|deploy             | true                     |
 |emulation          | false                    |
-|openshift_version  | 3.10                     |
-|kubernetes_version | 1.10.5                   |
-|kubevirt_version   | v0.8.0                   |
-|cdi_version        | v0.5.0                   |
+|openshift_version  | 3.11                     |
+|kubernetes_version | 1.11.0                   |
+|kubevirt_version   | v0.12.0-alpha.2          |
+|cdi_version        | v1.4.1                   |
 
 ## Clean up
 

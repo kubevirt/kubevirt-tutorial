@@ -3,14 +3,14 @@
 In this section, download the `kubevirt.yaml` file and explore it.  Then, apply it from the upstream github repo.
 
 ```
-export VERSION=v0.11.0
+export VERSION=v0.12.0-alpha.2
 ```
 
 We will precreate a specific configmap in the kube-system namespace in case nested virtualization is not enabled.
 This allows kubevirt to use emulation mode in this case
 
 ```
-grep -q vmx /proc/cpuinfo || oc create configmap -n kube-system kubevirt-config --from-literal debug.useEmulation=true
+grep -q vmx /proc/cpuinfo || oc create configmap -n kubevirt kubevirt-config --from-literal debug.useEmulation=true
 ```
 
 Grab the kubevirt.yaml file to explore. Review the ClusterRole's, CRDs, ServiceAccounts, DaemonSets, Deployments, and Services.
@@ -29,9 +29,9 @@ oc apply -f https://github.com/kubevirt/kubevirt/releases/download/$VERSION/kube
 Define the following policies for OpenShift.
 
 ```
-oc adm policy add-scc-to-user privileged -n kube-system -z kubevirt-privileged
-oc adm policy add-scc-to-user privileged -n kube-system -z kubevirt-controller
-oc adm policy add-scc-to-user privileged -n kube-system -z kubevirt-apiserver
+oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-privileged
+oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-controller
+oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-apiserver
 ```
 
 Give permissions to the qemu user for persistent volume claims 
@@ -43,7 +43,7 @@ setfacl -m user:107:rwx /root/openshift.local.pv/pv*
 Review the objects that KubeVirt added.
 
 ```
-oc project kube-system
+oc project kubevirt
 oc get sa | grep kubevirt
 oc describe sa kubevirt-apiserver # Please feel free to explore the other objects as well. Get a feel for the expected output.
 oc get pod
@@ -76,7 +76,7 @@ Browse to the `kube-system` project and explore the objects. Click on the differ
 Return to the CLI and install virtctl. This tool provides quick access to the serial and graphical ports of a VM, and handle start/stop operations. Also run `virtctl` to get an idea of it's options.
 
 ```
-export VERSION=v0.11.0
+export VERSION=v0.12.0-alpha.2
 curl -L -o virtctl https://github.com/kubevirt/kubevirt/releases/download/$VERSION/virtctl-$VERSION-linux-amd64
 chmod -v +x virtctl
 ./virtctl --help
