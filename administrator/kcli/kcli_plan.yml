@@ -1,6 +1,6 @@
 parameters:
    template: nested-centos7
-   kubevirt_version: v0.11.0
+   kubevirt_version: v0.12.0-alpha.2
    domain: cnvlab.gce.sysdeseng.com
    openshift_version: v3.11
    cdi_version: v1.4.1
@@ -8,7 +8,6 @@ parameters:
    numcpus: 4
    memory: 12288
    nodes: 40
-   deploy: false
    emulation: false
    keys:
     - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5Qbj7vDf0uYQpeYb432g5R4YvYJaPfPA4EM4qc3lO62c7oUsWbZlZBl5neEWX41HGCIP4Zm1ybN9iiDyeIns6hg5OkU2vUGuPtV2KCAZOI7snzXeZxlrjsVMjMy/CYUlvIOAPxY4XzfzMMAJjIJni18R2PqVRI4f4SeSq3IIzpnOu2VQmqjFmmdybQY83BvBvWj6KLszAXkJk9LkZSAoktXimDBWFPQYikzZihLolRxwHzo21lXSw58D1N+6IeMudOviAte5yu6FBUN6dFYbt9dkLuH2/ONliFz/042n5UNp0wC5BLdpVwJpWqqrCVaeXBgla/gYm8YNZJIAlf8K5 kboumedh@vegeta.local
@@ -51,7 +50,5 @@ student{{ "%03.d" | format(node+1) }}:
   - kubevirt-web-ui.yaml
  scripts:
   - requirements_openshift.sh
-{% if deploy %}
   - deploy_openshift.sh
-{% endif %}
 {% endfor %}
