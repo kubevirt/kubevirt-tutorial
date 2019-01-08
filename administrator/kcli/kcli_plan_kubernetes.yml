@@ -1,9 +1,9 @@
 parameters:
    template: nested-centos7
-   kubevirt_version: v0.9.5
+   kubevirt_version: v0.11.0
    domain: cnvlab.gce.sysdeseng.com
-   kubernetes_version: '1.10.5'
-   cdi_version: v1.3.0
+   kubernetes_version: '1.11.0'
+   cdi_version: v1.4.1
    disk_size: 60
    numcpus: 4
    memory: 12288
@@ -18,7 +18,7 @@ parameters:
     - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD0IFmpMQHlk87299njLxEgMJ3BAVN0zXlPQvE/vT1rHrluD+/vosXNdpzCEMSd3VQHduzXTOhNxYYAEgL3vy9EgCWnofJ96aPTLUz6aNdviltkfwtn8npPQ7ojnsa02ATHUjqI5ZbiQo2BcJScx3bEr/nvlczcuV6QF0EmKTPAEYRM1QQtE3TpozEAjOzElQkMepZc+RxI9k3HoSlWRiZK9o2mu96Y+aaCs9hXlmiYL7fbPVMnN83U3NMAAGqzUXT0QXjdVIuxEEvRYX2vE4LqjAopmTvfLy6c3VvO88w/0nbabQCoiWSTkZ/Wh4Pv0WVAyuahnr99sURQ5j2Zmd2f jparrill@deimos.localdomain
    tags:
     - cnvlab
-   ui_container: docker.io/mareklibra/kubevirt-web-ui:v1.3-8
+   ui_container: quay.io/kubevirt/kubevirt-web-ui:latest
 
 {% for node in range(0, nodes) %}
 student{{ "%03.d" | format(node+1) }}:
@@ -48,18 +48,12 @@ student{{ "%03.d" | format(node+1) }}:
     origin: clean_kubernetes.sh
   - path: /etc/yum.repos.d/kubernetes.repo
     origin: kubernetes.repo
-  - path: /root/kube-flannel.yml
-    origin: kube-flannel.yml
-  - path: /root/kube-flannel-rbac.yml
-    origin: kube-flannel-rbac.yml
-  - path: /root/pvc_cirros.yml
-    origin: pvc_cirros.yml
-  - path: /root/vm_pvc.yml
-    origin: vm_pvc.yml
-  - path: /root/vm_registrydisk.yml
-    origin: vm_registrydisk.yml
-  - path: /root/kubevirt-web-ui.yaml
-    origin: kubevirt-web-ui.yaml
+  - kube-flannel.yml
+  - kube-flannel-rbac.yml
+  - pvc_cirros.yml
+  - vm_pvc.yml
+  - vmm_containerdisk.yml
+  - kubevirt-web-ui.yaml
  scripts:
   - requirements_kubernetes.sh
 {% if deploy %}
