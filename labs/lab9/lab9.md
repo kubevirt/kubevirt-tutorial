@@ -2,6 +2,7 @@
 
 You can also interact with kubevirt using the dedicated UI
 
+### Install kubevirt web ui
 First Install it
 
 ```
@@ -18,8 +19,69 @@ You can then access it at `kubevirt-web-ui-kweb-ui.student<number>.cnvlab.gce.sy
 
 ![kubevirt-ui](images/ui.png)
 
+
+### Using the kubevirt web ui 
+
+Let's first `Create Project` named `web-ui-vm`
+
+```
+oc new-project web-ui-vm
+```
+
+
+### Create a Virtual Machine
+
+Click the `Create Virtual Machine` drop-down and select `Create with Wizard`
+
+![create virtual machine wizard](images/new_vm_wizard.png)
+
+
+In the `Basic Settings` configure with the following
+
+- Name: `test`
+- Namespace: `web-ui-vm`
+- Provision Source: `Registry`
+- Registry Image: `docker.io/kubevirt/cirros-registry-disk-demo:v0.9.6`
+- Operating System: `fedora27`
+- Flavor: `Custom`
+- Memory: `1`
+- CPUs: `1`
+- Workload Profile: `generic`
+
+![create virtual machine wizard](images/basic_settings.png)
+
+Click `Next >` until result and finish.
+
+### Controlling the State of the VM
+
+To start the virtual machine click the cog and select `Start Virtual Machine`.
+
+![start vm](images/start_vm.png)
+
+
+Now click the virtual machine link `test`
+
+### Virtual Machine Overview and Console
+
+![overview](images/overview.png)
+
+Click `Consoles` to view VNC.
+
+![overview](images/vm_console.png)
+
+### Associated Pods
+
+Clicking `Pods` will show the currently running pods for this namespace.
+
+![pods](images/pods.png)
+
+Then clicking the `virt-launcher-test-RANDOM` link will provide an overview
+
+![pods](images/pod_overview.png)
+
 This concludes this section of the lab.
 
 [Next Lab](../lab10/lab10.md)\
 [Previous Lab](../lab8/lab8.md)\
 [Home](../../README.md)
+
