@@ -24,9 +24,10 @@ You can then access it at `kubevirt-web-ui-kweb-ui.student<number>.cnvlab.gce.sy
 
 Let's first `Create Project` named `web-ui-vm`
 
-![new project](images/new_project.png)
+```
+oc new-project web-ui-vm
+```
 
-Then click the `kubevirt-web-ui` project link.  In the `Overview` the route to the kubevirt-web-ui will be listed.
 
 ### Create a Virtual Machine
 
@@ -79,6 +80,7 @@ Then clicking the `virt-launcher-test-RANDOM` link will provide an overview
 ![pods](images/pod_overview.png)
 
 This concludes this section of the lab.
+
 [Next Lab](../lab10/lab10.md)\
 [Previous Lab](../lab8/lab8.md)\
 [Home](../../README.md)
