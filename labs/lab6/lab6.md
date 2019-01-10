@@ -27,7 +27,7 @@ oc get vms -o yaml vm1
 To start a Virtual Machine you can use:
 
 ```
-./virtctl start vm1
+virtctl start vm1
 ```
 
 Now that the Virtual Machine has been started, check the status. Note the `running` status.
@@ -42,7 +42,7 @@ oc get vms -o yaml vm1
 Connect to the serial console of the Cirros VM. Hit return / enter a few times and login with the displayed username and password. 
 
 ```
-./virtctl console vm1
+virtctl console vm1
 ```
 
 ### Communication Between Application and Virtual Machine
@@ -70,7 +70,7 @@ Disconnect from the virtual machine console by typing: `ctrl+]`.
 Note: Requires `remote-viewer` from the `virt-viewer` package. This is out of scope for this lab. 
 
 ```
-./virtctl vnc vm1
+virtctl vnc vm1
 ```
 
 ### Connect using service 
@@ -79,7 +79,7 @@ We can "expose" any port of the vm so that we can access it from the outside.
 For instance, run the following to expose the ssh port of your vm
 
 ```
-./virtctl expose vm vm1 --port=22 --node-port=30000 --target-port=22 --name=vm1-ssh --type=NodePort
+virtctl expose vm vm1 --port=22 --node-port=30000 --target-port=22 --name=vm1-ssh --type=NodePort
 ```
 
 You can then access to your vm from the outside
@@ -93,7 +93,7 @@ ssh -p 30000 cirros@student<number>.cnvlab.gce.sysdeseng.com
 To shut it down:
 
 ```
-./virtctl stop vm1
+virtctl stop vm1
 ```
 
 To delete a Virtual Machine:
