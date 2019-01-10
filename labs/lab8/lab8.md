@@ -13,7 +13,7 @@ each compute node in the cluster that will run a virtual machine.
 Create a new bridge named br1:
 
 ```
-ovs-vsctl add br br1
+ovs-vsctl add-br br1
 ```
 
 ### Create a Network Attachment Definition

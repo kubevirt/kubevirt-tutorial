@@ -70,10 +70,11 @@ Browse to the `kube-system` project and explore the objects. Click on the differ
 Return to the CLI and install virtctl. This tool provides quick access to the serial and graphical ports of a VM, and handle start/stop operations. Also run `virtctl` to get an idea of it's options.
 
 ```
+mkdir -p /root/bin
 export VERSION=v0.12.0-alpha.3
-curl -L -o virtctl https://github.com/kubevirt/kubevirt/releases/download/$VERSION/virtctl-$VERSION-linux-amd64
-chmod -v +x virtctl
-./virtctl --help
+curl -L -o /root/bin/virtctl https://github.com/kubevirt/kubevirt/releases/download/$VERSION/virtctl-$VERSION-linux-amd64
+chmod -v +x /root/bin/virtctl
+virtctl --help
 ```
 
 This concludes this section of the lab.
