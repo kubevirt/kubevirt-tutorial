@@ -12,24 +12,9 @@
         resource_kind: cluster-role
         resource_name: cluster-admin
         state: present
-    - name: Deploy all components
+    - name: Deploy components
       command: "oc create -f {{ item }}"
       with_items:
         - '/root/openshift-multus.yml'
         - '/root/ovs-cni.yml'
         - '/root/openshift-ovs-vsctl.yml'
-    - name: Wait until ovs-vsctl is present
-      wait_for:
-        path: /usr/bin/ovs-vsctl
-        timeout: 180
-    - name: Wait For openvswitch db to get populated
-      wait_for:
-       timeout: 60
-    - name: Install sample bridge
-      openvswitch_bridge:
-         bridge: "br1"
-         state: present
-    - name: Install sample network attachment definition
-      command: "oc create -f {{ item }}"
-      with_items:
-      - /root/nad_br1.yml
