@@ -41,7 +41,7 @@ In the `Basic Settings` configure with the following
 - Name: `test`
 - Namespace: `web-ui-vm`
 - Provision Source: `Registry`
-- Registry Image: `docker.io/kubevirt/cirros-registry-disk-demo:v0.9.6`
+- Registry Image: `docker.io/kubevirt/cirros-registry-disk-demo:latest`
 - Operating System: `fedora27`
 - Flavor: `Custom`
 - Memory: `1`
@@ -84,4 +84,3 @@ This concludes this section of the lab.
 [Next Lab](../lab10/lab10.md)\
 [Previous Lab](../lab8/lab8.md)\
 [Home](../../README.md)
-

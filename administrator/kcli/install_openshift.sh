@@ -15,3 +15,4 @@ sed -i "s/#openshift_master_cluster_public_hostname=.*/openshift_master_cluster_
 ansible-playbook -i /root/inventory /root/openshift-ansible/playbooks/prerequisites.yml
 ansible-playbook -i /root/inventory /root/openshift-ansible/playbooks/deploy_cluster.yml
 ansible-playbook -i /root/inventory /root/multus.yml
+sh /root/nfs.sh
