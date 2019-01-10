@@ -3,22 +3,22 @@ apiVersion: kubevirt.io/v1alpha2
 kind: VirtualMachine
 metadata:
   labels:
-    kubevirt-vm: fedora-multus-1
-  name: fedora-multus-1
+    kubevirt-vm: fedora-multus-2
+  name: fedora-multus-2
 spec:
-  running: false
+  running: true
   template:
     metadata:
       labels:
-        kubevirt-vm: fedora-multus-1
+        kubevirt-vm: fedora-multus-2
     spec:
       domain:
         devices:
           disks:
           - disk:
               bus: virtio
-            name: registrydisk            
-            volumeName: registryvolume
+            name: containerdisk            
+            volumeName: containervolume
           - disk:
               bus: virtio
             name: cloudinitdisk
@@ -27,7 +27,7 @@ spec:
           - bridge: {}
             name: default
           - bridge: {}
-            macAddress: 20:37:cf:e0:ad:f1
+            macAddress: 20:37:cf:e0:ad:f2
             name: ovs-br1
         machine:
           type: ""
@@ -41,12 +41,13 @@ spec:
           networkName: ovs-br1
         name: ovs-br1
       volumes:
-      - name: registryvolume
+      - name: containervolume
         containerDisk:
-          image: docker.io/kubevirt/fedora-cloud-registry-disk-demo:v0.8.0
+          image: docker.io/kubevirt/fedora-cloud-registry-disk-demo:latest
       - cloudInitNoCloud:
           userData: |-
-            #cloud-config
-            password: fedora
-            chpasswd: { expire: False }
+            #!/bin/bash
+            echo fedora | passwd fedora --stdin
+            ip address add 11.0.0.6/24 dev eth1
+            ifconfig eth1 up
         name: cloudinitvolume

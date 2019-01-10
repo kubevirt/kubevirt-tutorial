@@ -54,6 +54,8 @@ student{{ "%03.d" | format(node+1) }}:
   - openshift-ovs-vsctl.yml
   - ovs-cni.yml
   - nad_br1.yml
+  - fedora-multus-1.yml
+  - fedora-multus-2.yml
  scripts:
   - pre.sh
   - install.sh
