@@ -18,34 +18,22 @@ ssh-keygen -t rsa -N '' -f /root/.ssh/id_rsa
 
 The following was done as part of the deployment
 
-- install *docker*, enable and start it as a service
-- install *oc* and *kubectl* client
-- pull relevant images
-- install openshift using *oc cluster up*
+- Install OpenShift prerequisites 
+- Pull relevant images
+- Install OpenShift using openshift-ansible
+- Install Multus, Docker (start and enable)
 
 As OpenShift is available, let's ask for a cluster status & take a look at our running containers:
 
+`oc version`
 ```
-oc version
-  oc v3.10.0-rc.0+c20e215
-  kubernetes v1.10.0+b81c8f8
-  features: Basic-Auth GSSAPI Kerberos SPNEGO
- 
-  Server https://127.0.0.1:8443
-  openshift v3.10.0-rc.0+ad6a1da-30
-  kubernetes v1.10.0+b81c8f8
-```
+oc v3.11.0+62803d0-1
+kubernetes v1.11.0+d4cacc0
+features: Basic-Auth GSSAPI Kerberos SPNEGO
 
-The important item from the `oc cluster status` command output is the `Web console URL`.
-
-```
-oc cluster status
-  Web console URL: https://student002.cnvlab.gce.sysdeseng.com:8443/console/
-  
-  Config is at host directory 
-  Volumes are at host directory 
-  Persistent volumes are at host directory /root/openshift.local.clusterup/openshift.local.pv
-  Data will be discarded when cluster is destroyed
+Server https://student001.cnvlab.gce.sysdeseng.com:8443
+openshift v3.11.0+1a90c5c-83
+kubernetes v1.11.0+d4cacc0
 ```
 
 This concludes this section of the lab.
