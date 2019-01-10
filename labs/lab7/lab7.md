@@ -25,7 +25,7 @@ oc get pods --namespace=golden
 As an example, we will import a Fedora28 Cloud Image as a PVC and launch a Virtual Machine making use of it.
 
 ```
-oc project myproject
+oc project default
 oc create -f pvc_cirros.yml
 ```
 
@@ -54,10 +54,10 @@ sed -i "s%ssh-rsa.*%$PUBKEY%" vm_pvc.yml
 oc create -f vm_pvc.yml
 ```
 
-This will create and start a Virtual Machine named vm2. We can use the following command to check our Virtual Machine is running and to gather its IP. You are looking for the IP address beside the `virt-launcher` pod.
+This will create and start a Virtual Machine named vm2. We can use the following command to check our Virtual Machine is running and to gather its IP.
 
 ```
-oc get pod -o wide
+oc get vmi
 ```
 
 Since we are running an all in one setup, the corresponding Virtual Machine is actually running on the same node, we can check its qemu process.
