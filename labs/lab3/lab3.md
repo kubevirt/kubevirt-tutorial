@@ -6,20 +6,20 @@ A PersistentVolume (PV) is a piece of storage in the cluster that has been provi
 oc get pv 
 ```
 
-By examining hostPath section of one of the existing PVS, we can see how we are using local paths to provide such storage
+By examining the nfs section of one of the existing PVS, we can see how we are using the node to provide such storage
 The *-o yaml* flag allows us to gather full information for the corrresponding object
 
 ```
 oc get pv pv0001 -o yaml
 ```
 
-As noted before, `oc cluster up` leverages docker for running
-OpenShift. You can see that by checking out the containers and
-images that are managed by docker:
+Openshift can either be run using docker as container runtime or [crio](https://cri-o.io/). We used the later so you can see that by checking how docker isn't running or docker images present as opposed to crictl:
 
 ```
 docker ps
 docker images
+crictl ps
+crictl images
 ```
 
 ### Label your Node
@@ -28,7 +28,7 @@ The OpenShift instance that you have started runs on a single node, localhost.
 Label your node so the virt-launcher pod can be scheduled correctly. Confirm the label was applied.
 
 ```
-oc label node localhost kubevirt.io/schedulable=true
+oc label node $(hostname) kubevirt.io/schedulable=true
 oc get nodes --show-labels
 ```
 
@@ -50,12 +50,9 @@ oc logs -f router-<rest of pod id>
 oc types
 ```
 
-Enable oc bash auto-completion. Try to use tab completion with the `oc` command before and after the next activity.
+Try to use tab completion with the `oc` command
 
 ```
-oc # Try tabbing for auto-completion now
-oc completion bash >> /etc/bash_completion.d/oc_completion
-source /etc/bash_completion.d/oc_completion
 oc # Try tabbing for auto-completion now
 ```
 

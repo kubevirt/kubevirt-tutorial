@@ -17,15 +17,15 @@ Review the objects that were added.
 
 ```
 oc get project| grep golden
-oc get pods --namespace=golden
+oc get pods -n golden
 ```
 
 #### Use CDI
 
-As an example, we will import a Fedora28 Cloud Image as a PVC and launch a Virtual Machine making use of it.
+As an example, we will import a Cirros Cloud Image as a PVC and launch a Virtual Machine making use of it.
 
 ```
-oc project default
+oc project myproject
 oc create -f pvc_cirros.yml
 ```
 
@@ -38,7 +38,7 @@ IMPORTER_POD=$(oc get pod -l app=containerized-data-importer -o=custom-columns=N
 oc logs $IMPORTER_POD
 ```
 
-Notice that the importer downloaded the publically available Fedora Cloud qcow image. Once the importer pod completes, this PVC is ready for use in kubevirt.
+Notice that the importer downloaded the publically available Cirros Cloud qcow image. Once the importer pod completes, this PVC is ready for use in kubevirt.
 
 Let's create a Virtual Machine making use of it. Review the file *vm_pvc.yml*.
 
@@ -57,16 +57,10 @@ oc create -f vm_pvc.yml
 This will create and start a Virtual Machine named vm2. We can use the following command to check our Virtual Machine is running and to gather its IP.
 
 ```
-oc get vmi
+oc get pod -o wide
 ```
 
-Since we are running an all in one setup, the corresponding Virtual Machine is actually running on the same node, we can check its qemu process.
-
-```
-ps -ef | grep qemu | grep vm2
-```
-
-Finally, use the gathered ip to connect to the Virtual Machine, create some files, stop and restart the Virtual Machine with virtctl and check how data persists.( Password is `gocubsgo`)
+Finally, use the gathered ip to connect to the Virtual Machine, create some files, stop and restart the Virtual Machine with virtctl and check how data persists. Use password *gocubsgo*
 
 ```
 ssh cirros@VM_IP

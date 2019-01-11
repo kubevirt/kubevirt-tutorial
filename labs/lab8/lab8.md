@@ -8,13 +8,14 @@
 
 ### Open vSwitch Configuration
 
-Since we are using the ovs cni plugin, we need to configure Open vSwitch on
-each compute node in the cluster that will run a virtual machine. 
+Since we are using the ovs cni plugin, we need to configure dedicated Open vSwitch bridges
 Create a new bridge named br1:
 
 ```
 ovs-vsctl add-br br1
 ```
+
+In a production setup, we would do the same on each of the cluster nodes and add a dedicated interface to the bridge
 
 ### Create a Network Attachment Definition
 
@@ -22,7 +23,6 @@ a `NetworkAttachmentDefinition` `config` section is a configuration for the CNI 
 Create a new one, pointing to bridge `br1`
 
 ```
-oc project default
 oc create -f /root/nad_br1.yml
 ```
 
@@ -42,7 +42,7 @@ oc create -f /root/fedora-multus-1.yml
 oc create -f /root/fedora-multus-2.yml 
 ```
 
-#### Configure Virtual Machine
+#### Access Virtual Machines
 
 There are multiple ways to access the machine. You can either use 
 vnc from kubevirt-web-ui, `virtctl` or ssh via the cluster ip address.
@@ -50,7 +50,7 @@ vnc from kubevirt-web-ui, `virtctl` or ssh via the cluster ip address.
 Locate the ips of the two vms:
 
 ```
-oc get vmi -n default
+oc get pod -o wide
 ```
 
 password is fedora as defined in the cloud-init section of the manifest.

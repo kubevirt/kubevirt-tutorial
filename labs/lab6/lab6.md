@@ -2,20 +2,23 @@
 
 ### Create a Virtual Machine
 
-explore The VM Manifest. Note it uses a [registry disk](https://kubevirt.io/user-guide/#/workloads/virtual-machines/disks-and-volumes?id=registrydisk) and as such doesn't persist data. Such registry disks currently exist for alpine, cirros and fedora.
+explore The VM Manifest. Note it uses a [container disk](https://kubevirt.io/user-guide/docs/latest/creating-virtual-machines/disks-and-volumes.html#containerdisk) and as such doesn't persist data. Such container disks currently exist for alpine, cirros and fedora.
 
 ```
-cat vm_registrydisk.yml
+cat vm_containerdisk.yml
 ```
 
-Apply the manifest to OpenShift.
+We change the yaml definition of this Virtual Machine to inject the default public key of root user in the GCP Virtual Machine and apply the manifest to OpenShift.
 
 ```
-oc apply -f vm_registrydisk.yml
+oc project myproject
+PUBKEY=`cat ~/.ssh/id_rsa.pub`
+sed -i "s%ssh-rsa.*%$PUBKEY%" vm_containerdisk.yml
+oc create -f vm_containerdisk.yml
   virtualmachine.kubevirt.io "vm1" created
 ```
 
-### Manage Virtual Machines (optional):
+### Manage Virtual Machines
 
 To get a list of existing Virtual Machines. Note the `running` status.
 
@@ -79,13 +82,13 @@ We can "expose" any port of the vm so that we can access it from the outside.
 For instance, run the following to expose the ssh port of your vm
 
 ```
-virtctl expose vm vm1 --port=22 --node-port=30000 --target-port=22 --name=vm1-ssh --type=NodePort
+virtctl expose vm vm1 --port=22 --port=30000 --target-port=22 --name=vm1-ssh --type=NodePort
 ```
 
 You can then access to your vm from the outside
 
 ```
-ssh -p 30000 cirros@student<number>.cnvlab.gce.sysdeseng.com
+ssh -p 30000 fedora@student<number>.cnvlab.gce.sysdeseng.com
 ```
 
 ### Controlling the State of the VM

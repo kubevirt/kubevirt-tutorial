@@ -9,17 +9,17 @@ This lab is designed to accommodate many students. As a result, each student wil
 
 You will be assigned a number by the instructor.
 
-Retrieve the keys from the [instructor host](http://cnv-tlv-web-svr.e2e.bos.redhat.com/cnv_rsa) so that you can _SSH_ into the instances by accessing the password protected directory. Download the `cnv_rsa`  file to your local machine and change the permissions of the file to 600. This web server is not public. You must be signed into the Red Hat VPN to access the key. Let an instructor know if you have any questions here.
+Retrieve the keys from the [instructor host](http://people.redhat.com/kboumedh/cnv_rsa) so that you can _SSH_ into the instances by using the dedicated key. Download the `cnv_rsa`  file to your local machine and change the permissions of the file to 600.
 
 ```
-wget http://cnv-tlv-web-svr.e2e.bos.redhat.com/cnv_rsa
+wget http://people.redhat.com/kboumedh/cnv_rsa
 chmod 600 cnv_rsa
 ```
 
 ### Connecting to your GCP Instance
 This lab should be performed on **YOUR ASSIGNED GCP INSTANCE** as `centos` user unless otherwise instructed.
 
-**_NOTE_**: Please be respectful and only connect to your assigned instance. Every instance for this lab uses the same public key so you could accidentally (or with malicious intent) connect to the wrong system. If you have any issues, please inform an instructor.
+**_NOTE_**: Please be respectful and only connect to your assigned instance. Every instance for this lab uses the same public key so you could accidentally connect to the wrong system. If you have any issues, please inform an instructor.
 
 ```
 ssh -i cnv_rsa centos@student<number>.cnvlab.gce.sysdeseng.com

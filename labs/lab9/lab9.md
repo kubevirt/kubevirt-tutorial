@@ -9,9 +9,10 @@ First Install it
 oc new-project kweb-ui
 oc apply -f kubevirt-web-ui.yaml
 oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:kweb-ui:default
+oc project myproject
 ```
 
-You can then access it at `kubevirt-web-ui-kweb-ui.student<number>.cnvlab.gce.sysdeseng.com` and use it to 
+You can then access it at `http://kubevirt-web-ui-kweb-ui.student<number>.cnvlab.gce.sysdeseng.com` and use it to 
 
 - stop/start/delete vms
 - create ones
@@ -22,14 +23,7 @@ You can then access it at `kubevirt-web-ui-kweb-ui.student<number>.cnvlab.gce.sy
 
 ### Using the kubevirt web ui 
 
-Let's first `Create Project` named `web-ui-vm`
-
-```
-oc new-project web-ui-vm
-```
-
-
-### Create a Virtual Machine
+#### Create a Virtual Machine
 
 Click the `Create Virtual Machine` drop-down and select `Create with Wizard`
 
@@ -39,10 +33,10 @@ Click the `Create Virtual Machine` drop-down and select `Create with Wizard`
 In the `Basic Settings` configure with the following
 
 - Name: `test`
-- Namespace: `web-ui-vm`
-- Provision Source: `Registry`
-- Registry Image: `docker.io/kubevirt/cirros-registry-disk-demo:latest`
-- Operating System: `fedora27`
+- Namespace: `myproject`
+- Provision Source: `Container`
+- Container Image: `docker.io/kubevirt/cirros-registry-disk-demo:latest`
+- Operating System: `fedora29`
 - Flavor: `Custom`
 - Memory: `1`
 - CPUs: `1`
@@ -52,7 +46,7 @@ In the `Basic Settings` configure with the following
 
 Click `Next >` until result and finish.
 
-### Controlling the State of the VM
+#### Controlling the State of the VM
 
 To start the virtual machine click the cog and select `Start Virtual Machine`.
 
@@ -61,7 +55,7 @@ To start the virtual machine click the cog and select `Start Virtual Machine`.
 
 Now click the virtual machine link `test`
 
-### Virtual Machine Overview and Console
+#### Virtual Machine Overview and Console
 
 ![overview](images/overview.png)
 
@@ -69,7 +63,7 @@ Click `Consoles` to view VNC.
 
 ![overview](images/vm_console.png)
 
-### Associated Pods
+#### Associated Pods
 
 Clicking `Pods` will show the currently running pods for this namespace.
 

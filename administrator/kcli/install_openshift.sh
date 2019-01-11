@@ -7,12 +7,13 @@ semanage fcontext -a -t container_file_t /var/lib/etcd
 restorecon -v /var/lib/etcd
 sed -i "s/#host_key_checking/host_key_checking = True/" /etc/ansible/ansible.cfg
 sed -i "s/#log_path/log_path/" /etc/ansible/ansible.cfg
-HOSTNAME=`hostname`.{{ domain }}
-sed -i "s/m01.default/$HOSTNAME/" /root/inventory
-sed -i "s/#openshift_master_default_subdomain=.*/openshift_master_default_subdomain=app.$HOSTNAME/" /root/inventory
-sed -i "s/#openshift_master_cluster_hostname=.*/openshift_master_cluster_hostname=$HOSTNAME/" /root/inventory
-sed -i "s/#openshift_master_cluster_public_hostname=.*/openshift_master_cluster_public_hostname=$HOSTNAME/" /root/inventory
 ansible-playbook -i /root/inventory /root/openshift-ansible/playbooks/prerequisites.yml
 ansible-playbook -i /root/inventory /root/openshift-ansible/playbooks/deploy_cluster.yml
 ansible-playbook -i /root/inventory /root/multus.yml
 sh /root/nfs.sh
+IMAGES="docker.io/kubevirt/virt-api:{{ kubevirt_version}} docker.io/kubevirt/virt-controller:{{ kubevirt_version}} docker.io/kubevirt/virt-handler:{{ kubevirt_version}} docker.io/kubevirt/virt-launcher:{{ kubevirt_version}} docker.io/kubevirt/cdi-uploadproxy:{{ cdi_version }} docker.io/kubevirt/cdi-apiserver:{{ cdi_version }} docker.io/kubevirt/cdi-importer:{{ cdi_version }} docker.io/kubevirt/cdi-controller:{{ cdi_version }} docker.io/kubevirt/fedora-cloud-container-disk-demo:latest"
+{% if crio %}
+for image in $IMAGES; do crictl pull $image ; done
+{% else %}
+for image in $IMAGES; do docker pull $image ; done
+{% endif %}

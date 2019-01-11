@@ -36,27 +36,21 @@ student{{ "%03.d" | format(node+1) }}:
   - size: {{ disk_size }}
  pool: default
  files: 
-  - path: /root/requirements.sh
-    origin: requirements_kubernetes.sh
-  - path: /root/kubernetes.sh
-    origin: kubernetes.sh
-  - path: /root/.kubevirt.sh
-    origin: kubevirt_kubernetes.sh
-  - path: /root/cdi.sh
-    origin: cdi_kubernetes.sh
-  - path: /root/clean.sh
-    origin: clean_kubernetes.sh
+  - requirements.sh
+  - kubernetes.sh
+  - cdi.sh
+  - clean.sh
   - path: /etc/yum.repos.d/kubernetes.repo
     origin: kubernetes.repo
   - kube-flannel.yml
   - kube-flannel-rbac.yml
   - pvc_cirros.yml
   - vm_pvc.yml
-  - vmm_containerdisk.yml
+  - vm_containerdisk.yml
   - kubevirt-web-ui.yaml
  scripts:
-  - requirements_kubernetes.sh
+  - requirements.sh
 {% if deploy %}
-  - deploy_kubernetes.sh
+  - deploy.sh
 {% endif %}
 {% endfor %}
