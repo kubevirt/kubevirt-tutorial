@@ -54,6 +54,7 @@ student{{ "%03.d" | format(node+1) }}:
   - nfs.sh
   - nfs.yml
   - app-template.yaml
+  - vm1_svc.yml
  scripts:
   - pre.sh
   - install.sh
