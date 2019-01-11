@@ -82,7 +82,7 @@ We can "expose" any port of the vm so that we can access it from the outside.
 For instance, run the following to expose the ssh port of your vm
 
 ```
-virtctl expose vm vm1 --port=22 --port=30000 --target-port=22 --name=vm1-ssh --type=NodePort
+oc create -f /root/vm1_svc.yml
 ```
 
 You can then access to your vm from the outside

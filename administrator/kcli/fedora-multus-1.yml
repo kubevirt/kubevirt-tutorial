@@ -10,7 +10,7 @@ spec:
   template:
     metadata:
       labels:
-        kubevirt-vm: fedora-multus-1
+        kubevirt.io/domain: fedora-multus-1
     spec:
       domain:
         devices:
