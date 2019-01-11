@@ -50,7 +50,7 @@ vnc from kubevirt-web-ui, `virtctl` or ssh via the cluster ip address.
 Locate the ips of the two vms:
 
 ```
-oc get pod -o wide
+oc get vmi
 ```
 
 password is fedora as defined in the cloud-init section of the manifest.
