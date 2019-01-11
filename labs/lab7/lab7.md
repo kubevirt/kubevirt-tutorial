@@ -57,7 +57,7 @@ oc create -f vm_pvc.yml
 This will create and start a Virtual Machine named vm2. We can use the following command to check our Virtual Machine is running and to gather its IP.
 
 ```
-oc get pod -o wide
+oc get vmi
 ```
 
 Finally, use the gathered ip to connect to the Virtual Machine, create some files, stop and restart the Virtual Machine with virtctl and check how data persists. Use password *gocubsgo*

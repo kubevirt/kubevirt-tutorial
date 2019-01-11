@@ -9,9 +9,9 @@ metadata:
 spec:
   running: true
   template:
-    labels:
-      kubevirt.io/domain: vm2
     metadata:
+      labels:
+        kubevirt.io/domain: vm2
       creationTimestamp: null
     spec:
       domain:
@@ -25,14 +25,19 @@ spec:
             volumeName: vm2-vol0
           - cdrom:
               bus: sata
-              readonly: true
             name: cloudinitdisk
             volumeName: cloudinitvolume
+          interfaces:
+          - bridge: {}
+            name: default
         machine:
           type: q35
         resources:
           requests:
             memory: 1024M
+      networks:
+      - name: default
+        pod: {}
       volumes:
       - name: vm2-vol0
         persistentVolumeClaim:

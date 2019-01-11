@@ -32,7 +32,7 @@ Click the `Create Virtual Machine` drop-down and select `Create with Wizard`
 
 In the `Basic Settings` configure with the following
 
-- Name: `test`
+- Name: `vm3`
 - Namespace: `myproject`
 - Provision Source: `Container`
 - Container Image: `docker.io/kubevirt/cirros-registry-disk-demo:latest`
@@ -53,7 +53,7 @@ To start the virtual machine click the cog and select `Start Virtual Machine`.
 ![start vm](images/start_vm.png)
 
 
-Now click the virtual machine link `test`
+Now click the virtual machine link `vm3`
 
 #### Virtual Machine Overview and Console
 
@@ -69,7 +69,7 @@ Clicking `Pods` will show the currently running pods for this namespace.
 
 ![pods](images/pods.png)
 
-Then clicking the `virt-launcher-test-RANDOM` link will provide an overview
+Then clicking the `virt-launcher-vm3-RANDOM` link will provide an overview
 
 ![pods](images/pod_overview.png)
 
