@@ -7,4 +7,6 @@ chmod 777 /pv${i}
 done
 exportfs -r
 systemctl start nfs ; systemctl enable nfs-server
+export HOME=/root
+oc login -u system:admin
 for i in `seq 1 20` ; do j=`printf "%03d" ${i}` ; sed "s/001/$j/" /root/nfs.yml | oc create -f - ; done

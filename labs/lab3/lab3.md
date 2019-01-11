@@ -7,17 +7,24 @@ oc get pv
 ```
 
 By examining the nfs section of one of the existing PVS, we can see how we are using the node to provide such storage
+
 The *-o yaml* flag allows us to gather full information for the corrresponding object
 
 ```
-oc get pv pv0001 -o yaml
+oc get pv pv001 -o yaml
 ```
 
-Openshift can either be run using docker as container runtime or [crio](https://cri-o.io/). We used the later so you can see that by checking how docker isn't running or docker images present as opposed to crictl:
+Openshift can either be run using docker as container runtime or [crio](https://cri-o.io/). 
+
+We used the later so you can see that docker isn't even installed
 
 ```
 docker ps
-docker images
+```
+
+Where as we can list running containers and images with `crictl`
+
+```
 crictl ps
 crictl images
 ```
