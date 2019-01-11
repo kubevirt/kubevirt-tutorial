@@ -14,21 +14,6 @@ The *-o yaml* flag allows us to gather full information for the corrresponding o
 oc get pv pv001 -o yaml
 ```
 
-Openshift can either be run using docker as container runtime or [crio](https://cri-o.io/). 
-
-We used the later so you can see that docker isn't even installed
-
-```
-docker ps
-```
-
-Where as we can list running containers and images with `crictl`
-
-```
-crictl ps
-crictl images
-```
-
 ### Label your Node
 
 The OpenShift instance that you have started runs on a single node, localhost.

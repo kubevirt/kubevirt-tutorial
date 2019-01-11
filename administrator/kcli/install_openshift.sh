@@ -11,7 +11,7 @@ ansible-playbook -i /root/inventory /root/openshift-ansible/playbooks/prerequisi
 ansible-playbook -i /root/inventory /root/openshift-ansible/playbooks/deploy_cluster.yml
 ansible-playbook -i /root/inventory /root/multus.yml
 sh /root/nfs.sh
-IMAGES="docker.io/kubevirt/virt-api:{{ kubevirt_version}} docker.io/kubevirt/virt-controller:{{ kubevirt_version}} docker.io/kubevirt/virt-handler:{{ kubevirt_version}} docker.io/kubevirt/virt-launcher:{{ kubevirt_version}} docker.io/kubevirt/cdi-uploadproxy:{{ cdi_version }} docker.io/kubevirt/cdi-apiserver:{{ cdi_version }} docker.io/kubevirt/cdi-importer:{{ cdi_version }} docker.io/kubevirt/cdi-controller:{{ cdi_version }} docker.io/kubevirt/fedora-cloud-container-disk-demo:latest"
+IMAGES="docker.io/kubevirt/virt-api:{{ kubevirt_version}} docker.io/kubevirt/virt-controller:{{ kubevirt_version}} docker.io/kubevirt/virt-handler:{{ kubevirt_version}} docker.io/kubevirt/virt-launcher:{{ kubevirt_version}} docker.io/kubevirt/cdi-uploadproxy:{{ cdi_version }} docker.io/kubevirt/cdi-apiserver:{{ cdi_version }} docker.io/kubevirt/cdi-importer:{{ cdi_version }} docker.io/kubevirt/cdi-controller:{{ cdi_version }} docker.io/kubevirt/fedora-cloud-container-disk-demo:latest quay.io/kubevirt/kubevirt-web-ui:latest docker.io/kubevirt/fedora-cloud-container-disk-demo:latest docker.io/kubevirt/cirros-container-disk-demo:latest"
 {% if crio %}
 for image in $IMAGES; do crictl pull $image ; done
 {% else %}

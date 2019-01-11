@@ -35,11 +35,11 @@ For a virtual machine to use multiple interfaces, there are a couple of modifica
 
 #### Create Virtual Machine
 
-Create two vms with a secondary nic pointing to the previously created bridge/network attachment definition:
+Create two vms named fedora-multus-1 and fedora-multus-2, both with a secondary nic pointing to the previously created bridge/network attachment definition:
 
 ```
-oc create -f /root/fedora-multus-1.yml 
-oc create -f /root/fedora-multus-2.yml 
+oc create -f /root/vm_multus1.yml 
+oc create -f /root/vm_multus2.yml 
 ```
 
 #### Access Virtual Machines

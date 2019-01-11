@@ -4,7 +4,7 @@ parameters:
    domain: cnvlab.gce.sysdeseng.com
    cdi_version: v1.4.1
    disk_size: 60
-   crio: true
+   crio: false
    numcpus: 4
    memory: 12288
    nodes: 1
@@ -49,8 +49,8 @@ student{{ "%03.d" | format(node+1) }}:
   - openshift-ovs-vsctl.yml
   - ovs-cni.yml
   - nad_br1.yml
-  - fedora-multus-1.yml
-  - fedora-multus-2.yml
+  - vm_multus1.yml
+  - vm_multus2.yml
   - nfs.sh
   - nfs.yml
   - app-template.yaml

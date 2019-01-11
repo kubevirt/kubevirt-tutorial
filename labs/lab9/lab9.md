@@ -12,7 +12,7 @@ oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:kweb-
 oc project myproject
 ```
 
-You can then access it at `http://kubevirt-web-ui-kweb-ui.student<number>.cnvlab.gce.sysdeseng.com` and use it to 
+You can then access it at `http://kubevirt-web-ui-kweb-ui.app.student<number>.cnvlab.gce.sysdeseng.com` and use it to 
 
 - stop/start/delete vms
 - create ones
