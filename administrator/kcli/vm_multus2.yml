@@ -43,7 +43,7 @@ spec:
       volumes:
       - name: containervolume
         containerDisk:
-          image: docker.io/kubevirt/fedora-cloud-registry-disk-demo:latest
+          image: docker.io/kubevirt/fedora-cloud-container-disk-demo:latest
       - cloudInitNoCloud:
           userData: |-
             #!/bin/bash
