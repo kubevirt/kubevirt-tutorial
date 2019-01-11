@@ -1,13 +1,15 @@
 parameters:
    template: nested-centos7
-   kubevirt_version: v0.12.0-alpha.3
+   kubevirt_version: v0.11.0
    domain: cnvlab.gce.sysdeseng.com
+   kubernetes_version: '1.11.0'
    cdi_version: v1.4.1
    disk_size: 60
-   crio: true
    numcpus: 4
    memory: 12288
-   nodes: 1
+   nodes: 40
+   deploy: false
+   emulation: false
    keys:
     - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5Qbj7vDf0uYQpeYb432g5R4YvYJaPfPA4EM4qc3lO62c7oUsWbZlZBl5neEWX41HGCIP4Zm1ybN9iiDyeIns6hg5OkU2vUGuPtV2KCAZOI7snzXeZxlrjsVMjMy/CYUlvIOAPxY4XzfzMMAJjIJni18R2PqVRI4f4SeSq3IIzpnOu2VQmqjFmmdybQY83BvBvWj6KLszAXkJk9LkZSAoktXimDBWFPQYikzZihLolRxwHzo21lXSw58D1N+6IeMudOviAte5yu6FBUN6dFYbt9dkLuH2/ONliFz/042n5UNp0wC5BLdpVwJpWqqrCVaeXBgla/gYm8YNZJIAlf8K5 kboumedh@vegeta.local
     - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/AvM9VbO2yiIb9AillBp/kTr8jqIErRU1LFKqhwPTm4AtVIjFSaOuM4AlspfCUIz9IHBrDcZmbcYKai3lC3JtQic7M/a1OWUjWE1ML8CEvNsGPGu5yNVUQoWC0lmW5rzX9c6HvH8AcmfMmdyQ7SgcAnk0zir9jw8ed2TRAzHn3vXFd7+saZLihFJhXG4zB8vh7gJHjLfjIa3JHptWzW9AtqF9QsoBY/iu58Rf/hRnrfWscyN3x9pGCSEqdLSDv7HFuH2EabnvNFFQZr4J1FYzH/fKVY3Ppt3rf64UWCztDu7L44fPwwkI7nAzdmQVTaMoD3Ej8i7/OSFZsC2V5IBT kboumedh@bumblefoot
@@ -34,27 +36,21 @@ student{{ "%03.d" | format(node+1) }}:
   - size: {{ disk_size }}
  pool: default
  files: 
-  - inventory
-  - install_openshift.sh
+  - requirements.sh
+  - kubernetes.sh
   - cdi.sh
   - clean.sh
+  - path: /etc/yum.repos.d/kubernetes.repo
+    origin: kubernetes.repo
+  - kube-flannel.yml
+  - kube-flannel-rbac.yml
   - pvc_cirros.yml
   - vm_pvc.yml
   - vm_containerdisk.yml
   - kubevirt-web-ui.yaml
-  - path: /root/multus.yml
-    origin: multus.yml
-    render: false
-  - openshift-multus.yml
-  - openshift-ovs-vsctl.yml
-  - ovs-cni.yml
-  - nad_br1.yml
-  - fedora-multus-1.yml
-  - fedora-multus-2.yml
-  - nfs.sh
-  - nfs.yml
-  - app-template.yaml
  scripts:
-  - pre.sh
-  - install.sh
+  - requirements.sh
+{% if deploy %}
+  - deploy.sh
+{% endif %}
 {% endfor %}
