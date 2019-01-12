@@ -3,7 +3,7 @@
 In this section, let's download the `kubevirt.yaml` manifest file upstream github repo and explore it. Then, we will deploy kubevirt with it
 
 ```
-export VERSION=v0.12.0-alpha.3
+export VERSION=v0.12.0
 ```
 
 Grab the kubevirt.yaml file to explore. Review the ClusterRole's, CRDs, ServiceAccounts, DaemonSets, Deployments, and Services.
@@ -61,7 +61,7 @@ Click on the different objects, explore the environment.
 Return to the CLI and install virtctl. This tool provides quick access to the serial and graphical ports of a VM, and handle start/stop operations. Also run `virtctl` to get an idea of it's options.
 
 ```
-export VERSION=v0.12.0-alpha.3
+export VERSION=v0.12.0
 curl -L -o /usr/bin/virtctl https://github.com/kubevirt/kubevirt/releases/download/$VERSION/virtctl-$VERSION-linux-amd64
 chmod -v +x /usr/bin/virtctl
 virtctl version
