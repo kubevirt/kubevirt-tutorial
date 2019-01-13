@@ -35,7 +35,7 @@ var _ = Describe("Polarion Test Cases Generator", func() {
 	var testSrc = `
 package test
 
-var _ = Describe("[component:Storage, vendor:cnv-qe.redhat.com, crit:medium]Test Case Generator", func() {
+var _ = Describe("[component:Storage][vendor:cnv-qe.redhat.com][crit:medium]Test Case Generator", func() {
 	BeforeEach(func() {
 		By("Before each test")
 	})
@@ -50,7 +50,7 @@ var _ = Describe("[component:Storage, vendor:cnv-qe.redhat.com, crit:medium]Test
 		return 1
 	}
 
-	table.DescribeTable("[rfe_id:1, posneg:negative, vendor:cnv-qe.redhat.com, level:integration]table test", func() {
+	table.DescribeTable("[rfe_id:1][posneg:negative][vendor:cnv-qe.redhat.com][level:integration]table test", func() {
 		By("Testing the table")
 		testNameFunc("table")
 		testFunc1()
@@ -60,7 +60,7 @@ var _ = Describe("[component:Storage, vendor:cnv-qe.redhat.com, crit:medium]Test
 		table.Entry("[component:Virt]entry 2"),
 	)
 	
-	Context("[posneg:negative, crit:low, vendor:cnv-qe.redhat.com]test context", func() {
+	Context("[posneg:negative][crit:low][vendor:cnv-qe.redhat.com]test context", func() {
 	    It("[test_id:3]test it 1", func() {
 			By("Testing it 1")
 			testFunc1()
@@ -68,7 +68,7 @@ var _ = Describe("[component:Storage, vendor:cnv-qe.redhat.com, crit:medium]Test
 		})
 	})
 	
-	It("[test_id:4, rfe_id:5, crit:high, vendor:cnv-qe.redhat.com, level:system]test it 2", func() {
+	It("[test_id:4][rfe_id:5][crit:high][vendor:cnv-qe.redhat.com][level:system]test it 2", func() {
 		testFunc1()
 		By("Testing it 2")
 		By("Testing it 2")
