@@ -43,15 +43,6 @@ const (
 	ginkgoIt       = "It"
 )
 
-const polarionPrefix = "+polarion:"
-
-var polarionCustomFields = map[string][]string{
-	"caseimportance": {"critical", "high", "medium", "low"},
-	"caseposneg":     {"positive", "negative"},
-	"caselevel":      {"component", "integration", "system", "acceptance"},
-	"testtype":       {"functional", "non-functional"},
-}
-
 type ginkgoBlock struct {
 	content     []string
 	rparenPos   []token.Pos
@@ -284,40 +275,6 @@ func parseTable(testcases *polarion_xml.TestCases, block *ginkgoBlock, exprs []a
 	}
 }
 
-func parseComments(n ast.Node, commentMap *ast.CommentMap, customFields *polarion_xml.TestCaseCustomFields) {
-	for _, cg := range commentMap.Filter(n).Comments() {
-		for _, c := range cg.List {
-			if !strings.HasPrefix(strings.Trim(c.Text, "// "), polarionPrefix) {
-				continue
-			}
-			if polarionComment := strings.Split(c.Text, ":"); len(polarionComment) != 2 {
-				panic(fmt.Errorf("polarion comment %s has incorrect format", c.Text))
-			} else if polarionField := strings.Split(polarionComment[1], "="); len(polarionField) != 2 {
-				panic(fmt.Errorf("polarion comment %s has incorrect custom field format", c.Text))
-			} else {
-				supportedValues, ok := polarionCustomFields[polarionField[0]]
-				if !ok {
-					panic(fmt.Errorf("usupported polarion custom field id %s", polarionField[0]))
-				}
-				if isFieldValueSupported(polarionField[1], supportedValues) {
-					addCustomField(customFields, polarionField[0], polarionField[1])
-				} else {
-					panic(fmt.Errorf("usupported value %s for polarion custom field %s", polarionField[1], polarionField[0]))
-				}
-			}
-		}
-	}
-}
-
-func isFieldValueSupported(value string, supportedValues []string) bool {
-	for _, v := range supportedValues {
-		if v == value {
-			return true
-		}
-	}
-	return false
-}
-
 // FillPolarionTestCases parse ginkgo format test and fill polarion test cases struct accordingly
 func FillPolarionTestCases(f *ast.File, testCases *polarion_xml.TestCases, commentMap *ast.CommentMap, filename string, component string) error {
 	var block *ginkgoBlock
@@ -388,7 +345,6 @@ func FillPolarionTestCases(f *ast.File, testCases *polarion_xml.TestCases, comme
 				block.stepContext = append(block.stepContext, block.rparenPos[len(block.rparenPos)-1])
 			case ginkgoTable:
 				customFields := polarion_xml.TestCaseCustomFields{}
-				parseComments(x, commentMap, &customFields)
 				parseTable(testCases, block, x.Args, &customFields, filename, component)
 				return false
 			case ginkgoIt, ginkgoSpecify:
@@ -421,7 +377,6 @@ func FillPolarionTestCases(f *ast.File, testCases *polarion_xml.TestCases, comme
 				addCustomField(&customFields, "automation_script", filename)
 				addCustomField(&customFields, "upstream", "yes")
 
-				parseComments(x, commentMap, &customFields)
 				testCase.TestCaseCustomFields = customFields
 				funLit := x.Args[1].(*ast.FuncLit)
 				parseIt(testCase, block, funLit.Body)

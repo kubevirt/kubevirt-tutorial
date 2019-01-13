@@ -24,13 +24,11 @@ Because generator use static analysis of AST, it creates number of limitations
 
 ### Additional custom fields for a test
 
-You can automatically generate additional test custom fields like `importance` or `positive`,
-you just need to create relevant polarion comment under test case.
+You can automatically generate additional test custom fields like `importance` or `negative`,
+by adding it as an attribute to the test (at all levels - Describe, Context, When, Specify, It).
 ```
 ...
-It("should work", func() {
-    // +polarion:caseimportance=critical
-    // +polarion:caseposneg=positive
+It("[crit:high][posneg:negative]should work", func() {
     ...
 })
 ```
@@ -39,5 +37,8 @@ Custom fields
 
 Name | Supported Values
 --- | --- 
-caseimportance | critical, high, medium, low
-caseposneg | positive, negative
+crit | critical, high, medium, low
+posneg | positive, negative
+level | component, integration, system, acceptance
+rfe_id | requirement id (project name parameter will become the rfe id prefix)
+test_id | test id (project name parameter will become the test id prefix)
