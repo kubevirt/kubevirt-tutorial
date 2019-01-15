@@ -2,23 +2,12 @@
 
 In this section, let's download the `kubevirt.yaml` manifest file upstream github repo and explore it. Then, we will deploy kubevirt with it
 
-Let' set the following environment variable to the kubevirt version we want to use
+Explore `~/kubevirt.yaml` file. Review the ClusterRole's, CRDs, ServiceAccounts, DaemonSets, Deployments, and Services.
 
-```
-export VERSION=v0.12.0
-```
-
-Grab the corresponding kubevirt.yaml file to explore. Review the ClusterRole's, CRDs, ServiceAccounts, DaemonSets, Deployments, and Services.
-
-```
-wget https://github.com/kubevirt/kubevirt/releases/download/$VERSION/kubevirt.yaml
-less kubevirt.yaml
-```
-
-Install KubeVirt. You should see several objects were created.
+Now, Install KubeVirt. You should see several objects were created.
  
 ```
-oc apply -f kubevirt.yaml
+oc apply -f ~/kubevirt.yaml
 ```
 
 The following [SCCs](https://docs.openshift.com/container-platform/3.7/admin_guide/manage_scc.html) need to be added so that kubevirt controllers can launch privileged pods:

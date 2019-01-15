@@ -6,11 +6,9 @@ At a high level, a persistent volume claim (PVC) is created. A custom controller
 
 #### Install CDI
 
-To install Cdi, we download the proper manifest and apply it, along with the proper SCCs
+To install Cdi, we apply the proper manifest, along with the proper SCCs
 
 ```
-export CDI_VERSION="v1.4.1"
-wget -P /root/ https://github.com/kubevirt/containerized-data-importer/releases/download/$CDI_VERSION/cdi-controller.yaml
 oc adm policy add-scc-to-user privileged system:serviceaccount:kube-system:default
 oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:kube-system:cdi-apiserver
 oc create -f /root/cdi-controller.yaml
