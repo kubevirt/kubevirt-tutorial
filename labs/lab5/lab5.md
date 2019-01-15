@@ -52,7 +52,7 @@ Click on the different objects, explore the environment.
 Return to the CLI and install virtctl. This tool provides quick access to the serial and graphical ports of a VM, and handle start/stop operations. Also run `virtctl` to get an idea of it's options.
 
 ```
-export VERSION=v0.12.0
+export VERSION=v0.13.0
 curl -L -o /usr/bin/virtctl https://github.com/kubevirt/kubevirt/releases/download/$VERSION/virtctl-$VERSION-linux-amd64
 chmod -v +x /usr/bin/virtctl
 virtctl version
