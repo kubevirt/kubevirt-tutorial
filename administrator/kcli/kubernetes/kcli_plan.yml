@@ -3,7 +3,6 @@ parameters:
    kubevirt_version: v0.11.0
    domain: cnvlab.gce.sysdeseng.com
    kubernetes_version: '1.11.0'
-   cdi_version: v1.4.1
    disk_size: 60
    numcpus: 4
    memory: 12288
@@ -38,7 +37,6 @@ student{{ "%03.d" | format(node+1) }}:
  files: 
   - requirements.sh
   - kubernetes.sh
-  - cdi.sh
   - clean.sh
   - path: /etc/yum.repos.d/kubernetes.repo
     origin: kubernetes.repo

@@ -1,6 +1,9 @@
 ### Deploy a Container-based Application to OpenShift
 
-The purpose of this section is to deploy an example application on top of OpenShift and demonstrate how containers and virtual machines can be orchestrated side by side within a single OpenShift cluster. We are going to create a dedicated project named `myproject`.
+The purpose of this section is to deploy an example application on top of OpenShift so we later on demonstrate how containers and virtual machines can be orchestrated side by side within a single OpenShift cluster.
+
+We will deploy the application [ARA Records Ansible](https://github.com/openstack/ara) or ARA for short.
+According to the project's README, `ARA Records Ansible playbook runs and makes the recorded data available and intuitive for users and systems`.  It is a simple web-based python application that is easily deployed to OpenShift.
 
 #### Create new Project and Add Template
 
@@ -10,9 +13,6 @@ oc create -f /root/app-template.yaml
 ```
 
 #### Deploy Application
-
-The command below will deploy the application [ARA Records Ansible](https://github.com/openstack/ara) or ARA for short.
-According to the project's README, `ARA Records Ansible playbook runs and makes the recorded data available and intuitive for users and systems`.  It is a simple web-based python application that is easily deployed to OpenShift. 
 
 ```
 oc new-app --template ara
@@ -27,7 +27,6 @@ The following objects will be created:
 
 
 #### Review Objects
-
 
 Let's show our `BuildConfig` and watch the container build log. The ara `BuildConfig` creates a new container image from the Dockerfile provided in our GitHub repository. While this is running, feel free to explore the links above to learn more about these OpenShift objects.
 

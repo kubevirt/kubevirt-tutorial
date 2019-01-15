@@ -17,3 +17,4 @@ for image in $IMAGES; do crictl pull $image ; done
 {% else %}
 for image in $IMAGES; do docker pull $image ; done
 {% endif %}
+oc label node $(hostname) kubevirt.io/schedulable=true

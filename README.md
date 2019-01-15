@@ -1,6 +1,9 @@
 # Deploy and Explore KubeVirt
 
-<!-- ([Lab Overview](labs/lab0/lab0.md)\) -->
+[![Licensed under Apache License version 2.0](https://img.shields.io/github/license/kubevirt/kubevirt.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+
+
+[Lab Overview](labs/lab0/lab0.md)\
 [Introduction / Connectivity](labs/lab1/lab1.md)\
 [Deploy OpenShift](labs/lab2/lab2.md)\
 [Explore the Environment](labs/lab3/lab3.md)\

@@ -2,11 +2,13 @@
 
 In this section, let's download the `kubevirt.yaml` manifest file upstream github repo and explore it. Then, we will deploy kubevirt with it
 
+Let' set the following environment variable to the kubevirt version we want to use
+
 ```
 export VERSION=v0.12.0
 ```
 
-Grab the kubevirt.yaml file to explore. Review the ClusterRole's, CRDs, ServiceAccounts, DaemonSets, Deployments, and Services.
+Grab the corresponding kubevirt.yaml file to explore. Review the ClusterRole's, CRDs, ServiceAccounts, DaemonSets, Deployments, and Services.
 
 ```
 wget https://github.com/kubevirt/kubevirt/releases/download/$VERSION/kubevirt.yaml
@@ -19,7 +21,7 @@ Install KubeVirt. You should see several objects were created.
 oc apply -f kubevirt.yaml
 ```
 
-Define the following policies for OpenShift.
+The following [SCCs](https://docs.openshift.com/container-platform/3.7/admin_guide/manage_scc.html) need to be added so that kubevirt controllers can launch privileged pods:
 
 ```
 oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-privileged
@@ -32,7 +34,8 @@ Review the objects that KubeVirt added.
 ```
 oc project kubevirt
 oc get sa | grep kubevirt
-oc describe sa kubevirt-apiserver # Please feel free to explore the other objects as well. Get a feel for the expected output.
+oc describe sa kubevirt-apiserver
+# Explore the other objects as well. Get a feel for the expected output.
 oc get pod
 HANDLER_POD=$(oc get  pod -l kubevirt.io=virt-handler -o=custom-columns=NAME:.metadata.name --no-headers=true)
 oc describe pod $HANDLER_POD
@@ -44,7 +47,7 @@ oc describe svc virt-api
 
 There are other services and objects to take a look at.
 
-To review the objects through the OpenShift web console, access the console and log in as the `admin` user at `https://student<number>.cnvlab.gce.sysdeseng.com:8443`. Remember, you can use `oc cluster status` to get your URL.
+To review the objects through the OpenShift web console, access the console and log in as the `admin` user at `https://student<number>.cnvlab.gce.sysdeseng.com:8443`. Remember, you can use `oc cluster status` to get your URL. Ignore the self signed certificate warning
 
 Open that URL in a browser, log in as the `admin` user with a password of `admin`.
 

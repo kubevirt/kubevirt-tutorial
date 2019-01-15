@@ -2,7 +2,7 @@
 
 Now that you have completed the lab, let's review what was covered here -
 
-* Explored an Openshift environment by running some basic commands
+* Explored an OpenShift environment by running some basic commands
 * Deployed an application on OpenShift
 * Deployed and explored KubeVirt
 * Deployed a virtual machine using Kubevirt

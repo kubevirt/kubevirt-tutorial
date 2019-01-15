@@ -1,39 +1,4 @@
-## Explore the Environment
-
-A PersistentVolume (PV) is a piece of storage in the cluster that has been provisioned by an administrator
-
-```
-oc get pv 
-```
-
-By examining the nfs section of one of the existing PVS, we can see how we are using the node to provide such storage
-
-The *-o yaml* flag allows us to gather full information for the corrresponding object
-
-```
-oc get pv pv001 -o yaml
-```
-
-Openshift can either be run using docker as container runtime or [crio](https://cri-o.io/).
-
-We used crio so we can list running containers and images with `crictl`
-
- ```
-crictl ps
-crictl images
-```
-
-Docker is also installed and running, just to provide the build fonctionality needed by Openshift and to be demonstrated in the next lab
-
-### Label your Node
-
-The OpenShift instance that you have started runs on a single node, localhost.
-Label your node so the virt-launcher pod can be scheduled correctly. Confirm the label was applied.
-
-```
-oc label node $(hostname) kubevirt.io/schedulable=true
-oc get nodes --show-labels
-```
+## Explore OpenShift Environment
 
 ## Basic OpenShift Commands
 
@@ -68,6 +33,35 @@ oc whoami
 ```
 
 Make sure you are logged in for the remainder of the lab ;)
+
+## Container Runtime 
+
+OpenShift can either be run using docker as container runtime or [crio](https://cri-o.io/).
+
+We used crio so we can list running containers and images with `crictl`
+
+ ```
+crictl ps
+crictl images
+```
+
+Docker is also installed and running, just to provide the build fonctionality needed by OpenShift and to be demonstrated in the next lab
+
+## Storage
+
+A PersistentVolume (PV) is a piece of storage in the cluster that has been provisioned by an administrator
+
+```
+oc get pv 
+```
+
+By examining the nfs section of one of the existing PVS, we can see how we are using the node to provide such storage
+
+The *-o yaml* flag allows us to gather full information for the corrresponding object
+
+```
+oc get pv pv001 -o yaml
+```
 
 This concludes this section of the lab.
 

@@ -2,47 +2,59 @@
 
 ### Create a Virtual Machine
 
-explore The VM Manifest. Note it uses a [container disk](https://kubevirt.io/user-guide/docs/latest/creating-virtual-machines/disks-and-volumes.html#containerdisk) and as such doesn't persist data. Such container disks currently exist for alpine, cirros and fedora.
+Explore The VM Manifest. Note it uses a [container disk](https://kubevirt.io/user-guide/docs/latest/creating-virtual-machines/disks-and-volumes.html#containerdisk) and as such doesn't persist data. Such container disks currently exist for alpine, cirros and fedora.
 
 ```
 cat vm_containerdisk.yml
 ```
 
-We change the yaml definition of this Virtual Machine to inject the default public key of root user in the GCP Virtual Machine and apply the manifest to OpenShift.
+Launch this vm:
 
 ```
 oc project myproject
-PUBKEY=`cat ~/.ssh/id_rsa.pub`
-sed -i "s%ssh-rsa.*%$PUBKEY%" vm_containerdisk.yml
 oc create -f vm_containerdisk.yml
+```
+
+Output should be similar to the following
+
+```
   virtualmachine.kubevirt.io "vm1" created
 ```
 
 ### Manage Virtual Machines
 
-To get a list of existing Virtual Machines. Note the `running` status.
+To get a list of existing Virtual Machines. Note in the `running` column that our vm has this field set to False and as such isn't running yet.
 
 ```
 oc get vms
 oc get vms -o yaml vm1
 ```
 
-To start a Virtual Machine you can use:
+Start the Virtual Machine:
 
 ```
 virtctl start vm1
 ```
 
-Now that the Virtual Machine has been started, check the status. Note the `running` status.
+Wait for a minute for the vm to actually launch
+
+Now that the Virtual Machine has been started, check the status. Note the `running` status has been changed to *True*
 
 ```
 oc get vms
 oc get vms -o yaml vm1
 ```
 
+You can confirm the vm is ready by checking its underlying pod:
+
+```
+oc get pod -o wide
+oc get vmi
+```
+
 ### Accessing VMs (serial console & spice)
 
-Connect to the serial console of the Cirros VM. Hit return / enter a few times and login with the displayed username and password. 
+Connect to the serial console of the VM. Hit return / enter a few times and login with fedora/fedora:
 
 ```
 virtctl console vm1
@@ -51,7 +63,7 @@ virtctl console vm1
 ### Communication Between Application and Virtual Machine
 
 While in the console of the `vm1` let's run `curl` to confirm our virtual machine
-can access the `Service` of the application deployment.
+can access the `Service` of the application we deployed earlier
 
 ```
 curl ara.myproject.svc.cluster.local:8080
@@ -79,13 +91,13 @@ virtctl vnc vm1
 ### Connect using service 
 
 We can "expose" any port of the vm so that we can access it from the outside.
-For instance, run the following to expose the ssh port of your vm
+For instance, run the following to expose the ssh port of your VM
 
 ```
 oc create -f /root/vm1_svc.yml
 ```
 
-You can then access to your vm from the outside
+You can then access to your VM from the outside
 
 ```
 ssh -p 30000 fedora@student<number>.cnvlab.gce.sysdeseng.com
