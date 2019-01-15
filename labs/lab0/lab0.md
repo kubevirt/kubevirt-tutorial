@@ -28,10 +28,10 @@ We will use a dedicated VM on GCP per student (No Gcp knowledge is required)
 
 ### Relevant Links
 
-- [kubevirt] (http://kubevirt.io/)
-- [kubevirt user guide] (https://kubevirt.io/user-guide/docs/latest/welcome/index.html)
-- [kubevirt github repo] (https://github.com/kubevirt/kubevirt)
-- [openshift] (https://docs.okd.io/latest/welcome/index.html)
+- [kubevirt](http://kubevirt.io/)
+- [kubevirt user guide](https://kubevirt.io/user-guide/docs/latest/welcome/index.html)
+- [kubevirt github repo](https://github.com/kubevirt/kubevirt)
+- [openshift](https://docs.okd.io/latest/welcome/index.html)
 
 [Next Lab](../lab1/lab1.md)\
 [Home](../../README.md)
