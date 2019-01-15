@@ -2,7 +2,6 @@ parameters:
    template: nested-centos7
    kubevirt_version: v0.12.0
    domain: cnvlab.gce.sysdeseng.com
-   cdi_version: v1.5.0
    disk_size: 60
    crio: true
    numcpus: 4
@@ -36,7 +35,6 @@ student{{ "%03.d" | format(node+1) }}:
  files: 
   - inventory
   - install_openshift.sh
-  - cdi.sh
   - clean.sh
   - pvc_cirros.yml
   - vm_pvc.yml

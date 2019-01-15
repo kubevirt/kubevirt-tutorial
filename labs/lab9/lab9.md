@@ -44,14 +44,13 @@ In the `Basic Settings` configure with the following
 
 ![create virtual machine wizard](images/basic_settings.png)
 
-Click `Next >` until result and finish.
+Click `Next >` until result and finish. You can safely ignore the message *"templates.template.openshift.io... not found"* 
 
 #### Controlling the State of the VM
 
 To start the virtual machine click the cog and select `Start Virtual Machine`.
 
 ![start vm](images/start_vm.png)
-
 
 Now click the virtual machine link `vm3`
 

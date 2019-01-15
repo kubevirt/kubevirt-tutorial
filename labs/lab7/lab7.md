@@ -6,18 +6,20 @@ At a high level, a persistent volume claim (PVC) is created. A custom controller
 
 #### Install CDI
 
-To install the components, we will first explore and then execute the `cdi.sh` script in root's home directory. Be sure to review the contents of this file first. Notice that in the script you are downloading a few yaml files as well, which will be applied to OpenShift. Take a minute to review those files too.
+To install Cdi, we download the proper manifest and apply it, along with the proper SCCs
 
 ```
-cat ~/cdi.sh
-sh ~/cdi.sh
+export CDI_VERSION="v1.4.1"
+wget -P /root/ https://github.com/kubevirt/containerized-data-importer/releases/download/$CDI_VERSION/cdi-controller.yaml
+oc adm policy add-scc-to-user privileged system:serviceaccount:kube-system:default
+oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:kube-system:cdi-apiserver
+oc create -f /root/cdi-controller.yaml
 ```
 
-Review the objects that were added.
+Review the objects that were added. Note the pods starting with *cdi*
 
 ```
-oc get project| grep golden
-oc get pods -n golden
+oc get pods -n kube-system
 ```
 
 #### Use CDI
@@ -26,7 +28,7 @@ As an example, we will import a Cirros Cloud Image as a PVC and launch a Virtual
 
 ```
 oc project myproject
-oc create -f pvc_cirros.yml
+oc create -f ~/pvc_cirros.yml
 ```
 
 This will create the PVC with a proper annotation so that CDI controller detects it and launches an importer pod to gather the image specified in the *cdi.kubevirt.io/storage.import.endpoint* annotation.
@@ -47,11 +49,10 @@ cat ~/vm_pvc.yml
 ```
 
 We change the yaml definition of this Virtual Machine to inject the default public key of root user in the GCP Virtual Machine.
+Launch this vm
 
 ```
-PUBKEY=`cat ~/.ssh/id_rsa.pub`
-sed -i "s%ssh-rsa.*%$PUBKEY%" vm_pvc.yml
-oc create -f vm_pvc.yml
+oc create -f ~/vm_pvc.yml
 ```
 
 This will create and start a Virtual Machine named vm2. We can use the following command to check our Virtual Machine is running and to gather its IP.
@@ -60,7 +61,7 @@ This will create and start a Virtual Machine named vm2. We can use the following
 oc get vmi
 ```
 
-Finally, use the gathered ip to connect to the Virtual Machine, create some files, stop and restart the Virtual Machine with virtctl and check how data persists. Use password *gocubsgo*
+Finally, use the gathered ip to connect to the Virtual Machine, create some files, stop and restart the Virtual Machine with virtctl and check how data persists. Use password *gocubsgo* if needed
 
 ```
 ssh cirros@VM_IP

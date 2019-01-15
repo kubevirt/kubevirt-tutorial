@@ -43,7 +43,7 @@ spec:
         persistentVolumeClaim:
           claimName: cirros
       - cloudInitNoCloud:
-          userData: |
+          userData: |-
             #cloud-config
             hostname: vm2
             ssh_pwauth: True
