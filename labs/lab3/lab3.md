@@ -1,4 +1,4 @@
-## Explore OpenShift Environment
+# Explore OpenShift Environment
 
 ## Basic OpenShift Commands
 

@@ -1,9 +1,0 @@
----
-
-- hosts: localhost
-  vars_files:
-    - aws_vars.yml
-
-  roles:
-    - vpc
-    - ec2-security-key

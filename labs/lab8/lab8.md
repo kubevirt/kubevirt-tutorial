@@ -20,7 +20,7 @@ a `NetworkAttachmentDefinition` `config` section is a configuration for the CNI 
 Create a new one, pointing to bridge `br1`
 
 ```
-oc create -f /root/nad_br1.yml
+oc create -f ~/nad_br1.yml
 ```
 
 ## Virtual Machine
@@ -35,8 +35,8 @@ For a virtual machine to use multiple interfaces, there are a couple of modifica
 Create two vms named fedora-multus-1 and fedora-multus-2, both with a secondary nic pointing to the previously created bridge/network attachment definition:
 
 ```
-oc create -f /root/vm_multus1.yml 
-oc create -f /root/vm_multus2.yml 
+oc create -f ~/vm_multus1.yml 
+oc create -f ~/vm_multus2.yml 
 ```
 
 In this case, we set running to *True* in the definition  of those vms so they will launch with no further action

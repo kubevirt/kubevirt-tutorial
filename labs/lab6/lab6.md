@@ -5,7 +5,7 @@
 Explore The VM Manifest. Note it uses a [container disk](https://kubevirt.io/user-guide/docs/latest/creating-virtual-machines/disks-and-volumes.html#containerdisk) and as such doesn't persist data. Such container disks currently exist for alpine, cirros and fedora.
 
 ```
-cat vm_containerdisk.yml
+cat ~/vm_containerdisk.yml
 ```
 
 Launch this vm:
@@ -38,7 +38,7 @@ virtctl start vm1
 
 Wait for a minute for the vm to actually launch
 
-Now that the Virtual Machine has been started, check the status. Note the `running` status has been changed to *True*
+Now that the Virtual Machine has been started, check the status. Note how the value in the `running` column has been changed to *True*
 
 ```
 oc get vms
@@ -60,6 +60,8 @@ Connect to the serial console of the VM. Hit return / enter a few times and logi
 virtctl console vm1
 ```
 
+You can disconnect from the virtual machine console by typing: `ctrl+]` but don't do it yet
+
 ### Communication Between Application and Virtual Machine
 
 While in the console of the `vm1` let's run `curl` to confirm our virtual machine
@@ -78,7 +80,7 @@ The expected output from the curl command should be:
 <p>You should be redirected automatically to target URL: <a href="/about/">/about/</a>.  If not click the link.
 ```
 
-Disconnect from the virtual machine console by typing: `ctrl+]`.
+Now disconnect from the console
 
 ### Connect to the graphical display.
 
@@ -91,13 +93,21 @@ virtctl vnc vm1
 ### Connect using service 
 
 We can "expose" any port of the vm so that we can access it from the outside.
+<<<<<<< HEAD
 For instance, run the following to expose the ssh port of your VM
+=======
+For instance, run the following to expose the ssh port of your VM:
+>>>>>>> modifications as per edu s feedback
 
 ```
 oc create -f /root/vm1_svc.yml
 ```
 
+<<<<<<< HEAD
 You can then access to your VM from the outside
+=======
+You can then access to your VM from the outside:
+>>>>>>> modifications as per edu s feedback
 
 ```
 ssh -p 30000 fedora@student<number>.cnvlab.gce.sysdeseng.com

@@ -10,4 +10,6 @@ sed -i "s%ssh-rsa.*%$PUBKEY%" /root/vm_containerdisk.yml
 sed -i "s%ssh-rsa.*%$PUBKEY%" /root/vm_pvc.yml
 sed -i "s%ssh-rsa.*%$PUBKEY%" /root/vm_multus1.yml
 sed -i "s%ssh-rsa.*%$PUBKEY%" /root/vm_multus2.yml
+wget -P /root https://github.com/kubevirt/kubevirt/releases/download/{{ kubevirt_version }}/kubevirt.yaml
+wget -P /root https://github.com/kubevirt/containerized-data-importer/releases/download/{{ cdi_version }}/cdi-controller.yaml
 #yum -y update
