@@ -43,7 +43,7 @@ spec:
       volumes:
       - name: containervolume
         containerDisk:
-          image: docker.io/kubevirt/fedora-cloud-container-disk-demo:latest
+          image: docker.io/kubevirt/fedora-cloud-registry-disk-demo:latest
       - cloudInitNoCloud:
           userData: |-
             #cloud-config
@@ -51,6 +51,6 @@ spec:
             chpasswd: { expire: False }
             ssh_pwauth: True
             runcmd:
-              - ip a add 11.0.0.5/24 dev eth1
-              - ip l set dev eth1 up
+            - ip a add 11.0.0.5/24 dev eth1
+            - ip l set dev eth1 up
         name: cloudinitvolume

@@ -38,6 +38,8 @@ IMPORTER_POD=$(oc get pod -l app=containerized-data-importer -o=custom-columns=N
 oc logs $IMPORTER_POD
 ```
 
+As the image downloaded is small, the importer pod might actually have disappeared by the time you check its logs
+
 Notice that the importer downloaded the publically available Cirros Cloud qcow image. Once the importer pod completes, this PVC is ready for use in kubevirt.
 
 Let's create a Virtual Machine making use of it. Review the file *vm_pvc.yml*.
