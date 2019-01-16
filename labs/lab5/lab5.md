@@ -1,6 +1,6 @@
 ## Install KubeVirt
 
-In this section, let's download the `kubevirt.yaml` manifest file upstream github repo and explore it. Then, we will deploy kubevirt with it
+In this section, let's download the `kubevirt.yaml` manifest file upstream github repo and explore it. Then, we will deploy kubevirt with it.
 
 Explore `~/kubevirt.yaml` file. Review the ClusterRole's, CRDs, ServiceAccounts, DaemonSets, Deployments, and Services.
 
@@ -24,9 +24,8 @@ Review the objects that KubeVirt added.
 oc project kubevirt
 oc get sa | grep kubevirt
 oc describe sa kubevirt-apiserver
-# Explore the other objects as well. Get a feel for the expected output.
 oc get pod
-HANDLER_POD=$(oc get  pod -l kubevirt.io=virt-handler -o=custom-columns=NAME:.metadata.name --no-headers=true)
+HANDLER_POD=$(oc get pod -l kubevirt.io=virt-handler -o=custom-columns=NAME:.metadata.name --no-headers=true)
 oc describe pod $HANDLER_POD
 # review the files on the root of the filesystem of the pod, see the virt-handler executable
 oc exec -it $HANDLER_POD ls /

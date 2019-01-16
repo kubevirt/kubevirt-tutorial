@@ -1,22 +1,24 @@
-## Set up your Environment
+## Review OpenShift Environment
 
-For the sake of time, some of the required setup has already been taken care of on your GCP VM. For future reference though, the easiest way to get started is to head over to the OpenShift Origin repo on github and follow the "[Getting Started](https://docs.okd.io/latest/install/index.html)" instructions.
+For the sake of time, some of the required setup has already been taken care of on your instance.
+
+For future reference though, the easiest way to get started is to head over to the OpenShift Origin documentation and follow the "[Getting Started](https://docs.okd.io/latest/install/index.html)" instructions.
 
 The following was done as part of the deployment:
 
 - Install OpenShift prerequisites 
-- Pull relevant images
 - Install OpenShift using openshift-ansible
 - Install Multus and Ovs cni
-- Enable nfs on the node and create persistent volumes based on it
+- Enable nfs on the instance and create persistent volumes based on it
+- Pull relevant kubevirt images
 
-Now, let's escalate privileges. The remaining commands will be run as _root_ on the GCP instance.
+Now, let's escalate privileges. The remaining commands will be run as _root_ on the instance.
 
 ```
 sudo -i
 ```
 
-As OpenShift is available, let's ask for a cluster status & take a look at our running containers:
+As OpenShift is available, let's ask for a cluster status:
 
 `oc version`
 

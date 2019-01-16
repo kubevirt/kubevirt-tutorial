@@ -12,7 +12,7 @@ Launch this vm:
 
 ```
 oc project myproject
-oc create -f vm_containerdisk.yml
+oc create -f ~/vm_containerdisk.yml
 ```
 
 Output should be similar to the following
@@ -23,11 +23,13 @@ Output should be similar to the following
 
 ### Manage Virtual Machines
 
-To get a list of existing Virtual Machines. Note in the `running` column that our vm has this field set to False and as such isn't running yet.
+Get list of existing Virtual Machines:
+
+Note in the `running` column that our vm has this field set to False and as such isn't running yet.
 
 ```
-oc get vms
-oc get vms -o yaml vm1
+oc get vm
+oc get vm vm1 -o yaml
 ```
 
 Start the Virtual Machine:
@@ -36,16 +38,18 @@ Start the Virtual Machine:
 virtctl start vm1
 ```
 
-Wait for a minute for the vm to actually launch
+Wait for about a  minute for the vm to fully launch.
 
 Now that the Virtual Machine has been started, check the status. Note how the value in the `running` column has been changed to *True*
 
 ```
-oc get vms
-oc get vms -o yaml vm1
+oc get vm
+oc get vm -o yaml vm1
 ```
 
-You can confirm the vm is ready by checking its underlying pod:
+Confirm the vm is ready by checking its underlying pod:
+
+In both commands, the indicated ip can be used to connect to the vm
 
 ```
 oc get pod -o wide
@@ -93,21 +97,14 @@ virtctl vnc vm1
 ### Connect using service 
 
 We can "expose" any port of the vm so that we can access it from the outside.
-<<<<<<< HEAD
-For instance, run the following to expose the ssh port of your VM
-=======
-For instance, run the following to expose the ssh port of your VM:
->>>>>>> modifications as per edu s feedback
+
+Expose the ssh port of your VM:
 
 ```
-oc create -f /root/vm1_svc.yml
+oc create -f ~/vm1_svc.yml
 ```
 
-<<<<<<< HEAD
-You can then access to your VM from the outside
-=======
-You can then access to your VM from the outside:
->>>>>>> modifications as per edu s feedback
+Access the VM using the exposed port:
 
 ```
 ssh -p 30000 fedora@student<number>.cnvlab.gce.sysdeseng.com
@@ -115,13 +112,13 @@ ssh -p 30000 fedora@student<number>.cnvlab.gce.sysdeseng.com
 
 ### Controlling the State of the VM
 
-To shut it down:
+Shut down the VM:
 
 ```
 virtctl stop vm1
 ```
 
-To delete a Virtual Machine:
+Delete the VM:
 
 ```
 oc delete vms vm1

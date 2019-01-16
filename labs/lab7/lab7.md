@@ -2,7 +2,7 @@
 
 [CDI](https://github.com/kubevirt/containerized-data-importer) is an utility designed to import Virtual Machine images for use with Kubevirt. 
 
-At a high level, a persistent volume claim (PVC) is created. A custom controller watches for importer specific claims, and when discovered, starts an import process to create a raw image named *disk.img* with the desired content into the associated PVC
+At a high level, a persistent volume claim (PVC) is created. A custom controller watches for importer specific claims, and when discovered, starts an import process to create a raw image named *disk.img* with the desired content into the associated PVC.
 
 #### Install CDI
 
@@ -11,7 +11,7 @@ To install Cdi, we apply the proper manifest, along with the proper SCCs
 ```
 oc adm policy add-scc-to-user privileged system:serviceaccount:kube-system:default
 oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:kube-system:cdi-apiserver
-oc create -f /root/cdi-controller.yaml
+oc create -f ~/cdi-controller.yaml
 ```
 
 Review the objects that were added. Note the pods starting with *cdi*
@@ -46,7 +46,6 @@ Let's create a Virtual Machine making use of it. Review the file *vm_pvc.yml*.
 cat ~/vm_pvc.yml
 ```
 
-We change the yaml definition of this Virtual Machine to inject the default public key of root user in the GCP Virtual Machine.
 Launch this vm
 
 ```
