@@ -1,9 +1,10 @@
 ## Kubevirt UI
 
-You can also interact with kubevirt using the dedicated UI
+In this section, we will install and interact with vms using kubevirt dedicated UI.
 
 ### Install kubevirt web ui
-First Install it
+
+Install the UI:
 
 ```
 oc new-project kweb-ui
@@ -12,14 +13,13 @@ oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:kweb-
 oc project myproject
 ```
 
-You can then access it at `http://kubevirt-web-ui-kweb-ui.app.student<number>.cnvlab.gce.sysdeseng.com` and use it to 
+You can then access it at `http://kubevirt-web-ui-kweb-ui.app.student<number>.cnvlab.gce.sysdeseng.com` and use it to:
 
 - stop/start/delete vms
 - create ones
 - access vm console through your browser
 
 ![kubevirt-ui](images/ui.png)
-
 
 ### Using the kubevirt web ui 
 
@@ -28,7 +28,6 @@ You can then access it at `http://kubevirt-web-ui-kweb-ui.app.student<number>.cn
 Click the `Create Virtual Machine` drop-down and select `Create with Wizard`
 
 ![create virtual machine wizard](images/new_vm_wizard.png)
-
 
 In the `Basic Settings` configure with the following
 

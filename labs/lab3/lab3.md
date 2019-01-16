@@ -1,6 +1,6 @@
-# Explore OpenShift Environment
+## Explore OpenShift
 
-## Basic OpenShift Commands
+### Basic OpenShift Commands
 
 Common OpenShift commands can be found below. There are quite a few more though, so be sure to refer to the [OpenShift CLI reference documentation](https://docs.openshift.org/latest/cli_reference/basic_cli_operations.html#cli-reference-basic-cli-operations). Descriptions for the following commands can be found in the CLI guide too.
 
@@ -24,7 +24,7 @@ Try to use tab completion with the `oc` command
 oc # Try tabbing for auto-completion now
 ```
 
-#### Log into OpenShift
+### Log into OpenShift
 
 ```
 oc logout
@@ -32,9 +32,9 @@ oc login -u system:admin
 oc whoami
 ```
 
-Make sure you are logged in for the remainder of the lab ;)
+Make sure you are logged in for the remainder of the lab :sweat_smile:
 
-## Container Runtime 
+### Container Runtime 
 
 OpenShift can either be run using docker as container runtime or [crio](https://cri-o.io/).
 
@@ -47,7 +47,7 @@ crictl images
 
 Docker is also installed and running, just to provide the build fonctionality needed by OpenShift and to be demonstrated in the next lab
 
-## Storage
+### Storage
 
 A PersistentVolume (PV) is a piece of storage in the cluster that has been provisioned by an administrator
 
@@ -55,7 +55,7 @@ A PersistentVolume (PV) is a piece of storage in the cluster that has been provi
 oc get pv 
 ```
 
-By examining the nfs section of one of the existing PVS, we can see how we are using the node to provide such storage
+By examining the nfs section of one of the existing PVS, we can see how we are using the node to provide such storage.
 
 The *-o yaml* flag allows us to gather full information for the corrresponding object
 
