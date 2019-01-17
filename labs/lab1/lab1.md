@@ -1,6 +1,6 @@
 ## Student Connection Process
 
-In this section, we review how to connect how to your instance
+In this section, we review how to connect to your instance
 
 ### Find your GCP Instance
 
