@@ -18,6 +18,44 @@ oc create -f /root/app-template.yaml
 ```
 oc new-app --template ara
 ```
+Be patient, it takes some time to build and deploy (~2m-3m). Watch the build and ara pods:
+
+```
+# oc get pod -w
+NAME          READY     STATUS    RESTARTS   AGE
+ara-1-build   1/1       Running   0          7s
+ara-1-deploy   0/1       Pending   0         0s
+ara-1-deploy   0/1       Pending   0         0s
+ara-1-deploy   0/1       ContainerCreating   0         0s
+ara-1-build   0/1       Completed   0         1m
+ara-1-build   0/1       Completed   0         1m
+ara-1-deploy   0/1       ContainerCreating   0         2s
+ara-1-xpxf2   0/1       Pending   0         0s
+ara-1-xpxf2   0/1       Pending   0         0s
+ara-1-xpxf2   0/1       ContainerCreating   0         1s
+ara-1-deploy   1/1       Running   0         3s
+ara-1-xpxf2   0/1       ContainerCreating   0         3s
+ara-1-xpxf2   1/1       Running   0         12s
+ara-1-deploy   0/1       Completed   0         15s
+ara-1-deploy   0/1       Terminating   0         15s
+ara-1-deploy   0/1       Terminating   0         15s
+```
+
+You can see the deployment status with `oc status` command. You should see something like this when it finish:
+
+```
+# oc status
+In project myproject on server https://student001.cnvlab.gce.sysdeseng.com:8443
+
+http://ara-myproject.app.student001.cnvlab.gce.sysdeseng.com to pod port 8080-tcp (svc/ara)
+  dc/ara deploys istag/ara:latest <- bc/ara docker builds https://github.com/jcpowermac/openshift-presentation#master 
+    deployment #1 deployed 15 seconds ago - 1 pod
+
+
+2 infos identified, use 'oc status --suggest' to see details.
+
+```
+
 The following objects will be created:
 
 - [BuildConfig](https://docs.openshift.org/latest/dev_guide/builds/build_strategies.html#docker-strategy-options) 
