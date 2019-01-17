@@ -1,13 +1,45 @@
 ## Install KubeVirt
 
-In this section, let's download the `kubevirt.yaml` manifest file upstream github repo and explore it. Then, we will deploy kubevirt with it.
+In this section, let's download the `kubevirt.yaml` manifest file upstream github repo and explore it (you should have a copy on your lab machine). Then, we will deploy kubevirt with it.
 
 Explore `~/kubevirt.yaml` file. Review the ClusterRole's, CRDs, ServiceAccounts, DaemonSets, Deployments, and Services.
 
 Now, Install KubeVirt. You should see several objects were created.
  
 ```
-oc apply -f ~/kubevirt.yaml
+oc apply -f /root/kubevirt.yaml
+```
+
+Sample Output:
+
+```
+namespace/kubevirt created
+service/kubevirt-prometheus-metrics created
+clusterrole.rbac.authorization.k8s.io/kubevirt.io:default created
+clusterrolebinding.rbac.authorization.k8s.io/kubevirt.io:default created
+clusterrole.rbac.authorization.k8s.io/kubevirt.io:admin created
+clusterrole.rbac.authorization.k8s.io/kubevirt.io:edit created
+clusterrole.rbac.authorization.k8s.io/kubevirt.io:view created
+serviceaccount/kubevirt-privileged created
+clusterrolebinding.rbac.authorization.k8s.io/kubevirt-privileged-cluster-admin created
+serviceaccount/kubevirt-apiserver created
+clusterrole.rbac.authorization.k8s.io/kubevirt-apiserver created
+clusterrolebinding.rbac.authorization.k8s.io/kubevirt-apiserver created
+clusterrolebinding.rbac.authorization.k8s.io/kubevirt-apiserver-auth-delegator created
+role.rbac.authorization.k8s.io/kubevirt-apiserver created
+rolebinding.rbac.authorization.k8s.io/kubevirt-apiserver created
+serviceaccount/kubevirt-controller created
+clusterrole.rbac.authorization.k8s.io/kubevirt-controller created
+clusterrolebinding.rbac.authorization.k8s.io/kubevirt-controller created
+service/virt-api created
+deployment.apps/virt-api created
+deployment.apps/virt-controller created
+daemonset.apps/virt-handler created
+customresourcedefinition.apiextensions.k8s.io/virtualmachineinstances.kubevirt.io created
+customresourcedefinition.apiextensions.k8s.io/virtualmachineinstancereplicasets.kubevirt.io created
+customresourcedefinition.apiextensions.k8s.io/virtualmachineinstancepresets.kubevirt.io created
+customresourcedefinition.apiextensions.k8s.io/virtualmachines.kubevirt.io created
+customresourcedefinition.apiextensions.k8s.io/virtualmachineinstancemigrations.kubevirt.io created
 ```
 
 The following [SCCs](https://docs.openshift.com/container-platform/3.7/admin_guide/manage_scc.html) need to be added so that kubevirt controllers can launch privileged pods:
@@ -22,8 +54,8 @@ Review the objects that KubeVirt added.
 
 ```
 oc project kubevirt
-oc get sa | grep kubevirt
-oc describe sa kubevirt-apiserver
+oc get serviceaccount | grep kubevirt
+oc describe serviceaccount kubevirt-apiserver
 oc get pod
 HANDLER_POD=$(oc get pod -l kubevirt.io=virt-handler -o=custom-columns=NAME:.metadata.name --no-headers=true)
 oc describe pod $HANDLER_POD
