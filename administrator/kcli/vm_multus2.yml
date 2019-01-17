@@ -1,5 +1,5 @@
 ---
-apiVersion: kubevirt.io/v1alpha2
+apiVersion: kubevirt.io/v1alpha3
 kind: VirtualMachine
 metadata:
   labels:
@@ -17,12 +17,10 @@ spec:
           disks:
           - disk:
               bus: virtio
-            name: containerdisk            
-            volumeName: containervolume
+            name: disk0
           - disk:
               bus: virtio
             name: cloudinitdisk
-            volumeName: cloudinitvolume
           interfaces:
           - bridge: {}
             name: default
@@ -41,7 +39,7 @@ spec:
           networkName: ovs-br1
         name: ovs-br1
       volumes:
-      - name: containervolume
+      - name: disk0
         containerDisk:
           image: docker.io/kubevirt/fedora-cloud-registry-disk-demo:latest
       - cloudInitNoCloud:
@@ -51,6 +49,6 @@ spec:
             chpasswd: { expire: False }
             ssh_pwauth: True
             runcmd:
-            - ip a add 11.0.0.6/24 dev eth1
-            - ip l set dev eth1 up 
-        name: cloudinitvolume
+              - ip a add 11.0.0.6/24 dev eth1
+              - ip l set dev eth1 up 
+        name: cloudinitdisk

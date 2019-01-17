@@ -46,6 +46,8 @@ student{{ "%03.d" | format(node+1) }}:
   - vm_pvc.yml
   - vm_containerdisk.yml
   - kubevirt-web-ui.yaml
+  - vm_multus1.yml
+  - vm_multus2.yml
  scripts:
   - requirements.sh
 {% if deploy %}

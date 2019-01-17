@@ -43,7 +43,7 @@ In the `Basic Settings` configure with the following
 
 ![create virtual machine wizard](images/basic_settings.png)
 
-Click `Next >` until result and finish. You can safely ignore the message *"templates.template.openshift.io... not found"* 
+Click `Next >` until result and finish.
 
 #### Controlling the State of the VM
 
