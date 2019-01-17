@@ -32,6 +32,14 @@ oc get vm
 oc get vm vm1 -o yaml
 ```
 
+Sample output for `oc get vm`
+
+```
+# oc get vm
+NAME      AGE       RUNNING   VOLUME
+vm1       9s        false   
+```
+
 Start the Virtual Machine:
 
 ```
@@ -47,6 +55,14 @@ oc get vm
 oc get vm -o yaml vm1
 ```
 
+Sample output for `oc get vm`
+
+```
+# oc get vm
+NAME      AGE       RUNNING   VOLUME
+vm1       2m        true    
+```
+
 Confirm the vm is ready by checking its underlying pod:
 
 In both commands, the indicated ip can be used to connect to the vm
@@ -54,6 +70,20 @@ In both commands, the indicated ip can be used to connect to the vm
 ```
 oc get pod -o wide
 oc get vmi
+```
+
+Sample output:
+
+```
+# oc get pod -o wide
+NAME                      READY     STATUS      RESTARTS   AGE       IP            NODE         NOMINATED NODE
+ara-1-build               0/1       Completed   0          16m       10.124.0.27   student001   <none>
+ara-1-xpxf2               1/1       Running     0          14m       10.124.0.29   student001   <none>
+virt-launcher-vm1-2b2v7   2/2       Running     0          2m        10.124.0.35   student001   <none>
+# oc get vmi
+NAME      AGE       PHASE     IP            NODENAME
+vm1       2m        Running   10.124.0.35   student003
+
 ```
 
 ### Accessing VMs (serial console & spice)
@@ -64,7 +94,7 @@ Connect to the serial console of the VM. Hit return / enter a few times and logi
 virtctl console vm1
 ```
 
-You can disconnect from the virtual machine console by typing: `ctrl+]` but don't do it yet
+You can disconnect from the virtual machine console by typing: `ctrl+]` or `ctrl+5` but don't do it yet
 
 ### Communication Between Application and Virtual Machine
 
