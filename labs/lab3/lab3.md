@@ -45,11 +45,11 @@ crictl ps
 crictl images
 ```
 
-Docker is also installed and running, just to provide the build fonctionality needed by OpenShift and to be demonstrated in the next lab
+Docker is also installed and running, just to provide the build functionality needed by OpenShift, and to be demostrated in the next lab.
 
 ### Storage
 
-A PersistentVolume (PV) is a piece of storage in the cluster that has been provisioned by an administrator
+A PersistentVolume (PV) is a piece of storage in the cluster that has been provisioned by an cluster administrator.
 
 ```
 oc get pv 
@@ -57,7 +57,7 @@ oc get pv
 
 By examining the nfs section of one of the existing PVS, we can see how we are using the node to provide such storage.
 
-The *-o yaml* flag allows us to gather full information for the corrresponding object
+The *-o yaml* flag allows us to gather full information for the corrresponding object:
 
 ```
 oc get pv pv001 -o yaml
