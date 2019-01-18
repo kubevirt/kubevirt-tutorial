@@ -20,6 +20,15 @@ Review the objects that were added. Note the pods starting with *cdi*
 oc get pods -n kube-system
 ```
 
+You should see some thing like this:
+
+```
+# oc get pods -n kube-system | grep cdi
+cdi-apiserver-7f46fd54f4-8fn2m    1/1       Running   0          41s
+cdi-deployment-c8b8cbf66-pn48q    1/1       Running   0          40s
+cdi-uploadproxy-7d87748cb-6cdpz   1/1       Running   0          41s
+```
+
 #### Use CDI
 
 As an example, we will import a Cirros Cloud Image as a PVC and launch a Virtual Machine making use of it.
@@ -35,7 +44,31 @@ This will create the PVC with a proper annotation so that CDI controller detects
 oc get pvc cirros -o yaml
 oc get pod
 IMPORTER_POD=$(oc get pod -l app=containerized-data-importer -o=custom-columns=NAME:.metadata.name --no-headers=true)
-oc logs $IMPORTER_POD
+oc logs -f $IMPORTER_POD
+```
+
+This is a sample output of the importer pod logs:
+
+```
+# oc logs -f $IMPORTER_POD
+I0118 10:40:32.938365       1 importer.go:45] Starting importer
+I0118 10:40:32.939305       1 importer.go:58] begin import process
+I0118 10:40:32.939375       1 importer.go:82] begin import process
+I0118 10:40:32.939417       1 dataStream.go:293] copying "http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img" to "/data/disk.img"...
+I0118 10:40:33.102412       1 prlimit.go:107] ExecWithLimits qemu-img, [info --output=json http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img]
+I0118 10:40:34.975749       1 prlimit.go:107] ExecWithLimits qemu-img, [convert -p -f qcow2 -O raw json: {"file.driver": "http", "file.url": "http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img", "file.timeout": 3600} /data/disk.img]
+I0118 10:40:34.983868       1 qemu.go:189] 0.00
+I0118 10:40:35.525892       1 qemu.go:189] 1.19
+I0118 10:40:35.572275       1 qemu.go:189] 2.38
+....
+....
+I0118 10:40:37.597856       1 qemu.go:189] 98.02
+I0118 10:40:37.598886       1 qemu.go:189] 99.21
+I0118 10:40:37.689849       1 prlimit.go:107] ExecWithLimits qemu-img, [info --output=json /data/disk.img]
+I0118 10:40:37.710083       1 dataStream.go:349] Expanding image size to: 10Gi
+I0118 10:40:37.712784       1 prlimit.go:107] ExecWithLimits qemu-img, [resize -f raw /data/disk.img 10G]
+I0118 10:40:37.729748       1 importer.go:89] import complete
+
 ```
 
 As the image downloaded is small, the importer pod might actually have disappeared by the time you check its logs
@@ -57,8 +90,12 @@ oc create -f ~/vm_pvc.yml
 This will create and start a Virtual Machine named vm2. We can use the following command to check our Virtual Machine is running and to gather its IP.
 
 ```
-oc get vmi
+# oc get  vmi
+NAME      AGE       PHASE     IP            NODENAME
+vm2       1m        Running   10.124.0.64   student003
+
 ```
+
 
 Finally, use the gathered ip to connect to the Virtual Machine, create some files, stop and restart the Virtual Machine with virtctl and check how data persists. Use password *gocubsgo* if needed
 
