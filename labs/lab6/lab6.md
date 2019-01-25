@@ -88,7 +88,7 @@ vm1       2m        Running   10.124.0.35   student003
 
 ### Accessing VMs (serial console & spice)
 
-Connect to the serial console of the VM. Hit return / enter a few times and login with fedora/fedora:
+Connect to the serial console of the VM. Hit return / enter a few times and login with **fedora**/**fedora**:
 
 ```
 virtctl console vm1
