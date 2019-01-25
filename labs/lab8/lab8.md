@@ -56,7 +56,7 @@ Locate the ips of the two vms:
 oc get vmi
 ```
 
-password is fedora as defined in the cloud-init section of the manifest.
+password is *fedora* as defined in the cloud-init section of the manifest.
 
 ```
 ssh fedora@<ip_listed_above>
