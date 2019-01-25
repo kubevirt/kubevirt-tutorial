@@ -31,7 +31,7 @@ Click the `Create Virtual Machine` drop-down and select `Create with Wizard`
 
 In the `Basic Settings` configure with the following
 
-- Name: `vm3`
+- Name: `test`
 - Namespace: `myproject`
 - Provision Source: `Container`
 - Container Image: `docker.io/kubevirt/cirros-registry-disk-demo:latest`
