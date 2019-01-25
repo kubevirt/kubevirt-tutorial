@@ -94,6 +94,17 @@ Connect to the serial console of the VM. Hit return / enter a few times and logi
 virtctl console vm1
 ```
 
+Log in with the following credentials: 
+
+```
+Fedora 29 (Cloud Edition)
+Kernel 4.18.16-300.fc29.x86_64 on an x86_64 (ttyS0)
+
+vm1 login: fedora
+Password: fedora
+
+```
+
 You can disconnect from the virtual machine console by typing: `ctrl+]` or `ctrl+5` but don't do it yet
 
 ### Communication Between Application and Virtual Machine
