@@ -60,14 +60,14 @@ oc get pod
 HANDLER_POD=$(oc get pod -l kubevirt.io=virt-handler -o=custom-columns=NAME:.metadata.name --no-headers=true)
 oc describe pod $HANDLER_POD
 # review the files on the root of the filesystem of the pod, see the virt-handler executable
-oc exec -it $HANDLER_POD ls /
+oc exec -it $HANDLER_POD ls /bin
 oc get svc
 oc describe svc virt-api
 ```
 
 There are other services and objects to take a look at.
 
-To review the objects through the OpenShift web console, access the console and log in as the `admin` user at `https://student<number>.cnvlab.gce.sysdeseng.com:8443`. Remember, you can use `oc cluster status` to get your URL. Ignore the self signed certificate warning
+To review the objects through the OpenShift web console, access the console and log in as the `admin` user at `https://student<number>.cnvlab.gce.sysdeseng.com:8443`. Remember, you can use `oc status` to get your URL. Ignore the self signed certificate warning
 
 Open that URL in a browser, log in as the `admin` user with a password of `admin`.
 
