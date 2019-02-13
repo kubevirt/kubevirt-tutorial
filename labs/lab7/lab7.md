@@ -6,27 +6,49 @@ At a high level, a persistent volume claim (PVC) is created. A custom controller
 
 #### Install CDI
 
-To install Cdi, we apply the proper manifest, along with the proper SCCs
+To install Cdi, we first deploy The operator
 
 ```
-oc adm policy add-scc-to-user privileged system:serviceaccount:kube-system:default
-oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:kube-system:cdi-apiserver
-oc create -f ~/cdi-controller.yaml
+oc create -f ~/cdi-operator.yaml
 ```
 
-Review the objects that were added. Note the pods starting with *cdi*
+Sample Output:
 
 ```
-oc get pods -n kube-system
+namespace/cdi created
+serviceaccount/cdi-operator created
+clusterrolebinding.rbac.authorization.k8s.io/cdi-operator created
+configmap/cdi-controler-leader-election created
+deployment.apps/cdi-operator created
+customresourcedefinition.apiextensions.k8s.io/cdis.cdi.kubevirt.io created
 ```
 
-You should see some thing like this:
+Now that operator got deployed , we install Cdi
 
 ```
-# oc get pods -n kube-system | grep cdi
-cdi-apiserver-7f46fd54f4-8fn2m    1/1       Running   0          41s
-cdi-deployment-c8b8cbf66-pn48q    1/1       Running   0          40s
-cdi-uploadproxy-7d87748cb-6cdpz   1/1       Running   0          41s
+oc create -f ~/cdi-operator-cr.yaml
+```
+
+Sample Output:
+
+```
+cdi.cdi.kubevirt.io/cdi created
+```
+
+Review the objects that were added:
+
+```
+oc get pods -n cdi
+```
+
+Sample Output:
+
+```
+NAME                               READY     STATUS    RESTARTS   AGE
+cdi-apiserver-7cb6cbc489-kmj98     1/1       Running   0          38s
+cdi-deployment-798748c78-vhrx5     1/1       Running   0          38s
+cdi-operator-7c6c88b68f-84h54      1/1       Running   0          1m
+cdi-uploadproxy-7cc65c589f-srnmw   1/1       Running   0          38s
 ```
 
 #### Use CDI
