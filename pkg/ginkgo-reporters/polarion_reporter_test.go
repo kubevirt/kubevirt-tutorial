@@ -79,6 +79,10 @@ var _ = Describe("ginkgo_reporters", func() {
 					Name:  "polarion-custom-isautomated",
 					Value: "True",
 				},
+				{
+					Name:  "polarion-testrun-status-id",
+                    Value: "inprogress",
+				},
 			},
 		}
 
@@ -136,7 +140,7 @@ var _ = Describe("ginkgo_reporters", func() {
 				Properties: PolarionProperties{
 					Property: []PolarionProperty{
 						{
-							Name:  "polarion-project-id",
+							Name:  "polarion-testcase-id",
 							Value: "QE-123",
 						},
 					},
@@ -156,7 +160,7 @@ var _ = Describe("ginkgo_reporters", func() {
 				Properties: PolarionProperties{
 					Property: []PolarionProperty{
 						{
-							Name:  "polarion-project-id",
+							Name:  "polarion-testcase-id",
 							Value: "QE-789",
 						},
 					},

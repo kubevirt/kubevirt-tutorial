@@ -116,6 +116,10 @@ func (reporter *PolarionReporter) SpecSuiteWillBegin(config config.GinkgoConfigT
 				Name:  "polarion-custom-isautomated",
 				Value: "True",
 			},
+			{
+				Name:  "polarion-testrun-status-id",
+				Value: "inprogress",
+			},
 		},
 	}
 
@@ -224,7 +228,7 @@ func extractTestID(testname string, ProjectID string) PolarionProperties {
 		properties = PolarionProperties{
 			Property: []PolarionProperty{
 				{
-					Name:  "polarion-project-id",
+					Name:  "polarion-testcase-id",
 					Value: ProjectID + "-" + testID,
 				},
 			},
