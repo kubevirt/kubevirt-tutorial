@@ -1,0 +1,3 @@
+- import_tasks: kubevirt.yml
+- import_tasks: multus.yml
+- import_tasks: ovs_cni.yml

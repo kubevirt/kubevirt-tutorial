@@ -1,101 +1,103 @@
-## Deploy a Container-based Application to OpenShift
+# Lab 4
 
-The purpose of this section is to deploy an example application on top of OpenShift so we later on demonstrate how containers and virtual machines can be orchestrated side by side within a single OpenShift cluster.
+## Deploy our first Virtual Machine
 
-We will deploy the application [ARA Records Ansible](https://github.com/openstack/ara) or ARA for short, using the build feature of OpenShift which allows to create containers from a github repo source.
+To start with, we'll be deploying a VM that uses a [ContainerDisk](https://kubevirt.io/user-guide/docs/latest/creating-virtual-machines/disks-and-volumes.html#containerdisk). It won't use any of the available PVs, ContainerDisk based VMs are ephemeral.
 
-According to the project's README, `ARA Records Ansible playbook runs and makes the recorded data available and intuitive for users and systems`. It is a simple web-based python application that is easily deployed to OpenShift.
-
-### Create new Project and Add Template
-
-```
-oc new-project myproject
-oc create -f /root/app-template.yaml
+```console
+$ cd ~/student-materials
+$ kubectl config set-context $(kubectl config current-context) --namespace=default
+$ kubectl create -f vm_containerdisk.yml
+virtualmachine.kubevirt.io/vm1 created
 ```
 
-### Deploy Application
+Check for the VM we just created:
 
-```
-oc new-app --template ara
-```
-Be patient, it takes some time to build and deploy (~2m-3m). Watch the build and ara pods:
-
-```
-# oc get pod -w
-NAME          READY     STATUS    RESTARTS   AGE
-ara-1-build   1/1       Running   0          7s
-ara-1-deploy   0/1       Pending   0         0s
-ara-1-deploy   0/1       Pending   0         0s
-ara-1-deploy   0/1       ContainerCreating   0         0s
-ara-1-build   0/1       Completed   0         1m
-ara-1-build   0/1       Completed   0         1m
-ara-1-deploy   0/1       ContainerCreating   0         2s
-ara-1-xpxf2   0/1       Pending   0         0s
-ara-1-xpxf2   0/1       Pending   0         0s
-ara-1-xpxf2   0/1       ContainerCreating   0         1s
-ara-1-deploy   1/1       Running   0         3s
-ara-1-xpxf2   0/1       ContainerCreating   0         3s
-ara-1-xpxf2   1/1       Running   0         12s
-ara-1-deploy   0/1       Completed   0         15s
-ara-1-deploy   0/1       Terminating   0         15s
-ara-1-deploy   0/1       Terminating   0         15s
+```console
+$ kubectl get vm vm1
+NAME   AGE   RUNNING   VOLUME
+vm1    24s   false
 ```
 
-You can see the deployment status with `oc status` command. You should see something like this when it finish:
+Notice it's not running, in the YAML definition we can find the following block:
 
-```
-# oc status
-In project myproject on server https://student001.cnvlab.gce.sysdeseng.com:8443
-
-http://ara-myproject.app.student001.cnvlab.gce.sysdeseng.com to pod port 8080-tcp (svc/ara)
-  dc/ara deploys istag/ara:latest <- bc/ara docker builds https://github.com/jcpowermac/openshift-presentation#master 
-    deployment #1 deployed 15 seconds ago - 1 pod
-
-
-2 infos identified, use 'oc status --suggest' to see details.
-
+```yaml
+...
+spec:
+  running: false
+...
 ```
 
-The following objects will be created:
+The *VirtualMachine* object is the definition of our VM, but it's not instantiated, let's do so with *virtctl* as follows:
 
-- [BuildConfig](https://docs.openshift.org/latest/dev_guide/builds/build_strategies.html#docker-strategy-options) 
-- [ImageStream](https://docs.openshift.org/latest/dev_guide/managing_images.html) 
-- [DeploymentConfig](https://docs.openshift.org/latest/dev_guide/deployments/how_deployments_work.html)
-- [Route](https://docs.openshift.org/latest/dev_guide/routes.html)
-- [Service](https://docs.openshift.org/latest/architecture/core_concepts/pods_and_services.html#services)
-
-### Review Objects
-
-Let's show our `BuildConfig` and watch the container build log. The ara `BuildConfig` creates a new container image from the Dockerfile provided in our GitHub repository. While this is running, feel free to explore the links above to learn more about these OpenShift objects.
-
-```
-oc get bc
-oc logs -f bc/ara
+```console
+$ virtctl start vm1
+VM vm1 was scheduled to start
 ```
 
-Once that is complete we can confirm that our `DeploymentConfig` has rolled out. The `ara` `DeploymentConfig` 
-describes the desired state of the application. 
+A *virt-launcher* Pod should be starting now, which will spawn the actual virtual machine instance (or VMI):
 
-```
-oc get dc
-oc rollout status dc/ara
-```
-
-Now let's take a look at the `Service` and `Route`. A `Route` exposes a `Service` to allow ingress traffic access via a hostname.
-In the case of ARA this allows us to view the web interface of the application.
-A `Service` provides a consistent load balanced endpoint that permits pods to access each other. 
-
-
-```
-oc get svc
-oc describe svc ara
-oc get route
-oc describe route ara
+```console
+$ kubectl get pods -w
+NAME                      READY   STATUS    RESTARTS   AGE
+virt-launcher-vm1-2qflc   0/2     Running   0          12s
+virt-launcher-vm1-2qflc   0/2     Running   0          12s
+virt-launcher-vm1-2qflc   1/2     Running   0          17s
+virt-launcher-vm1-2qflc   2/2     Running   0          23s
 ```
 
-You can use the url `http://ara-myproject.app.student<number>.cnvlab.gce.sysdeseng.com` to access ara web interface.
+We can also use *kubectl* to check the virtual machine and its instance:
 
-This concludes this section of the lab.
+```console
+$ kubectl get vm vm1
+NAME   AGE   RUNNING   VOLUME
+vm1    19m   true
+
+$ kubectl get vmi vm1
+NAME   AGE     PHASE     IP            NODENAME
+vm1    3m49s   Running   10.244.0.22   sjr-kubemaster.deshome.net
+```
+
+Using *virtctl* we can connect to the VMI's console as follows:
+
+```console
+$ virtctl console vm1
+Successfully connected to vm1 console. The escape sequence is ^]
+
+Fedora 29 (Cloud Edition)
+Kernel 4.18.16-300.fc29.x86_64 on an x86_64 (ttyS0)
+
+vm1 login: fedora
+Password: fedora
+
+[fedora@vm1 ~]$ ping -c 1 google.com
+PING google.com (172.217.16.238) 56(84) bytes of data.
+64 bytes from mad08s04-in-f14.1e100.net (172.217.16.238): icmp_seq=1 ttl=54 time=22.1 ms
+
+--- google.com ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 22.098/22.098/22.098/0.000 ms
+[fedora@vm1 ~]$ exit
+
+Fedora 29 (Cloud Edition)
+Kernel 4.18.16-300.fc29.x86_64 on an x86_64 (ttyS0)
+
+vm1 login:
+```
+There is also a graphical console for connecting to the VMs, using the *vnc* subcommand instead of *console*. Note that it requires you to have *remote-viewer* installed and it's out of the scope of this lab.
+
+
+**NOTE**: To exit the console press *Ctrl+]*
+
+## Recap
+
+* We've defined a *VirtualMachine* object on the cluster which didn't actually instantiate the *vm1*
+* We've started the *vm1* using *virtctl*, which instantiated it creating the *VirtualMachineInstance* object
+  * *kubectl patch* could have also been used to start *vm1*
+* Finally, we've connected to the *vm1's* serial console using *virtctl*
+
+
+This concludes this section of the lab, before heading off to the next lab, spend some time describing and exploring the objects this lab created on the cluster.
 
 [Next Lab](../lab5/lab5.md)\
 [Previous Lab](../lab3/lab3.md)\

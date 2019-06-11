@@ -1,0 +1,6 @@
+DEVICE="eth1"
+ONBOOT="yes"
+DEVICETYPE="ovs"
+TYPE="OVSIntPort"
+OVS_BRIDGE="br1"
+HOTPLUG="no"

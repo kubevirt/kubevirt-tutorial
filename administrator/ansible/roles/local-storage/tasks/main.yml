@@ -1,0 +1,17 @@
+---
+- name: Create local-volume-provisioner namespace
+  k8s:
+    state: present
+    name: local-volume-provisioner
+    kind: Namespace
+    api_version: v1
+
+- name: Create StorageClass for local volumes
+  k8s:
+    state: present
+    resource_definition: "{{ lookup('file', 'files/local-storage-manifests/sc.yml') }}"
+
+- name: Deploy local storage provisioner
+  k8s:
+    state: present
+    resource_definition: "{{ lookup('file', 'files/local-storage-manifests/provisioner.yml') }}"

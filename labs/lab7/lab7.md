@@ -1,129 +1,68 @@
-## Experiment with CDI
+# Lab 7
 
-[CDI](https://github.com/kubevirt/containerized-data-importer) is an utility designed to import Virtual Machine images for use with Kubevirt. 
+**DISCLAIMER:** The WebUI is fully functional on Openshift, but not yet in Kubernetes (we are working on it! :D). If you try to spin up a VM using the wizard, the namespaces will not be shown, don't worry about that, just continue with the labs avoiding this part.
 
-At a high level, a persistent volume claim (PVC) is created. A custom controller watches for importer specific claims, and when discovered, starts an import process to create a raw image named *disk.img* with the desired content into the associated PVC.
+## Using the Kubevirt UI to interact with VMs
 
-#### Install CDI
+In this section, we will install and interact with VMs using KubeVirt's dedicated UI.
 
-To install Cdi, we first deploy The operator
+You can then access it at `http://kubevirtlab-<number>.<domain>:30000` and use it to:
 
-```
-oc create -f ~/cdi-operator.yaml
-```
+* stop/start/delete/... VMs
+* Create new ones
+* Access VM consoles through your browser
 
-Sample Output:
+![kubevirt-ui](images/ui.png)
 
-```
-namespace/cdi created
-serviceaccount/cdi-operator created
-clusterrolebinding.rbac.authorization.k8s.io/cdi-operator created
-configmap/cdi-controler-leader-election created
-deployment.apps/cdi-operator created
-customresourcedefinition.apiextensions.k8s.io/cdis.cdi.kubevirt.io created
-```
+### Using the KubeVirt web UI 
 
-Now that operator got deployed , we install Cdi
+#### Create a Virtual Machine
 
-```
-oc create -f ~/cdi-operator-cr.yaml
-```
+Click the `Create Virtual Machine` drop-down and select `Create with Wizard`
 
-Sample Output:
+![create virtual machine wizard](images/new_vm_wizard.png)
 
-```
-cdi.cdi.kubevirt.io/cdi created
-```
+In the `Basic Settings` configure with the following
 
-Review the objects that were added:
+* Name: `vm3`
+* Namespace: `myproject`
+* Provision Source: `Container`
+* Container Image: `docker.io/kubevirt/cirros-container-disk-demo:latest`
+* Operating System: `fedora29`
+* Flavor: `Custom`
+* Memory: `1`
+* CPUs: `1`
+* Workload Profile: `generic`
 
-```
-oc get pods -n cdi
-```
+![create virtual machine wizard](images/basic_settings.png)
 
-Sample Output:
+Click `Next >` until result and finish.
 
-```
-NAME                               READY     STATUS    RESTARTS   AGE
-cdi-apiserver-7cb6cbc489-kmj98     1/1       Running   0          38s
-cdi-deployment-798748c78-vhrx5     1/1       Running   0          38s
-cdi-operator-7c6c88b68f-84h54      1/1       Running   0          1m
-cdi-uploadproxy-7cc65c589f-srnmw   1/1       Running   0          38s
-```
+#### Controlling the State of the VM
 
-#### Use CDI
+To start the virtual machine click the cog and select `Start Virtual Machine`.
 
-As an example, we will import a Cirros Cloud Image as a PVC and launch a Virtual Machine making use of it.
+![start vm](images/start_vm.png)
 
-```
-oc project myproject
-oc create -f ~/pvc_cirros.yml
-```
+Now click the virtual machine link `vm3`
 
-This will create the PVC with a proper annotation so that CDI controller detects it and launches an importer pod to gather the image specified in the *cdi.kubevirt.io/storage.import.endpoint* annotation.
+#### Virtual Machine Overview and Console
 
-```
-oc get pvc cirros -o yaml
-oc get pod
-IMPORTER_POD=$(oc get pod -l app=containerized-data-importer -o=custom-columns=NAME:.metadata.name --no-headers=true)
-oc logs -f $IMPORTER_POD
-```
+![overview](images/overview.png)
 
-This is a sample output of the importer pod logs:
+Click *Consoles* to view graphical (VNC) console.
 
-```
-# oc logs -f $IMPORTER_POD
-I0118 10:40:32.938365       1 importer.go:45] Starting importer
-I0118 10:40:32.939305       1 importer.go:58] begin import process
-I0118 10:40:32.939375       1 importer.go:82] begin import process
-I0118 10:40:32.939417       1 dataStream.go:293] copying "http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img" to "/data/disk.img"...
-I0118 10:40:33.102412       1 prlimit.go:107] ExecWithLimits qemu-img, [info --output=json http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img]
-I0118 10:40:34.975749       1 prlimit.go:107] ExecWithLimits qemu-img, [convert -p -f qcow2 -O raw json: {"file.driver": "http", "file.url": "http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img", "file.timeout": 3600} /data/disk.img]
-I0118 10:40:34.983868       1 qemu.go:189] 0.00
-I0118 10:40:35.525892       1 qemu.go:189] 1.19
-I0118 10:40:35.572275       1 qemu.go:189] 2.38
-....
-....
-I0118 10:40:37.597856       1 qemu.go:189] 98.02
-I0118 10:40:37.598886       1 qemu.go:189] 99.21
-I0118 10:40:37.689849       1 prlimit.go:107] ExecWithLimits qemu-img, [info --output=json /data/disk.img]
-I0118 10:40:37.710083       1 dataStream.go:349] Expanding image size to: 10Gi
-I0118 10:40:37.712784       1 prlimit.go:107] ExecWithLimits qemu-img, [resize -f raw /data/disk.img 10G]
-I0118 10:40:37.729748       1 importer.go:89] import complete
+![overview](images/vm_console.png)
 
-```
+#### Associated Pods
 
-As the image downloaded is small, the importer pod might actually have disappeared by the time you check its logs
+Clicking `Pods` will show the currently running pods for this namespace.
 
-Notice that the importer downloaded the publically available Cirros Cloud qcow image. Once the importer pod completes, this PVC is ready for use in kubevirt.
+![pods](images/pods.png)
 
-Let's create a Virtual Machine making use of it. Review the file *vm_pvc.yml*.
+Then clicking the `virt-launcher-vm3-RANDOM` link will provide an overview.
 
-```
-cat ~/vm_pvc.yml
-```
-
-Launch this vm
-
-```
-oc create -f ~/vm_pvc.yml
-```
-
-This will create and start a Virtual Machine named vm2. We can use the following command to check our Virtual Machine is running and to gather its IP.
-
-```
-# oc get  vmi
-NAME      AGE       PHASE     IP            NODENAME
-vm2       1m        Running   10.124.0.64   student003
-
-```
-
-
-Finally, use the gathered ip to connect to the Virtual Machine, create some files, stop and restart the Virtual Machine with virtctl and check how data persists. Use password *gocubsgo* if needed
-
-```
-ssh cirros@VM_IP
-```
+![pods](images/pod_overview.png)
 
 This concludes this section of the lab.
 

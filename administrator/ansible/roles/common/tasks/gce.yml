@@ -1,0 +1,33 @@
+---
+- name: '[GCE] Partition disks for local storage'
+  parted:
+    device: "/dev/{{ item }}"
+    number: 1
+    state: present
+  loop: "{{ gce_devices }}"
+
+- name: '[GCE] Format disks for local storage'
+  filesystem:
+    dev: /dev/{{ item }}1
+    fstype: xfs
+    opts: -L {{ item }}
+  loop: "{{ gce_devices }}"
+
+- name: '[GCE] Mount disks for local storage'
+  mount:
+    path: /mnt/storage/{{ item }}
+    src: LABEL={{ item }}
+    fstype: xfs
+    state: mounted
+  loop: "{{ gce_devices }}"
+
+- name: '[GCE] Install bridges'
+  openvswitch_bridge:
+     bridge: "br1"
+     state: present
+
+- name: '[GCE] Add port to bridge'
+  openvswitch_port:
+    bridge: "br1"
+    port: "eth1"
+    state: present

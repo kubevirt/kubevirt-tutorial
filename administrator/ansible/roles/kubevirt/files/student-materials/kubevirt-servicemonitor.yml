@@ -1,0 +1,25 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: prometheus-operator-kubelet
+    chart: prometheus-operator-5.7.0
+    heritage: Tiller
+    release: kubevirtlab
+    prometheus.kubevirt.io: ""
+  name: kubevirtlab-kubevirt
+  namespace: prometheus
+spec:
+  endpoints:
+  - honorLabels: true
+    port: metrics
+    scheme: https
+    tlsConfig:
+      insecureSkipVerify: true
+  jobLabel: prometheus.kubevirt.io
+  namespaceSelector:
+    matchNames:
+    - kubevirt
+  selector:
+    matchLabels:
+      prometheus.kubevirt.io: ""

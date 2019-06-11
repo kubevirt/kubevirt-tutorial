@@ -1,0 +1,7 @@
+- name: Pre-pull k8s images
+  command: kubeadm config images pull --kubernetes-version {{ kubernetes_version }}
+
+  #- name: Set pull images completed
+  #  file:
+  #    state: file
+  #    path: /etc/ansible/facts.d/kubernetes_images_pull.fact

@@ -1,0 +1,3 @@
+---
+kubernetes_version: stable-1
+kubelet_extra_args:

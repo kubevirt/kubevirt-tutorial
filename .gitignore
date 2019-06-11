@@ -1,2 +1,5 @@
 cnv_rsa
 cnv_rsa.ppk
+**.terraform
+**tfstate*
+sjr*

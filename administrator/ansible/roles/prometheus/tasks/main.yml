@@ -1,0 +1,2 @@
+- import_tasks: prometheus.yml
+  when: "'masters' in group_names"
