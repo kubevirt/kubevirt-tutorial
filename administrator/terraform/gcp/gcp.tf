@@ -35,7 +35,7 @@ resource "google_compute_firewall" "default" {
 #}
 
 module "gcp_kubevirt_lab" {
-    source          = "github.com/jparrill/terraform-google-compute-engine-instance"
+    source          = "github.com/codificat/terraform-google-compute-engine-instance"
     amount          = "${var.gcp_instances}"
     region          = "${var.gcp_region}"
     zone            = "${var.gcp_zone}"
@@ -52,6 +52,6 @@ module "gcp_kubevirt_lab" {
     
     user_data       = "Kubevirt Laboratory for ${var.lab_description}"
     username        = "${var.lab_username}"
-    public_key_path = "~/.ssh/cnv_lab_new.pub"
+    public_key_path = "~/.ssh/kubevirt-tutorial.pub"
     instance_tag    = "${var.gcp_instance_tag}" 
 }

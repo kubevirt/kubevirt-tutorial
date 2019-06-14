@@ -13,21 +13,19 @@ The naming convention for the lab VMs is: **kubevirtlab-\<number\>.gce.sexylinux
 All the boxes have been provisioned with an SSH public key, so you can SSH into your instance using the ssh key located into [RSA](./RSA) folder.
 
 ```console
-$ wget https://raw.githubusercontent.com/tripledes/kubevirt-tutorial/master/labs/lab1/RSA/cnv_lab_rsa
-$ chmod 600 cnv_lab_rsa
-$ ssh-add cnv_lab_rsa
+$ wget https://raw.githubusercontent.com/codificat/kubevirt-tutorial-fork/master/labs/lab1/RSA/kubevirt-tutorial
+$ chmod 600 kubevirt-tutorial
+$ ssh-add kubevirt-tutorial
 ```
-
-**NOTE**: The password for this RSA is 'fedora'
 
 ### Connecting to your Instance
 
-This lab should be performed on **YOUR ASSIGNED INSTANCE** only, as *kubevirt-user* user, unless otherwise instructed.
+This lab should be performed on **YOUR ASSIGNED INSTANCE** only, as *kubevirt* user, unless otherwise instructed.
 
 **NOTE**: Please be respectful and only connect to your assigned instance. All instances on this lab use the **same** public key, so you could accidentally connect to the wrong system. If you have any issues, please inform an instructor/s.
 
 ```console
-$ ssh -i cnv_lab_rsa kubevirt-user@kubevirtlab-<number>.gce.sexylinux.net
+$ ssh -i kubevirt-tutorial kubevirt@kubevirtlab-<number>.gce.sexylinux.net
 
 The authenticity of host 'kubevirtlab-2.gce.sexylinux.net (35.188.64.157)' can't be established.
 ECDSA key fingerprint is SHA256:36+hPGyR9ZxYRRfMngif8PXLR1yoVFCGZ1kylpNE8Sk.

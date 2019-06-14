@@ -11,10 +11,9 @@ This directory provides bases to deploy the lab.
 ## Installation on Libvirt
 
 ```shell
-git clone https://github.com/tripledes/kubevirt-tutorial
+git clone https://github.com/kubevirt/kubevirt-tutorial
 cd kubevirt-tutorial
-git checkout sjr-refactor
-cd administrator/terraform
+cd administrator/terraform/libvirt
 terraform init
 terraform plan -var-file varfiles/<yourvarsfile>.tf
 cd ../ansible
@@ -23,23 +22,29 @@ ANSIBLE_ROLES_PATH=roles ansible-playbook -i inventories/<inventory> -u cloud --
 
 ## Installation on GCE
 
+```
+gcloud auth login
+gcloud auth application-default login
+```
+
+Create your varfile: `varfiles/containerdays-2019.tfvars`
+
 ```shell
-git clone https://github.com/tripledes/kubevirt-tutorial
+git clone https://github.com/kubevirt/kubevirt-tutorial
 cd kubevirt-tutorial
-git checkout sjr-refactor
-cd administrator/terraform
+cd administrator/terraform/gcp
 terraform init -get -upgrade=true
-terraform plan -var-file varfiles/opensouthcode19.tfvars -refresh=true
-terraform apply -var-file varfiles/opensouthcode19.tfvars
+terraform plan -var-file varfiles/containerdays-2019.tfvars -refresh=true
+terraform apply -var-file varfiles/containerdays-2019.tfvars
 ### If you want to debug it, just add this env var:
-TF_LOG=DEBUG terraform apply -var-file varfiles/opensouthcode19.tfvars -refresh=true
+TF_LOG=DEBUG terraform apply -var-file varfiles/containerdays-2019.tfvars -refresh=true
 ###
 cd ../ansible
-wget <SSH KEY URL> -O ~/.ssh/cnv_lab_new
-wget <SSH PUB URL> -O ~/.ssh/cnv_lab_new.pub
-ssh-add ~/.ssh/cnv_lab_new
+wget <SSH KEY URL> -O ~/.ssh/kubevirt-tutorial
+wget <SSH PUB URL> -O ~/.ssh/kubevirt-tutorial.pub
+ssh-add ~/.ssh/kubevirt-tutorial
 ### Here you need to put the right password
-ANSIBLE_ROLES_PATH=roles GCE_INI_PATH=~/.ansible/inventory/gce.ini ansible-playbook -i ~/.ansible/inventory/gce.py --private-key ~/.ssh/cnv_lab_new -l tag_kubevirtlab playbooks/kubernetes.yml
+ANSIBLE_ROLES_PATH=roles GCE_INI_PATH=~/.ansible/inventory/gce.ini ansible-playbook -i ~/.ansible/inventory/gce.py --private-key ~/.ssh/kubevirt-tutorial -l tag_kubevirtlab playbooks/kubernetes.yml
 ```
 
 ## Versions used

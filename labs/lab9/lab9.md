@@ -47,7 +47,7 @@ Again, these will tend to be ever-growing numbers, thus PromQL functions are nee
 In the student materials (*~/student-materials*) you'll find a [Grafana](https://grafana.org) dashboard we've prepared for you all, so let's import it and see what it shows, perform the following steps in your own workstation/laptop:
 
 ```console
-$ wget https://raw.githubusercontent.com/tripledes/kubevirt-tutorial/master/administrator/ansible/roles/kubevirt/files/student-materials/KubeVirt-grafana-dashboard.json
+$ wget https://raw.githubusercontent.com/codificat/kubevirt-tutorial-fork/master/administrator/ansible/roles/kubevirt/files/student-materials/KubeVirt-grafana-dashboard.json
 ```
 
 Now, point your browser to your node's hostname port 30300. You'll be greet with Grafana's login page, use the following authentication details:
