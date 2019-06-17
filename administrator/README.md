@@ -39,12 +39,31 @@ terraform apply -var-file varfiles/containerdays-2019.tfvars
 ### If you want to debug it, just add this env var:
 TF_LOG=DEBUG terraform apply -var-file varfiles/containerdays-2019.tfvars -refresh=true
 ###
+```
+
+
+- Create a service account and download its JSON file
+
+- Get inventory script and configuration file:
+
+```shell
+wget https://raw.githubusercontent.com/ansible/ansible/devel/contrib/inventory/gce.ini -O ~/.ansible/inventories/gce.ini
+wget https://raw.githubusercontent.com/ansible/ansible/v$(ansible --version | awk '/^ansible/ { print $2}')/contrib/inventory/gce.py -O ~/.ansible/inventories/gce.py
+```
+
+
+
+```shell
 cd ../ansible
 wget <SSH KEY URL> -O ~/.ssh/kubevirt-tutorial
 wget <SSH PUB URL> -O ~/.ssh/kubevirt-tutorial.pub
 ssh-add ~/.ssh/kubevirt-tutorial
-### Here you need to put the right password
-ANSIBLE_ROLES_PATH=roles GCE_INI_PATH=~/.ansible/inventory/gce.ini ansible-playbook -i ~/.ansible/inventory/gce.py --private-key ~/.ssh/kubevirt-tutorial -l tag_kubevirtlab playbooks/kubernetes.yml
+ANSIBLE_ROLES_PATH=roles \
+                  ansible-playbook \
+                  -i ~/.ansible/inventories/gce.py \
+                  --private-key ~/.ssh/kubevirt-tutorial \
+                  -l tag_kubevirtlab \
+                  playbooks/kubernetes.yml
 ```
 
 ## Versions used
