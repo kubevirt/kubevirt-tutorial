@@ -1,10 +1,18 @@
 plugin: gcp_compute
 zones: # populate inventory with instances in these regions
   - europe-west4-a
+  - us-central1-b
 projects:
   - cnvlab-209908 
 service_account_file: /home/jparrill/.ansible/inventory/gce.json 
 auth_kind: serviceaccount
+keyed_groups:
+  # Create groups from GCE labels
+  - prefix: gcp
+    key: tags
+groups:
+  push-button: "'kubevirt-button' in (name)"
+  lab: "'kubevirtlab' in (name)"
 scopes:
  - 'https://www.googleapis.com/auth/cloud-platform'
  - 'https://www.googleapis.com/auth/compute.readonly'
