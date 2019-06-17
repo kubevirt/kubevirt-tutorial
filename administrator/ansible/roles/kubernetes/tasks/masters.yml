@@ -46,7 +46,7 @@
     namespace: kube-system
     resource_definition:
       spec:
-        replicas: 2
+        replicas: 1
   vars:
     ansible_become: False
 
