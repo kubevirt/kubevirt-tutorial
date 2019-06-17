@@ -4,16 +4,15 @@
 
 In this section we're going to deploy the following three components:
 
-* [KubeVirt Operator](https://github.com/kubevirt/kubevirt)
-  * Provides a set of CRDs and components required to manage the VMs
-* [CDI Operator](https://github.com/kubevirt/containerized-data-importer)
-  * Another set of CRDs to help ease the storage management for KubeVirt VMs
-* [KubeVirt Web UI](https://github.com/kubevirt/web-ui)
-  * Provides a graphical environment to manage VM based workloads
+* The [KubeVirt Operator](https://github.com/kubevirt/kubevirt) provides a set of Custom Resource Definitions (CRDs) and components required to manage VMs inside Kubernetes
+* The Containerized Data Importer [(CDI) Operator](https://github.com/kubevirt/containerized-data-importer) provides another set of CRDs to facilitate the management of persistent storage for KubeVirt-based VMs
+* The [KubeVirt Web UI](https://github.com/kubevirt/web-ui) provides a graphical environment to manage VM based workloads
 
 ## Install the KubeVirt Operator
 
-We're going to start with the KubeVirt Operator, being connected to your assigned instance, execute the following steps:
+We're going to start with the KubeVirt operator.
+
+Connect to your assigned instance and execute the following steps:
 
 ```console
 $ cd ~/kubevirt/kubevirt-operator-manifests
@@ -29,7 +28,7 @@ $ kubectl wait deployment virt-controller --for condition=available
 deployment.extensions/virt-controller condition met
 ```
 
-Let's explore what's being deployed:
+Let's explore what is being deployed as a result:
 
 ```console
 $ kubectl get all -l kubevirt.io
@@ -69,6 +68,7 @@ $ virtctl version
 Client Version: version.Info{GitVersion:"v0.17.0", GitCommit:"c0f960702dce718419a767f3913669f539229ff0", GitTreeState:"clean", BuildDate:"2019-05-05T08:09:14Z", GoVersion:"go1.11.5", Compiler:"gc", Platform:"linux/amd64"}
 Server Version: version.Info{GitVersion:"v0.17.0", GitCommit:"a067696ed6c25b0eab9dfcd01bbdc045f500f8ca", GitTreeState:"clean", BuildDate:"2019-05-06T14:58:11Z", GoVersion:"go1.11.5", Compiler:"gc", Platform:"linux/amd64"}
 ```
+
 
 ## Install the CDI operator
 
@@ -125,11 +125,11 @@ servicemonitor.monitoring.coreos.com/kubevirtlab-kubevirt created
 
 Let's summarize what happened on this lab:
 
-* We've installed both KubeVirt and CDI operators:
-  * The operators enabled us to deploy instances (CRs) of both products
-  * Created the both CRs, for KubeVirt and CDI, which the operator observed and act accordingly
-* We tested KubeVirt's API is available using *virtctl*, the CLI tool for interacting with KubeVirt VMs
-* Finally, we've deployed a *ServiceMonitor* object to tell Prometheus to scrap the KubeVirt components, including the VMs we'll be running in the subsequent labs
+* We have installed the KubeVirt and CDI operators:
+  * The operators enabled us to create instances of KubeVirt and CDI as Custom Resources (CRs).
+  * By creating CRs for both KubeVirt and CDI, the operators deployed the necessary KubeVirt and CDI components.
+* We verified that KubeVirt's API is available using *virtctl*, the CLI tool to manage KubeVirt VMs.
+* Finally, we've deployed a *ServiceMonitor* object to ask Prometheus to scrap the KubeVirt components, including the VMs we'll be running in subsequent labs.
 
 
 This concludes this section, take your time to review what's been deployed, all the resources, etc and then head off to the next lab!
