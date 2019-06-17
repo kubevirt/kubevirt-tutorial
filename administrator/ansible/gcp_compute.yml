@@ -3,8 +3,9 @@ zones: # populate inventory with instances in these regions
   - europe-west4-a
   - us-central1-b
 projects:
-  - cnvlab-209908 
-service_account_file: /home/jparrill/.ansible/inventory/gce.json 
+  - cnvlab-209908
+# You can set this via the GCE_CREDENTIALS_FILE_PATH env var instead:
+#service_account_file: /home/elvis/.ansible/inventory/gce.json
 auth_kind: serviceaccount
 keyed_groups:
   # Create groups from GCE labels

@@ -58,7 +58,7 @@
         hostname: "{{ item }}"
         groups: 'masters'
     with_items:
-        - "{{ groups[tag_lab] }}"
+        - "{{ groups['lab'] }}"
   
   ### Workaround for GCE, always gives an IP on network interfaces
   - name: Disable the eth1 interface

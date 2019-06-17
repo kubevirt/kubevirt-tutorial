@@ -41,6 +41,12 @@
   notify:
     - reload sshd
 
+- name: Enable IPv4 forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    sysctl_set: yes
+
 - name: Create modules-load file for br_netfilter
   file:
     state: touch

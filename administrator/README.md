@@ -44,25 +44,22 @@ TF_LOG=DEBUG terraform apply -var-file varfiles/containerdays-2019.tfvars -refre
 
 - Create a service account and download its JSON file
 
-- Get inventory script and configuration file:
-
-```shell
-wget https://raw.githubusercontent.com/ansible/ansible/devel/contrib/inventory/gce.ini -O ~/.ansible/inventories/gce.ini
-wget https://raw.githubusercontent.com/ansible/ansible/v$(ansible --version | awk '/^ansible/ { print $2}')/contrib/inventory/gce.py -O ~/.ansible/inventories/gce.py
-```
-
+- See the [README for ansible](./ansible/README.md) for details on Ansible configuration
 
 
 ```shell
-cd ../ansible
 wget <SSH KEY URL> -O ~/.ssh/kubevirt-tutorial
-wget <SSH PUB URL> -O ~/.ssh/kubevirt-tutorial.pub
 ssh-add ~/.ssh/kubevirt-tutorial
+
+cd ../ansible
+
+export GCE_CREDENTIALS_FILE_PATH=/path/to/your/gcp/service/account/keyfile.json
+
 ANSIBLE_ROLES_PATH=roles \
                   ansible-playbook \
-                  -i ~/.ansible/inventories/gce.py \
+                  -i gcp_compute.yml \
                   --private-key ~/.ssh/kubevirt-tutorial \
-                  -l tag_kubevirtlab \
+                  -l lab \
                   playbooks/kubernetes.yml
 ```
 
