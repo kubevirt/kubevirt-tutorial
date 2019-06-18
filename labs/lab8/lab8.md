@@ -1,41 +1,46 @@
-# Lab 8
+# Lab 8: Deploy a multi-homed VM using Multus
 
-## Deploy a multi-homed VM using Multus
+In this lab we will run virtual machines with multiple network interfaces (NICs) by leveraging the Multus and OVS CNI plugins.
 
-In this lab, we will run virtual machines with multiple nics, leveraging Multus and OVS CNI plugins.
+Having these two plugins makes it possible to define multiple networks in our Kubernetes cluster. Once the *Network Attachement Definitions* (NADs) are present it's only a matter of defining the VM's NICs and link them to each network as needed.
 
-Having these two plugins makes possible to define multiple networks in our Kubernetes cluster, once the NADs (NetworkAttachementDefinition) are present, it's only a matter of defining the VM's NICs on each network it needs.
+> **WARNING: this lab contains deliberate errors!**. Simple copy&paste will
+> *not* work on this lab. This was done to help you understand what you are
+> doing :), enjoy!
 
-**WARN: We've introduced errors in the laboratory to avoid copy/paste without understanding :), enjoy!!**
-
-### Open vSwitch Configuration
+## Open vSwitch Configuration
 
 Since we are using the OVS CNI plugin, we need to configure dedicated Open vSwitch bridges.
 
-We already have a provisioned a bridge named `br1`, as a reference, if we were to provision it manually, we'd just need execute the following command:
+The lab instances already have an OVS bridge named `br1`.
+
+> As a reference, if we were to provision the bridge manually we'd just need execute the following command:
+>
+> ```console
+> $ sudo ovs-vsctl add-br br1
+> ```
+
+To see the already provisioned bridge execute this command:
 
 ```console
-$ ovs-vsctl add-br br1
-```
+$ sudo ovs-vsctl show
 
-To see the data already provisioned execute this command:
-
-```console
-$ ovs-vsctl show
-
-57b1fe30-b115-45cd-85db-7a205fe60912
+48244a9a-507f-457e-ae78-574aa318d98e
     Bridge "br1"
+        Port "eth1"
+            Interface "eth1"
+                type: internal
         Port "br1"
             Interface "br1"
                 type: internal
     ovs_version: "2.0.0"
 ```
 
-In a production environment, we would do the same on each of the cluster nodes and attach a dedicated physical interface, to the bridge.
+In a production environment, we would do the same on each of the cluster nodes and attach a dedicated physical interface to the bridge.
 
-### Create a Network Attachment Definition
+## Create a Network Attachment Definition
 
-A *NetworkAttachmentDefinition*, within its *config* section, configures the CNI plugin. Among other settings there is the bridge itself, which is used by OVS attaching the Pod's virtual interface to it.
+A *NetworkAttachmentDefinition* (a Custom Resource), within its *config* section, configures the CNI plugin. Among other settings there is the bridge itself, which is used by OVS to attach the Pod's virtual interface to it.
 
 ```yaml
 apiVersion: "k8s.cni.cncf.io/v1"
@@ -51,7 +56,7 @@ spec:
     }'
 ```
 
-Let's now create a new NAD, which will use the bridge *br1*:
+Let's now create a new NAD which will use the bridge *br1*:
 
 
 ```console
@@ -60,9 +65,11 @@ $ kubectl config set-context $(kubectl config current-context) --namespace=defau
 $ kubectl create -f multus_nad_br1.yml
 ```
 
-### Create Virtual Machine
+## Create Virtual Machine
 
-So far we've seen *VirtualMachine* resource definitions using just one network, the cluster's default or PodNetwork. Now for using the newly created network, the *VirtualMachine* object needs to reference it and include a new interface that will use it. Similar to what we would do to attach volumes to a regular Pod.
+So far we've seen *VirtualMachine* resource definitions that connect to one single network, the cluster's default or PodNetwork.
+
+To use the newly created network, the *VirtualMachine* object needs to reference it and include a new interface that will use it, similar to what we would do to attach volumes to a regular Pod:
 
 ```yaml
 ...
@@ -81,14 +88,14 @@ So far we've seen *VirtualMachine* resource definitions using just one network, 
         name: ovs-net-1
 ```
 
-Create two vms named **fedora-multus-1** and **fedora-multus-2**, both with a secondary nic pointing to the previously created bridge/network attachment definition:
+Create two VMs named **fedora-multus-1** and **fedora-multus-2**, both with a secondary NIC pointing to the previously created bridge/network attachment definition:
 
 ```console
 $ kubectl create -f vm_multus1.yml
 $ kubectl create -f vm_multus2.yml
 ```
 
-### Verifying the network connectivity
+## Verifying the network connectivity
 
 Locate the IPs of the two VMs, open two connections to your GCP instance and connect to both VM serial consoles:
 

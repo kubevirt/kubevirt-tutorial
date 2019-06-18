@@ -60,8 +60,8 @@ Here we can see that the PVC has an owner, the *vm2-dv* *DataVolume*, and that t
 
 ## Recap
 
-* We've deployed the KubeVirt web UI
-* We've connected to the UI, exposed on the node's IP at port 30000
+* We deployed the KubeVirt web UI
+* We connected to the web UI, which is exposed on the node's IP at port 30000
   * Checked the VMs in the cluster
   * Checked available actions and attributes
 

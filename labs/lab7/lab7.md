@@ -1,13 +1,8 @@
 # Lab 7: Using the Kubevirt UI to interact with VMs
 
-> **NOTE:** at the time of this writing, the WebUI is fully functional on
-> OpenShift but not yet in Kubernetes (we are working on it! :D). In Kubernetes
-> if you try to spin up a VM using the *wizard* the namespaces will not be
-> shown; don't worry about that, just continue with the labs avoiding that part.
+In this section we will deploy and interact with VMs using KubeVirt's web-based user interface.
 
-In this section, we will install and interact with VMs using KubeVirt's dedicated UI.
-
-You can then access it at `http://kubevirtlab-<number>.<domain>:30000` and use it to:
+You can then access the web UI at `http://kubevirtlab-<number>.<domain>:30000` and use it to:
 
 * stop/start/delete/... VMs
 * Create new ones
@@ -18,6 +13,13 @@ You can then access it at `http://kubevirtlab-<number>.<domain>:30000` and use i
 ## Using the KubeVirt web UI 
 
 ### Create a Virtual Machine
+
+> **NOTE:** at the time of this writing, the WebUI is fully functional on
+> OpenShift but not yet in Kubernetes (we are working on it! :D). In Kubernetes
+> if you try to spin up a VM using the *wizard* the namespaces will not be
+> shown, preventing this workflow to complete. For now, on a Kubernetes
+> environment, just skip this section about the create VM wizard and look at the
+> other UI features.
 
 Click the `Create Virtual Machine` drop-down and select `Create with Wizard`
 
@@ -49,21 +51,30 @@ Now click the virtual machine link `vm3`
 
 ### Virtual Machine Overview and Console
 
+While looking at a VM's detailed page:
+
 ![overview](images/overview.png)
 
-Click *Consoles* to view graphical (VNC) console.
+click the *Consoles* tab to view its graphical (VNC) console:
 
 ![overview](images/vm_console.png)
 
 ### Associated Pods
 
-Clicking `Pods` will show the currently running pods for this namespace.
+Virtual Machines run inside pods. Navigate to *Workloads -> Pods* to see a list of the pods that are currently running in the selected namespace:
 
 ![pods](images/pods.png)
 
-Then clicking the `virt-launcher-vm3-RANDOM` link will provide an overview.
+Then clicking on a specific pod's name will provide an overview of the pod:
 
 ![pods](images/pod_overview.png)
+
+#### Exercise
+
+- The pod details page has a *Terminal* tab. Is there any relationwhip between that tab and the *Consoles* tab in the VM details page?
+
+- Is there more than one container in the pod? What does each container do?
+
 
 This concludes this section of the lab.
 
