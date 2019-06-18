@@ -1,6 +1,4 @@
-# Lab 2
-
-## Review Kubernetes environment
+# Lab 2: Review the Kubernetes environment
 
 For the sake of time, some of the required setup has already been taken care of. The following steps wer performed as part of the instance preparation:
 
@@ -16,7 +14,7 @@ For the sake of time, some of the required setup has already been taken care of.
   * [Grafana](https://grafana.com)
 * Resource manifests to interact with KubeVirt components have been copied over to your *$HOME/student-materials*
 
-### Verify the cluster
+## Verify the cluster
 
 Let's ask the cluster for its status:
 
@@ -27,7 +25,7 @@ Client Version: version.Info{Major:"1", Minor:"14", GitVersion:"v1.14.3", GitCom
 Server Version: version.Info{Major:"1", Minor:"14", GitVersion:"v1.14.3", GitCommit:"5e53fd6bc17c0dec8434817e69b04a25d8ae0ff0", GitTreeState:"clean", BuildDate:"2019-06-06T01:36:19Z", GoVersion:"go1.12.5", Compiler:"gc", Platform:"linux/amd64"}
 ```
 
-Now let's check that the physical volumes are ready and available:
+Now let's check that persistent volumes are ready and available:
 
 ```console
 $ kubectl get pv

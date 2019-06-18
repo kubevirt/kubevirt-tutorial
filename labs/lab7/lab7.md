@@ -1,8 +1,9 @@
-# Lab 7
+# Lab 7: Using the Kubevirt UI to interact with VMs
 
-**DISCLAIMER:** The WebUI is fully functional on Openshift, but not yet in Kubernetes (we are working on it! :D). If you try to spin up a VM using the wizard, the namespaces will not be shown, don't worry about that, just continue with the labs avoiding this part.
-
-## Using the Kubevirt UI to interact with VMs
+> **NOTE:** at the time of this writing, the WebUI is fully functional on
+> OpenShift but not yet in Kubernetes (we are working on it! :D). In Kubernetes
+> if you try to spin up a VM using the *wizard* the namespaces will not be
+> shown; don't worry about that, just continue with the labs avoiding that part.
 
 In this section, we will install and interact with VMs using KubeVirt's dedicated UI.
 
@@ -14,9 +15,9 @@ You can then access it at `http://kubevirtlab-<number>.<domain>:30000` and use i
 
 ![kubevirt-ui](images/ui.png)
 
-### Using the KubeVirt web UI 
+## Using the KubeVirt web UI 
 
-#### Create a Virtual Machine
+### Create a Virtual Machine
 
 Click the `Create Virtual Machine` drop-down and select `Create with Wizard`
 
@@ -38,7 +39,7 @@ In the `Basic Settings` configure with the following
 
 Click `Next >` until result and finish.
 
-#### Controlling the State of the VM
+### Controlling the State of the VM
 
 To start the virtual machine click the cog and select `Start Virtual Machine`.
 
@@ -46,7 +47,7 @@ To start the virtual machine click the cog and select `Start Virtual Machine`.
 
 Now click the virtual machine link `vm3`
 
-#### Virtual Machine Overview and Console
+### Virtual Machine Overview and Console
 
 ![overview](images/overview.png)
 
@@ -54,7 +55,7 @@ Click *Consoles* to view graphical (VNC) console.
 
 ![overview](images/vm_console.png)
 
-#### Associated Pods
+### Associated Pods
 
 Clicking `Pods` will show the currently running pods for this namespace.
 

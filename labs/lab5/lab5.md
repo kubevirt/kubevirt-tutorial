@@ -1,21 +1,19 @@
-# Lab 5
+# Lab 5: Deploy a VM using a DataVolume
 
-## Deploy a VM using a DataVolume
-
-Explore the VM manifests, notice it uses a [DataVolume](https://kubevirt.io/user-guide/docs/latest/creating-virtual-machines/disks-and-volumes.html#datavolume)
+There is another VM definition that uses a [DataVolume](https://kubevirt.io/user-guide/docs/latest/creating-virtual-machines/disks-and-volumes.html#datavolume) instead of a ContainerDisk:
 
 ```console
 $ view ~/student-materials/vm_datavolume.yml
 ```
 
-Now let's start this VM and we'll observe the image importing process before the VMI is created:
+Now let's create this VM and we'll observe the image importing process before the VMI is created. **Note:** the image import is relatively fast and the importer pod terminates quickly, so be ready to watch the logs shortly after the VM creation or you will miss the opportunity:
 
 ```console
 $ cd ~/student-materials/
 $ kubectl create -f vm_datavolume.yaml
 virtualmachine.kubevirt.io/vm2 created
 
-$kubectl get pods | grep importer
+$ kubectl get pods | grep importer
 importer-vm2-dv-sgch7
 
 $ kubectl logs -f importer-vm2-dv-sgch7
@@ -38,7 +36,7 @@ I0517 14:44:04.317260       1 data-processor.go:230] Expanding image size to: 10
 I0517 14:44:04.373807       1 data-processor.go:167] New phase: Complete
 ```
 
-Again, we can connect to the VM's serial console and check if we've got that extra space that CDI made for us:
+Once the VM has started we can again connect to its serial console and check if we have the extra space that the Containerized Data Importer (CDI) made for us:
 
 ```console
 $ virtctl console vm2
@@ -46,7 +44,7 @@ Successfully connected to vm2 console. The escape sequence is ^]
 
 login as 'cirros' user. default password: 'gocubsgo'. use 'sudo' for root.
 cirros login: cirros
-Password:
+Password: gocubsgo
 $ df -h /
 Filesystem                Size      Used Available Use% Mounted on
 /dev/vda1                 4.8G     24.1M      4.6G   1% /
@@ -91,14 +89,15 @@ Status:
   Phase:     Succeeded
   Progress:  100.0%
 Events:
-  Type     Reason            Age                  From                   Message
-  ----     ------            ----                 ----                   -------
-  Normal   ImportScheduled   19m                  datavolume-controller  Import into vm2-dv scheduled
-  Normal   ImportInProgress  18m (x2 over 19m)    datavolume-controller  Import into vm2-dv in progress
-  Normal   Synced            8m3s (x24 over 19m)  datavolume-controller  DataVolume synced successfully
+  Type    Reason            Age                     From                   Message
+  ----    ------            ----                    ----                   -------
+  Normal  ImportScheduled   3m55s                   datavolume-controller  Import into vm2-dv scheduled
+  Normal  ImportInProgress  3m38s                   datavolume-controller  Import into vm2-dv in progress
+  Normal  Synced            3m13s (x16 over 3m55s)  datavolume-controller  DataVolume synced successfully
+  Normal  ImportSucceeded   3m13s                   datavolume-controller  Successfully imported into PVC vm2-dv
 ```
 
-The associated PVC has the same name, *vm2-dv*, let's describe it as well, it contains some interesting data:
+The associated Persistent Volume Claim (PVC) has the same name as the DataVolume, *vm2-dv*. Let's describe it as well, it contains some interesting data:
 
 ```console
 $ kubectl describe pvc vm2-dv
@@ -127,16 +126,16 @@ Events:
 Mounted By:  virt-launcher-vm2-92pm2
 ```
 
-Pay special attention to the *Annotations* section where CDI introduces interesting data like the endpoint where the image was imported from, the phase and pod name.
+Pay special attention to the *Annotations* section where CDI adds interesting metadata like the endpoint where the image was imported from, the phase and pod name.
 
 ## Recap
 
-* We've created a second VM, *vm2*, this one included a *DataVolume* template which instructs KubeVirt and CDI to:
-  * Create a PVC which uses a PV already created on the cluster
-  * The CDI importer pod, takes the source, in this case a URL, and imports the image directly to the PV attached to the PVC
-  * Once that process finishes, a *virt-launcher* pod starts using the same PVC, with the imported image, as boot disk
-* A detail that might go unnoticed, CDI is able to detect the requested storage size, the available space (accounting for file system overhead) and resize the image accordingly
-* We've connected to *vm2's* serial console and verified the root partition was expanded to the disk size, this is usually done through configuration services like *cloud-init*
+* We created a second VM, *vm2*. This one included a *DataVolume* template which instructs KubeVirt and CDI to:
+  * Create a PVC which uses a PV already created on the cluster.
+  * The CDI importer pod to take the source, in this case a URL, and import the image directly to the PV attached to the PVC.
+  * Once that process finishes, a *virt-launcher* pod starts using the same PVC, with the imported image, as its boot disk.
+* A detail that might go unnoticed: CDI is able to detect the requested storage size, the available space (accounting for file system overhead) and resize the image accordingly.
+* We connected to *vm2's* serial console and verified that the root partition was expanded to fill the underlying disk size. This is usually done through configuration services like *cloud-init*.
 
 This concludes this section of the lab, spend some time checking out all the objects and how they relate to each other, then head off to the next lab!
 

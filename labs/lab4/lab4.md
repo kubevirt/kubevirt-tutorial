@@ -1,8 +1,6 @@
-# Lab 4
+# Lab 4: Deploy your first Virtual Machine
 
-## Deploy our first Virtual Machine
-
-To start with, we'll be deploying a VM that uses a [ContainerDisk](https://kubevirt.io/user-guide/docs/latest/creating-virtual-machines/disks-and-volumes.html#containerdisk). It won't use any of the available PVs, ContainerDisk based VMs are ephemeral.
+We will deploy a VM that uses a [ContainerDisk](https://kubevirt.io/user-guide/docs/latest/creating-virtual-machines/disks-and-volumes.html#containerdisk). Therefore, the VM will not use any of the available Persistent Volumes (PVs), as ContainerDisk based storage is ephemeral.
 
 ```console
 $ cd ~/student-materials
@@ -11,7 +9,7 @@ $ kubectl create -f vm_containerdisk.yml
 virtualmachine.kubevirt.io/vm1 created
 ```
 
-Check for the VM we just created:
+Check the VM that we just created:
 
 ```console
 $ kubectl get vm vm1
@@ -19,7 +17,7 @@ NAME   AGE   RUNNING   VOLUME
 vm1    24s   false
 ```
 
-Notice it's not running, in the YAML definition we can find the following block:
+Notice it's not running. This is because in its YAML definition we can find the following:
 
 ```yaml
 ...
@@ -28,7 +26,9 @@ spec:
 ...
 ```
 
-The *VirtualMachine* object is the definition of our VM, but it's not instantiated, let's do so with *virtctl* as follows:
+## Start the Virtual Machine
+
+The *VirtualMachine* object is the definition of our VM, but a running VM is represented by a *VirtualMachineInstance*. Our VM is not instantiated yet, let's do so using *virtctl* as follows:
 
 ```console
 $ virtctl start vm1
@@ -55,7 +55,7 @@ vm1    19m   true
 
 $ kubectl get vmi vm1
 NAME   AGE     PHASE     IP            NODENAME
-vm1    3m49s   Running   10.244.0.22   sjr-kubemaster.deshome.net
+vm1    3m49s   Running   10.244.0.22   kubevirtlab-2
 ```
 
 Using *virtctl* we can connect to the VMI's console as follows:
@@ -70,13 +70,13 @@ Kernel 4.18.16-300.fc29.x86_64 on an x86_64 (ttyS0)
 vm1 login: fedora
 Password: fedora
 
-[fedora@vm1 ~]$ ping -c 1 google.com
-PING google.com (172.217.16.238) 56(84) bytes of data.
-64 bytes from mad08s04-in-f14.1e100.net (172.217.16.238): icmp_seq=1 ttl=54 time=22.1 ms
+[fedora@vm1 ~]$ ping -c 1 kubevirt.io
+PING kubevirt.io (185.199.111.153) 56(84) bytes of data.
+64 bytes from 185.199.111.153 (185.199.111.153): icmp_seq=1 ttl=54 time=5.30 ms
 
---- google.com ping statistics ---
+--- kubevirt.io ping statistics ---
 1 packets transmitted, 1 received, 0% packet loss, time 0ms
-rtt min/avg/max/mdev = 22.098/22.098/22.098/0.000 ms
+rtt min/avg/max/mdev = 5.303/5.303/5.303/0.000 ms
 [fedora@vm1 ~]$ exit
 
 Fedora 29 (Cloud Edition)
@@ -84,17 +84,23 @@ Kernel 4.18.16-300.fc29.x86_64 on an x86_64 (ttyS0)
 
 vm1 login:
 ```
-There is also a graphical console for connecting to the VMs, using the *vnc* subcommand instead of *console*. Note that it requires you to have *remote-viewer* installed and it's out of the scope of this lab.
-
 
 **NOTE**: To exit the console press *Ctrl+]*
 
+There is also a graphical console to connect to the VMs, using *virtctl vnc* instead of *virtctl console*. This requires you to have a VNC client like *remote-viewer* installed on your system. In this lab we are executing *virtctl* remotely on the lab instance, and therefore we can't use this option. Instead, we will access a VM's graphical console in a later lab through the web UI.
+
+### Exercise
+
+Can you operate on the VM and VMI objects using standard *kubectl* commands without relying on *virtctl*?
+
+In particular, can you start or stop a VM without *virtctl*?
+
 ## Recap
 
-* We've defined a *VirtualMachine* object on the cluster which didn't actually instantiate the *vm1*
-* We've started the *vm1* using *virtctl*, which instantiated it creating the *VirtualMachineInstance* object
+* We defined a *VirtualMachine* object on the cluster. This didn't actually instantiate the *vm1* VM.
+* We started the *vm1* using *virtctl*, which instantiated it creating the *VirtualMachineInstance* object
   * *kubectl patch* could have also been used to start *vm1*
-* Finally, we've connected to the *vm1's* serial console using *virtctl*
+* Finally, we connected to the *vm1's* serial console using *virtctl*
 
 
 This concludes this section of the lab, before heading off to the next lab, spend some time describing and exploring the objects this lab created on the cluster.

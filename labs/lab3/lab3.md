@@ -1,6 +1,4 @@
-# Lab 3
-
-## Deploy KubeVirt/CDI/UI
+# Lab 3: Deploy KubeVirt/CDI/UI
 
 In this section we're going to deploy the following three components:
 
@@ -68,7 +66,13 @@ $ virtctl version
 Client Version: version.Info{GitVersion:"v0.17.0", GitCommit:"c0f960702dce718419a767f3913669f539229ff0", GitTreeState:"clean", BuildDate:"2019-05-05T08:09:14Z", GoVersion:"go1.11.5", Compiler:"gc", Platform:"linux/amd64"}
 Server Version: version.Info{GitVersion:"v0.17.0", GitCommit:"a067696ed6c25b0eab9dfcd01bbdc045f500f8ca", GitTreeState:"clean", BuildDate:"2019-05-06T14:58:11Z", GoVersion:"go1.11.5", Compiler:"gc", Platform:"linux/amd64"}
 ```
+### Exercise
 
+Check that a few new Custom Resource Definitions (CRDs) are now available in the cluster.
+
+What are these? What is their purpose? How do they look like?
+
+Do you see any instance of any of these Custom Resources?
 
 ## Install the CDI operator
 

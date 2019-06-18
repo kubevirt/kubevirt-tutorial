@@ -1,6 +1,4 @@
-# Lab 0
-
-## Lab Overview
+# Lab 0: Overview
 
 This lab is targeted towards people who don’t have any KubeVirt experience.
 

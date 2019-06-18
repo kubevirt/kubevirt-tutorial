@@ -1,10 +1,8 @@
-# Lab 1
-
-## Student Connection Process
+# Lab 1: Student Connection Process
 
 In this section, we'll review how to connect to your instance.
 
-### Find your GCP Instance
+## Find your GCP Instance
 
 This lab is designed to accommodate several students. Each student will be provided with a cloud instance running on GCP with nested virtualization, 4 vcpus and 16GiB of RAM. No GCP knowledge is required for this lab.
 
@@ -18,7 +16,7 @@ $ chmod 600 kubevirt-tutorial
 $ ssh-add kubevirt-tutorial
 ```
 
-### Connecting to your Instance
+## Connecting to your Instance
 
 This lab should be performed on **YOUR ASSIGNED INSTANCE** only, as the *kubevirt* user, unless otherwise instructed.
 
