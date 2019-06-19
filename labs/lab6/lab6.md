@@ -1,171 +1,71 @@
-## Use KubeVirt
+# Lab 6: Install and explore the KubeVirt Web UI
 
-### Create a Virtual Machine
+## Install the KubeVirt Web UI
 
-Explore The VM Manifest. Note it uses a [container disk](https://kubevirt.io/user-guide/docs/latest/creating-virtual-machines/disks-and-volumes.html#containerdisk) and as such doesn't persist data. Such container disks currently exist for alpine, cirros and fedora.
+In this lab we are going to deploy KubeVirt's web UI, which eases the management of VMs.
 
-```
-cat ~/vm_containerdisk.yml
-```
-
-Launch this vm:
-
-```
-oc project myproject
-oc create -f ~/vm_containerdisk.yml
+```console
+$ cd ~/kubevirt/kubevirt-ui-custom-manifests
+$ kubectl config set-context $(kubectl config current-context) --namespace=kubevirt
+$ kubectl create -f kubevirt_ui.yml
+$ kubectl wait pod -l app=kubevirt-web-ui --for condition=Ready --timeout=180s
+pod/kubevirt-web-ui-qmpwl condition met
 ```
 
-Output should be similar to the following
+Now, check the three resources deployed for the Web UI:
 
-```
-  virtualmachine.kubevirt.io "vm1" created
-```
+```console
+$ kubectl get all -l app=kubevirt-web-ui
+NAME                        READY   STATUS    RESTARTS   AGE
+pod/kubevirt-web-ui-qmpwl   1/1     Running   0          78m
 
-### Manage Virtual Machines
+NAME                                    DESIRED   CURRENT   READY   AGE
+replicationcontroller/kubevirt-web-ui   1         1         1       78m
 
-Get list of existing Virtual Machines:
-
-Note in the `running` column that our vm has this field set to False and as such isn't running yet.
-
-```
-oc get vm
-oc get vm vm1 -o yaml
+NAME                      TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+service/kubevirt-web-ui   NodePort   10.96.35.132   <none>        9000:30000/TCP   78m
 ```
 
-Sample output for `oc get vm`
+**NOTE**: take a look at the kubevirt-web-ui service, the UI should be available on your node's assigned hostname at port 30000.
 
-```
-# oc get vm
-NAME      AGE       RUNNING   VOLUME
-vm1       9s        false   
-```
+## Explore the KubeVirt UI
 
-Start the Virtual Machine:
+Using your browser, head to *http://<your_gcp_instance_hostname>:30000* and you'll be greeted by an status page showing the health of the cluster and a stream of events.
 
-```
-virtctl start vm1
-```
+![Cluster status page](images/kwebui-01.png)
 
-Wait for about a  minute for the vm to fully launch.
+On the left side navigation bar, click on *Workloads* and then *VirtualMachines*, you'll be presented with a view of the defined VMs in the cluster, click on the *vm1* to open up its details page.
 
-Now that the Virtual Machine has been started, check the status. Note how the value in the `running` column has been changed to *True*
+![VM1 details](images/kwebui-02.png)
 
-```
-oc get vm
-oc get vm -o yaml vm1
-```
+Notice all the available tabs, *YAML*, *Consoles*, ... click on *Consoles*
 
-Sample output for `oc get vm`
+![VM1 VNC Console](images/kwebui-03.png)
 
-```
-# oc get vm
-NAME      AGE       RUNNING   VOLUME
-vm1       2m        true    
-```
+Click now on the *actions* button, it will present you with few options:
 
-Confirm the vm is ready by checking its underlying pod:
+![VM actions](images/kwebui-04.png)
 
-In both commands, the indicated ip can be used to connect to the vm
+You can interact with the VM from the UI as well. The *Migrate Virtual Machine* action is not really available for this lab because we are running on a single node cluster (so we can't migrate a VM from one node to another), but clicking it on a multi-node cluster would trigger a live migration of the VM.
 
-```
-oc get pod -o wide
-oc get vmi
-```
+Now let's get back clicking on *Workloads*, *VirtualMachines* and review the details for *vm2*. Take a closer look to its disks by clicking on the *Disks* tab:
 
-Sample output:
+![VM2 storage details](images/kwebui-05.png)
 
-```
-# oc get pod -o wide
-NAME                      READY     STATUS      RESTARTS   AGE       IP            NODE         NOMINATED NODE
-ara-1-build               0/1       Completed   0          16m       10.124.0.27   student001   <none>
-ara-1-xpxf2               1/1       Running     0          14m       10.124.0.29   student001   <none>
-virt-launcher-vm1-2b2v7   2/2       Running     0          2m        10.124.0.35   student001   <none>
-# oc get vmi
-NAME      AGE       PHASE     IP            NODENAME
-vm1       2m        Running   10.124.0.35   student003
+To see even more details, go to the *Storage* section and click on *Persistent Volume Claims*. There you will see a summary of *PVCs* on the selected namespace, and *vm2-dv* should be listed there. Click on it to see its details:
 
-```
+![vm2-dv details](images/kwebui-06.png)
 
-### Accessing VMs (serial console & spice)
+Here we can see that the PVC has an owner, the *vm2-dv* *DataVolume*, and that the PVC is attached to a Persistent Volume attached to this claim (in this case the *local-pv-2049c47d* *PV*).
 
-Connect to the serial console of the VM. Hit return / enter a few times and login with fedora/fedora:
+## Recap
 
-```
-virtctl console vm1
-```
+* We deployed the KubeVirt web UI
+* We connected to the web UI, which is exposed on the node's IP at port 30000
+  * Checked the VMs in the cluster
+  * Checked available actions and attributes
 
-Log in with the following credentials: 
-
-```
-Fedora 29 (Cloud Edition)
-Kernel 4.18.16-300.fc29.x86_64 on an x86_64 (ttyS0)
-
-vm1 login: fedora
-Password: fedora
-
-```
-
-You can disconnect from the virtual machine console by typing: `ctrl+]` or `ctrl+5` but don't do it yet
-
-### Communication Between Application and Virtual Machine
-
-While in the console of the `vm1` let's run `curl` to confirm our virtual machine
-can access the `Service` of the application we deployed earlier
-
-```
-curl ara.myproject.svc.cluster.local:8080
-```
-
-The expected output from the curl command should be:
-
-```
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<title>Redirecting...</title>
-<h1>Redirecting...</h1>
-<p>You should be redirected automatically to target URL: <a href="/about/">/about/</a>.  If not click the link.
-```
-
-Now disconnect from the console
-
-### Connect to the graphical display.
-
-Note: Requires `remote-viewer` from the `virt-viewer` package. This is out of scope for this lab. 
-
-```
-virtctl vnc vm1
-```
-
-### Connect using service 
-
-We can "expose" any port of the vm so that we can access it from the outside.
-
-Expose the ssh port of your VM:
-
-```
-oc create -f ~/vm1_svc.yml
-```
-
-Access the VM using the exposed port:
-
-```
-ssh -p 30000 fedora@student<number>.cnvlab.gce.sysdeseng.com
-```
-
-### Controlling the State of the VM
-
-Shut down the VM:
-
-```
-virtctl stop vm1
-```
-
-Delete the VM:
-
-```
-oc delete vms vm1
-```
-
-This concludes this section of the lab.
+This concludes this lab! Take your time exploring the UI and when your ready head to the next one!
 
 [Next Lab](../lab7/lab7.md)\
 [Previous Lab](../lab5/lab5.md)\

@@ -1,0 +1,3 @@
+---
+libvirt_devices: ['vdb', 'vdc', 'vdd', 'vde', 'vdf']
+gce_devices: ['sdb', 'sdc', 'sdd', 'sde']

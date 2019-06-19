@@ -1,0 +1,23 @@
+---
+- name: Apply Multus manifests
+  k8s:
+    state: present
+    resource_definition: "{{ lookup('file', 'files/multus-custom-manifests/{{ item }}.yml') }}"
+  loop:
+    - multus-ns
+    - nad-crd
+    - multus-clusterrole
+    - multus-clusterrolebinding
+    - multus-sa
+    - multus-cni-configmap
+    - multus-ds
+    - cni-plugins
+    - l2-bridge
+  loop_control:
+    pause: 10
+
+- name: Pausing for 2 minute
+  wait_for: timeout=120
+  delegate_to: localhost
+  vars:
+    ansible_become: False

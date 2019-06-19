@@ -1,0 +1,46 @@
+---
+- name: Get JSON information for Helm latest version
+  uri:
+    url: https://api.github.com/repos/helm/helm/releases/latest
+    return_contents: yes
+  register: json_response
+
+- name: Fetch Helm
+  get_url:
+    url: https://storage.googleapis.com/kubernetes-helm/helm-{{ helm_version }}-linux-amd64.tar.gz
+    dest: /tmp/helm.tar.gz
+  retries: 5
+  delay: 5
+  vars:
+    helm_version: "{{ json_response.json.tag_name }}"
+
+- name: Unarchive Helm
+  unarchive:
+    src: /tmp/helm.tar.gz
+    dest: /tmp
+    remote_src: yes
+    creates: /tmp/linux-amd64/helm
+
+- name: Copy Helm within PATH
+  copy:
+    src: /tmp/linux-amd64/helm
+    dest: /home/{{ ansible_user }}/.local/bin/helm
+    owner: "{{ ansible_user }}"
+    mode: 0755
+    remote_src: yes
+
+- name: Create SA and RBAC for tiller
+  k8s:
+    state: present
+    resource_definition: "{{ lookup('file', 'files/tiller-rbac.yml') }}"
+
+- name: Initialize Helm
+  command: /home/{{ ansible_user }}/.local/bin/helm init --service-account tiller --history-max 50 --net-host --replicas 1 --wait
+  args:
+    creates: /home/{{ ansible_user }}/.helm
+
+- name: Pausing for 1 minute
+  wait_for: timeout=60
+  delegate_to: localhost
+  vars:
+    ansible_become: False

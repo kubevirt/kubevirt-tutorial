@@ -1,1 +1,0 @@
-sh /root/kubernetes.sh

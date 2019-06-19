@@ -1,0 +1,34 @@
+---
+- name: Install virtctl
+  get_url:
+    url: https://github.com/kubevirt/kubevirt/releases/download/{{ kubevirt_version }}/virtctl-{{ kubevirt_version }}-linux-amd64
+    dest: /home/{{ ansible_user }}/.local/bin/virtctl
+    mode: 0755
+    owner: "{{ ansible_user }}"
+    validate_certs: false
+  retries: 5
+  delay: 5
+
+- name: Create directory for KubeVirt manifests
+  file:
+    state: directory
+    path: /home/{{ ansible_user }}/kubevirt
+    mode: 0755
+    owner: "{{ ansible_user }}"
+
+- name: Copy KubeVirt manifests
+  copy:
+    src: files/{{ item }}
+    dest: /home/{{ ansible_user }}/kubevirt/
+    mode: 0755
+    owner: "{{ ansible_user }}"
+  loop:
+    - kubevirt-ui-custom-manifests
+    - kubevirt-operator-manifests
+    - cdi-operator-manifests
+
+- name: Copy student materials
+  copy:
+    src: files/student-materials
+    dest: /home/{{ ansible_user }}/
+    owner: "{{ ansible_user }}"

@@ -1,129 +1,80 @@
-## Experiment with CDI
+# Lab 7: Using the Kubevirt UI to interact with VMs
 
-[CDI](https://github.com/kubevirt/containerized-data-importer) is an utility designed to import Virtual Machine images for use with Kubevirt. 
+In this section we will deploy and interact with VMs using KubeVirt's web-based user interface.
 
-At a high level, a persistent volume claim (PVC) is created. A custom controller watches for importer specific claims, and when discovered, starts an import process to create a raw image named *disk.img* with the desired content into the associated PVC.
+You can then access the web UI at `http://kubevirtlab-<number>.<domain>:30000` and use it to:
 
-#### Install CDI
+* stop/start/delete/... VMs
+* Create new ones
+* Access VM consoles through your browser
 
-To install Cdi, we first deploy The operator
+![kubevirt-ui](images/ui.png)
 
-```
-oc create -f ~/cdi-operator.yaml
-```
+## Using the KubeVirt web UI 
 
-Sample Output:
+### Create a Virtual Machine
 
-```
-namespace/cdi created
-serviceaccount/cdi-operator created
-clusterrolebinding.rbac.authorization.k8s.io/cdi-operator created
-configmap/cdi-controler-leader-election created
-deployment.apps/cdi-operator created
-customresourcedefinition.apiextensions.k8s.io/cdis.cdi.kubevirt.io created
-```
+> **NOTE:** at the time of this writing, the WebUI is fully functional on
+> OpenShift but not yet in Kubernetes (we are working on it! :D). In Kubernetes
+> if you try to spin up a VM using the *wizard* the namespaces will not be
+> shown, preventing this workflow to complete. For now, on a Kubernetes
+> environment, just skip this section about the create VM wizard and look at the
+> other UI features.
 
-Now that operator got deployed , we install Cdi
+Click the `Create Virtual Machine` drop-down and select `Create with Wizard`
 
-```
-oc create -f ~/cdi-operator-cr.yaml
-```
+![create virtual machine wizard](images/new_vm_wizard.png)
 
-Sample Output:
+In the `Basic Settings` configure with the following
 
-```
-cdi.cdi.kubevirt.io/cdi created
-```
+* Name: `vm3`
+* Namespace: `myproject`
+* Provision Source: `Container`
+* Container Image: `docker.io/kubevirt/cirros-container-disk-demo:latest`
+* Operating System: `fedora29`
+* Flavor: `Custom`
+* Memory: `1`
+* CPUs: `1`
+* Workload Profile: `generic`
 
-Review the objects that were added:
+![create virtual machine wizard](images/basic_settings.png)
 
-```
-oc get pods -n cdi
-```
+Click `Next >` until result and finish.
 
-Sample Output:
+### Controlling the State of the VM
 
-```
-NAME                               READY     STATUS    RESTARTS   AGE
-cdi-apiserver-7cb6cbc489-kmj98     1/1       Running   0          38s
-cdi-deployment-798748c78-vhrx5     1/1       Running   0          38s
-cdi-operator-7c6c88b68f-84h54      1/1       Running   0          1m
-cdi-uploadproxy-7cc65c589f-srnmw   1/1       Running   0          38s
-```
+To start the virtual machine click the cog and select `Start Virtual Machine`.
 
-#### Use CDI
+![start vm](images/start_vm.png)
 
-As an example, we will import a Cirros Cloud Image as a PVC and launch a Virtual Machine making use of it.
+Now click the virtual machine link `vm3`
 
-```
-oc project myproject
-oc create -f ~/pvc_cirros.yml
-```
+### Virtual Machine Overview and Console
 
-This will create the PVC with a proper annotation so that CDI controller detects it and launches an importer pod to gather the image specified in the *cdi.kubevirt.io/storage.import.endpoint* annotation.
+While looking at a VM's detailed page:
 
-```
-oc get pvc cirros -o yaml
-oc get pod
-IMPORTER_POD=$(oc get pod -l app=containerized-data-importer -o=custom-columns=NAME:.metadata.name --no-headers=true)
-oc logs -f $IMPORTER_POD
-```
+![overview](images/overview.png)
 
-This is a sample output of the importer pod logs:
+click the *Consoles* tab to view its graphical (VNC) console:
 
-```
-# oc logs -f $IMPORTER_POD
-I0118 10:40:32.938365       1 importer.go:45] Starting importer
-I0118 10:40:32.939305       1 importer.go:58] begin import process
-I0118 10:40:32.939375       1 importer.go:82] begin import process
-I0118 10:40:32.939417       1 dataStream.go:293] copying "http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img" to "/data/disk.img"...
-I0118 10:40:33.102412       1 prlimit.go:107] ExecWithLimits qemu-img, [info --output=json http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img]
-I0118 10:40:34.975749       1 prlimit.go:107] ExecWithLimits qemu-img, [convert -p -f qcow2 -O raw json: {"file.driver": "http", "file.url": "http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img", "file.timeout": 3600} /data/disk.img]
-I0118 10:40:34.983868       1 qemu.go:189] 0.00
-I0118 10:40:35.525892       1 qemu.go:189] 1.19
-I0118 10:40:35.572275       1 qemu.go:189] 2.38
-....
-....
-I0118 10:40:37.597856       1 qemu.go:189] 98.02
-I0118 10:40:37.598886       1 qemu.go:189] 99.21
-I0118 10:40:37.689849       1 prlimit.go:107] ExecWithLimits qemu-img, [info --output=json /data/disk.img]
-I0118 10:40:37.710083       1 dataStream.go:349] Expanding image size to: 10Gi
-I0118 10:40:37.712784       1 prlimit.go:107] ExecWithLimits qemu-img, [resize -f raw /data/disk.img 10G]
-I0118 10:40:37.729748       1 importer.go:89] import complete
+![overview](images/vm_console.png)
 
-```
+### Associated Pods
 
-As the image downloaded is small, the importer pod might actually have disappeared by the time you check its logs
+Virtual Machines run inside pods. Navigate to *Workloads -> Pods* to see a list of the pods that are currently running in the selected namespace:
 
-Notice that the importer downloaded the publically available Cirros Cloud qcow image. Once the importer pod completes, this PVC is ready for use in kubevirt.
+![pods](images/pods.png)
 
-Let's create a Virtual Machine making use of it. Review the file *vm_pvc.yml*.
+Then clicking on a specific pod's name will provide an overview of the pod:
 
-```
-cat ~/vm_pvc.yml
-```
+![pods](images/pod_overview.png)
 
-Launch this vm
+#### Exercise
 
-```
-oc create -f ~/vm_pvc.yml
-```
+- The pod details page has a *Terminal* tab. Is there any relationwhip between that tab and the *Consoles* tab in the VM details page?
 
-This will create and start a Virtual Machine named vm2. We can use the following command to check our Virtual Machine is running and to gather its IP.
+- Is there more than one container in the pod? What does each container do?
 
-```
-# oc get  vmi
-NAME      AGE       PHASE     IP            NODENAME
-vm2       1m        Running   10.124.0.64   student003
-
-```
-
-
-Finally, use the gathered ip to connect to the Virtual Machine, create some files, stop and restart the Virtual Machine with virtctl and check how data persists. Use password *gocubsgo* if needed
-
-```
-ssh cirros@VM_IP
-```
 
 This concludes this section of the lab.
 

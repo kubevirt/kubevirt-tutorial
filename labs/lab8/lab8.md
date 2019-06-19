@@ -1,83 +1,129 @@
-# Networking with Multus
+# Lab 8: Deploy a multi-homed VM using Multus
 
-In this lab, we will Run Virtual machines with multiple nics by leveraging Multus integration.
+In this lab we will run virtual machines with multiple network interfaces (NICs) by leveraging the Multus and OVS CNI plugins.
 
-Multus CNI enables attaching multiple network interfaces to pods in Kubernetes and has integration with Kubevirt.
+Having these two plugins makes it possible to define multiple networks in our Kubernetes cluster. Once the *Network Attachement Definitions* (NADs) are present it's only a matter of defining the VM's NICs and link them to each network as needed.
+
+> **WARNING: this lab contains deliberate errors!**. Simple copy&paste will
+> *not* work on this lab. This was done to help you understand what you are
+> doing :), enjoy!
 
 ## Open vSwitch Configuration
 
-Since we are using the ovs cni plugin, we need to configure dedicated Open vSwitch bridges.
+Since we are using the OVS CNI plugin, we need to configure dedicated Open vSwitch bridges.
 
-Create a new bridge named `br1`:
+The lab instances already have an OVS bridge named `br1`.
 
+> As a reference, if we were to provision the bridge manually we'd just need execute the following command:
+>
+> ```console
+> $ sudo ovs-vsctl add-br br1
+> ```
+
+To see the already provisioned bridge execute this command:
+
+```console
+$ sudo ovs-vsctl show
+
+48244a9a-507f-457e-ae78-574aa318d98e
+    Bridge "br1"
+        Port "eth1"
+            Interface "eth1"
+                type: internal
+        Port "br1"
+            Interface "br1"
+                type: internal
+    ovs_version: "2.0.0"
 ```
-ovs-vsctl add-br br1
-```
 
-In a production setup, we would do the same on each of the cluster nodes and add a dedicated interface to the bridge.
+In a production environment, we would do the same on each of the cluster nodes and attach a dedicated physical interface to the bridge.
 
 ## Create a Network Attachment Definition
 
-a `NetworkAttachmentDefinition` `config` section is a configuration for the CNI plugin where we indicate which bridges to associate to the pod/vm.
+A *NetworkAttachmentDefinition* (a Custom Resource), within its *config* section, configures the CNI plugin. Among other settings there is the bridge itself, which is used by OVS to attach the Pod's virtual interface to it.
 
-Create a new one, pointing to bridge `br1`:
-
+```yaml
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+  name: ovs-net-1
+  namespace: 'multus'
+spec:
+  config: '{
+      "cniVersion": "0.3.1",
+      "type": "ovs",
+      "bridge": "br1"
+    }'
 ```
-oc create -f ~/nad_br1.yml
+
+Let's now create a new NAD which will use the bridge *br1*:
+
+
+```console
+$ cd ~/student-materials
+$ kubectl config set-context $(kubectl config current-context) --namespace=default
+$ kubectl create -f multus_nad_br1.yml
 ```
-
-## Virtual Machine
-
-For a virtual machine to use multiple interfaces, there are a couple of modifications to the VirtualMachine manifest that are required.
-
-- interfaces
-- networks
 
 ## Create Virtual Machine
 
-Create two vms named fedora-multus-1 and fedora-multus-2, both with a secondary nic pointing to the previously created bridge/network attachment definition:
+So far we've seen *VirtualMachine* resource definitions that connect to one single network, the cluster's default or PodNetwork.
 
-```
-oc create -f ~/vm_multus1.yml 
-oc create -f ~/vm_multus2.yml 
-```
+To use the newly created network, the *VirtualMachine* object needs to reference it and include a new interface that will use it, similar to what we would do to attach volumes to a regular Pod:
 
-In this case, we set running to *True* in the definition of those vms so they will launch with no further action
-
-## Access Virtual Machines
-
-There are multiple ways to access the machine.
-
-You can either use vnc from kubevirt-web-ui, `virtctl` or ssh via the cluster ip address.
-
-Locate the ips of the two vms:
-
-```
-oc get vmi
-```
-
-password is *fedora* as defined in the cloud-init section of the manifest.
-
-```
-ssh fedora@<ip_listed_above>
+```yaml
+...
+          interfaces:
+          - bridge: {}
+            name: default
+          - bridge: {}
+            macAddress: 20:37:cf:e0:ad:f1
+            name: ovs-net-1
+...
+      networks:
+      - name: default
+        pod: {}
+      - multus:
+          networkName: ovs-net-1
+        name: ovs-net-1
 ```
 
-Confirm that `eth1` is available:
+Create two VMs named **fedora-multus-1** and **fedora-multus-2**, both with a secondary NIC pointing to the previously created bridge/network attachment definition:
 
+```console
+$ kubectl create -f vm_multus1.yml
+$ kubectl create -f vm_multus2.yml
 ```
+
+## Verifying the network connectivity
+
+Locate the IPs of the two VMs, open two connections to your GCP instance and connect to both VM serial consoles:
+
+```console
+$ virtctl console fedora-multus-1
+$ virtctl console fedora-multus-2
+```
+
+Confirm the VMs got two network interfaces, *eth0* and *eth1*:
+
+```console
 [root@fedora-multus-1 ~]# ip a
 ...OUTPUT...
-3: eth1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+2: eth0: ...
+3: eth1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state UP group default qlen 1000
     link/ether 20:37:cf:e0:ad:f1 brd ff:ff:ff:ff:ff:ff
 ```
 
-## Confirm connectivity
+Both VMs should have already an IP address on their *eth1*, cloudinit was used to configure it. The *fedora-multus-1* VM should have the IP address *11.0.0.5* and *fedora-multus-2* VM should have *11.0.0.6*, let's try to use ping or SSH to verify the connectivity:
 
-Through cloudinit, we also configured fedora-multus-1 vm to have ip 11.0.0.5 and fedora-multus-1 vm to have ip 11.0.0.6 so try to ping or ssh between them:
-
+```console
+$ ping 11.0.0.(5|6)
 ```
-ping 11.0.0.5
-ping 11.0.0.6
+
+Or
+
+```console
+$ ssh fedora@11.0.0.(5|6)
 ```
 
 [Next Lab](../lab9/lab9.md)\

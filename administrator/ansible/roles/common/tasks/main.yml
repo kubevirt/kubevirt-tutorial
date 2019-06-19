@@ -1,0 +1,4 @@
+---
+- import_tasks: centos.yml
+  when: ansible_distribution == "CentOS"
+- import_tasks: common.yml

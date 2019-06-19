@@ -1,0 +1,69 @@
+---
+- name: Add nf-call-iptables sysctl knob
+  sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: 1
+    state: present
+    reload: yes
+
+- name: Enable and start kubelet
+  systemd:
+    state: started
+    enabled: yes
+    name: kubelet
+
+- name: Create base directory for local storage
+  file:
+    state: directory
+    path: /mnt/storage
+
+- name: Summon Libvirt provider specific activities
+  import_tasks: libvirt.yml
+  when: "'QEMU' in ansible_system_vendor"
+
+- name: Summon GCE provider specific activities
+  import_tasks: gce.yml
+  when: "'Google' in ansible_system_vendor"
+
+- name: Create facts directory
+  file:
+    state: directory
+    path: /etc/ansible/facts.d
+
+- name: Check Nested Virtualization
+  command: 'cat /sys/module/kvm_intel/parameters/nested'
+  register: nested
+
+- block:
+  - name: Disable kvm_intel
+    command: 'modprobe -r kvm_intel'
+
+  - name: Make persistent nested virtualization
+    lineinfile:
+      path: '/etc/modprobe.d/kvm.conf'
+      line: 'options kvm_intel nested=1'
+      create: yes
+
+  - name: Activate Nested Virtualization
+    modprobe:
+      name: kvm_intel
+      params: 'nested=1'
+      state: present
+  when: "'N' in nested.stdout"
+
+- block:
+  - name: Add Laboratory nodes to masters group
+    add_host:
+        name: "{{ item }}"
+        hostname: "{{ item }}"
+        groups: 'masters'
+    with_items:
+        - "{{ groups['lab'] }}"
+  
+  ### Workaround for GCE, always gives an IP on network interfaces
+  - name: Disable the eth1 interface
+    command: ifdown eth1
+  
+  - name: Enable the eth1 interface
+    command: ifup eth1
+  when: "'Google' in ansible_system_vendor"

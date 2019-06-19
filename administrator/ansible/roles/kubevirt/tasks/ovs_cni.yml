@@ -1,0 +1,11 @@
+---
+- name: Install OVS CNI
+  k8s:
+    state: present
+    resource_definition: "{{ lookup('file', 'files/ovs-cni-manifests/kubernetes-ovs-cni.yml') }}"
+
+- name: Pausing for 1 minute
+  wait_for: timeout=60
+  delegate_to: localhost
+  vars:
+    ansible_become: False

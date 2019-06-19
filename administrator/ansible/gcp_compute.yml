@@ -1,0 +1,26 @@
+plugin: gcp_compute
+zones: # populate inventory with instances in these regions
+  - europe-west4-a
+  - us-central1-b
+projects:
+  - cnvlab-209908
+# You can set this via the GCE_CREDENTIALS_FILE_PATH env var instead:
+#service_account_file: /home/elvis/.ansible/inventory/gce.json
+auth_kind: serviceaccount
+keyed_groups:
+  # Create groups from GCE labels
+  - prefix: gcp
+    key: tags
+groups:
+  push-button: "'kubevirt-button' in (name)"
+  lab: "'kubevirtlab' in (name)"
+scopes:
+ - 'https://www.googleapis.com/auth/cloud-platform'
+ - 'https://www.googleapis.com/auth/compute.readonly'
+hostnames:
+  # List host by name instead of the default public ip
+  - name
+compose:
+  # Set an inventory parameter to use the Public IP address to connect to the host
+  # For Private ip use "networkInterfaces[0].networkIP"
+  ansible_host: networkInterfaces[0].accessConfigs[0].natIP

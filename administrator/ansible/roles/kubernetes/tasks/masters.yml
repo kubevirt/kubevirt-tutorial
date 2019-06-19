@@ -1,0 +1,56 @@
+---
+- name: Initialize Kubernetes
+  command: kubeadm init --pod-network-cidr=10.244.0.0/16 --kubernetes-version {{ kubernetes_version }} --node-name {{ inventory_hostname }}
+  args:
+    creates: /etc/kubernetes/admin.conf
+
+- name: Setup kube configuration for user
+  file:
+    path: /home/{{ ansible_user }}/.kube
+    state: directory
+    owner: "{{ ansible_user }}"
+    mode: 0750
+
+- name: Copy kubeconfig to user home
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /home/{{ ansible_user }}/.kube/config
+    owner: "{{ ansible_user }}"
+    remote_src: yes
+
+- name: Make the master schedulable
+  shell: kubectl taint nodes --all node-role.kubernetes.io/master-
+  register: cmd_result
+  failed_when: "('not found' not in cmd_result.stderr) and (cmd_result.stderr != '')"
+  vars:
+    ansible_become: False
+
+- name: Apply Flannel manifests
+  k8s:
+    state: present
+    resource_definition: "{{ lookup('file', 'files/kube-flannel.yml') }}"
+  vars:
+    ansible_become: False
+
+# TODO: Check for something reasonable, e.g. Flannel DS
+- name: Pausing for 3 minute
+  wait_for: timeout=180
+  delegate_to: localhost
+  vars:
+    ansible_become: False
+
+- name: Scale CoreDNS deployment down to 1 replica
+  k8s:
+    kind: Deployment
+    name: coredns
+    namespace: kube-system
+    resource_definition:
+      spec:
+        replicas: 1
+  vars:
+    ansible_become: False
+
+- name: Allow Priville CoreDNS deployment down to 1 replica
+  shell: "kubectl -n kube-system get deployment coredns -o yaml | sed 's/allowPrivilegeEscalation: false/allowPrivilegeEscalation: true/g' | kubectl apply -f -"
+  vars:
+    ansible_become: False

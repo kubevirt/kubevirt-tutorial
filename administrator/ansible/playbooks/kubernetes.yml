@@ -1,0 +1,20 @@
+---
+- hosts: all
+  become: true
+  vars:
+      kubelet_extra_args: "{{ KUBELET_EXTRA_ARGS | default('--cgroup-driver=systemd') }}"
+      # ansible user could be found on administrator/terraform/gcp/varfiles/opensouthcode19.tfvars
+      # lab_username
+      ansible_user: "kubevirt"
+      # tag_lab could be found on administrator/terraform/gcp/variables.tf
+      # instance_tag="kubevirtlab", take care, by default GCE adds tag_ as a preffix on the tag
+      tag_lab: "tag_kubevirtlab"
+      # Deploy Kubevirt
+      deploy_kubevirt: true
+  roles:
+    - common
+    - kubernetes
+    - { role: kubevirt, ansible_become: false, when: deploy_kubevirt | bool }
+    - { role: local-storage, ansible_become: false }
+    - { role: helm, ansible_become: false, when: deploy_kubevirt | bool }
+    - { role: prometheus, ansible_become: false, when: deploy_kubevirt | bool }

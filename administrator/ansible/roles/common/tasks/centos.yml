@@ -1,0 +1,141 @@
+---
+- name: Add kubernetes EL7 repository
+  yum_repository:
+    name: kubernetes
+    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+    description: EL7 Kubernetes repository
+
+- name: Add Docker CE repo
+  copy:
+    src: files/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+    mode: 0644
+    owner: root
+
+- name: Enable EPEL
+  yum:
+    name: epel-release
+    state: latest
+
+- name: Upgrade them all
+  yum:
+    name: '*'
+    state: latest
+    update_cache: yes
+    update_only: yes
+
+- name: Disable SELinux
+  lineinfile:
+    path: /etc/selinux/config
+    regexp: '^SELINUX=.*'
+    line: "SELINUX=permissive"
+
+- name: Disable sshd UseDNS
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#UseDNS.*'
+    line: "UseDNS no"
+  notify:
+    - reload sshd
+
+- name: Enable IPv4 forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    sysctl_set: yes
+
+- name: Create modules-load file for br_netfilter
+  file:
+    state: touch
+    path: /etc/modules-load.d/br_netfilter.conf
+    mode: 0644
+    owner: root
+    group: root
+
+- name: Add br_netfiltter to auto-load
+  lineinfile:
+    path: /etc/modules-load.d/br_netfilter.conf
+    regexp: '^br_netfilter'
+    line: "br_netfilter"
+
+- name: Load br_netfilter kernel
+  modprobe:
+    name: br_netfilter
+    state: present
+
+- name: Install K8s and dependencies
+  yum:
+    name: "{{ kubernetes_packages }}"
+    state: latest
+  vars:
+    kubernetes_packages:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+    - kubeadm
+    - kubelet
+    - kubectl
+    - xfsprogs
+    - bridge-utils
+    - git
+    - ceph-common
+    - openvswitch
+    - openvswitch-controller
+    - python2-openshift
+    - vim
+    - tmux
+
+- name: Add kubelet extra args
+  lineinfile:
+    path: /etc/sysconfig/kubelet
+    regexp: '^KUBELET_EXTRA_ARGS=.*'
+    line: "KUBELET_EXTRA_ARGS={{ kubelet_extra_args }}"
+  when: kubelet_extra_args | length > 0
+
+- name: Make sure /etc/docker directory exists
+  file:
+    state: directory
+    path: /etc/docker
+    mode: 0755
+    owner: root
+
+- name: Configure docker daemon to use systemd cgroups driver
+  copy:
+    src: files/docker-daemon.json
+    dest: /etc/docker/daemon.json
+    mode: 0644
+    owner: root
+
+- name: Enabling services
+  systemd:
+    state: started
+    enabled: yes
+    name: "{{ item }}"
+  loop:
+    - docker
+    - openvswitch
+
+- name: Add networking files for OVS bridge
+  copy:
+    src: files/{{ item }}
+    dest: /etc/sysconfig/network-scripts/{{ item }}
+    mode: 0644
+    owner: root
+  loop:
+    - ifcfg-eth1
+    - ifcfg-br1
+
+- name: Create ~/.local/bin
+  file:
+    path: /home/{{ ansible_user }}/.local/bin
+    state: directory
+    mode: 0755
+    owner: "{{ ansible_user }}"
+  vars:
+    ansible_become: False
+
+- name: reboot
+  reboot:

@@ -1,0 +1,55 @@
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: kube-multus-ds-amd64
+  namespace: multus
+  labels:
+    tier: node
+    app: multus
+spec:
+  template:
+    metadata:
+      labels:
+        tier: node
+        app: multus
+    spec:
+      hostNetwork: true
+      nodeSelector:
+        beta.kubernetes.io/arch: amd64
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      serviceAccountName: multus
+      containers:
+      - name: kube-multus
+        command: ["/entrypoint.sh"]
+        args: ["--multus-conf-file=/usr/src/multus-cni/images/00-multus.conf"]
+        image: docker.io/nfvpe/multus:latest
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "50Mi"
+          limits:
+            cpu: "100m"
+            memory: "50Mi"
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: cni
+          mountPath: /host/etc/cni/net.d
+        - name: cnibin
+          mountPath: /host/opt/cni/bin
+        - name: multus-cfg
+          mountPath: /usr/src/multus-cni/images/
+      volumes:
+      - name: cni
+        hostPath:
+          path: /etc/cni/net.d
+      - name: cnibin
+        hostPath:
+          path: /opt/cni/bin
+      - name: multus-cfg
+        configMap:
+          name: multus-cni-config

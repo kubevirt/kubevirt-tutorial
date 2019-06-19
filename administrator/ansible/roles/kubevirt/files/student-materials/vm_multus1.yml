@@ -1,0 +1,55 @@
+---
+apiVersion: kubevirt.io/v1alpha3
+kind: VirtualMachine
+metadata:
+  labels:
+    kubevirt-vm: fedora-multus-1
+  name: fedora-multus-1
+spec:
+  running: true
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: fedora-multus-1
+    spec:
+      domain:
+        devices:
+          disks:
+          - disk:
+              bus: virtio
+            name: disk0 
+          - disk:
+              bus: virtio
+            name: cloudinitdisk
+          interfaces:
+          - bridge: {}
+            name: default
+          - bridge: {}
+            macAddress: 20:37:cf:e0:ad:f1
+            name: ovs-net-1
+        machine:
+          type: ""
+        resources:
+          requests:
+            memory: 1024M
+      networks:
+      - name: default
+        pod: {}
+      - multus:
+          networkName: ovs-net-1
+        name: ovs-net-1
+      volumes:
+      - name: disk0
+        containerDisk:
+          image: docker.io/kubevirt/fedora-cloud-container-disk-demo:latest
+      - cloudInitNoCloud:
+          userData: |-
+            #cloud-config
+            password: fedora
+            chpasswd: { expire: False }
+            ssh_pwauth: True
+            runcmd:
+              - nmcli con mod 'Wired connection 1' ipv4.address 11.0.0.5/24
+              - nmcli con mod 'Wired connection 1' ipv4.method static
+              - nmcli con up 'Wired connection 1'
+        name: cloudinitdisk
