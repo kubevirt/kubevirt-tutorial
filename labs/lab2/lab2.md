@@ -82,9 +82,9 @@ statefulset.apps/prometheus-kubevirtlab-prometheus-ope-prometheus       1/1     
 Notice that both *PromUI* and *Grafana* have been exposed on the node's TCP ports 30090 and 30300. Both can be accessed with the following details:
 
 * PromUI
-  * http://<span></span>kubevirtlab-\<number\>.gce.sexylinux.net:30090
+  * http://<span></span>kubevirtlab-\<number\>.try.kubevirt.me:30090
 * Grafana
-  * http://<span></span>kubevirtlab-\<number\>.gce.sexylinux.net:30300
+  * http://<span></span>kubevirtlab-\<number\>.try.kubevirt.me:30300
   * Username: admin
   * Password: kubevirtlab123
 
