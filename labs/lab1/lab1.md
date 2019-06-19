@@ -11,7 +11,7 @@ The naming convention for the lab VMs is: **kubevirtlab-\<number\>.gce.sexylinux
 All the boxes have been provisioned with an SSH public key, so you can SSH into your instance using the ssh key located into [RSA](./RSA) folder.
 
 ```console
-$ wget https://raw.githubusercontent.com/codificat/kubevirt-tutorial-fork/master/labs/lab1/RSA/kubevirt-tutorial
+$ wget https://raw.githubusercontent.com/kubevirt/kubevirt-tutorial/master/labs/lab1/RSA/kubevirt-tutorial
 $ chmod 600 kubevirt-tutorial
 $ ssh-add kubevirt-tutorial
 ```
