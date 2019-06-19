@@ -12,10 +12,32 @@
       tag_lab: "tag_kubevirtlab"
       # Deploy Kubevirt
       deploy_kubevirt: true
+      # Parameter just to indicate the playbooks that are on a testing platform
+      # and avoid to apply some tasks 
+      testing: "{{ TESTING | default(false) }}"
+  pre_tasks:
+      - name: 'Set Testing facts'
+        set_fact:
+            k8s_vers: "{{ TARGET | default('k8s-1.13.3') }}"
+            # Those match with gcr.io/k8s-testimages/bootstrap:v20190516-c6832d9 container image spec
+            ansible_user: 'root'
+            ansible_user_dir: '/workspace'
+        when: testing | bool
+
+      - name: 'Set location of key projects'
+        set_fact:
+            kutu_path: "{{ ansible_user_dir }}/kubevirt-tutorial"
+            kuci_path: "{{ ansible_user_dir }}/kubevirtci"
+        when: testing | bool
+
+      - name: 'Set Kubeconfig location'
+        set_fact:
+            kubeconfig: "{{ kuci_path }}/_ci-configs/{{ k8s_vers }}/.kubeconfig"
+        when: testing | bool
   roles:
-    - common
-    - kubernetes
-    - { role: kubevirt, ansible_become: false, when: deploy_kubevirt | bool }
-    - { role: local-storage, ansible_become: false }
-    - { role: helm, ansible_become: false, when: deploy_kubevirt | bool }
-    - { role: prometheus, ansible_become: false, when: deploy_kubevirt | bool }
+      - { role: common, when: not testing | bool }
+      - { role: kubernetes, when: not testing |bool }
+      - { role: kubevirt, ansible_become: false, when: deploy_kubevirt | bool }
+      - { role: local-storage, ansible_become: false }
+      - { role: helm, ansible_become: false, when: deploy_kubevirt | bool }
+      - { role: prometheus, ansible_become: false, when: deploy_kubevirt | bool }
