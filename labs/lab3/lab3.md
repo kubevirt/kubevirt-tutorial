@@ -20,10 +20,8 @@ $ kubectl wait deployment virt-operator --for condition=available
 deployment.extensions/virt-operator condition met
 
 $ kubectl create -f kubevirt-cr.yaml
-$ kubectl wait deployment virt-api --for condition=available
-deployment.extensions/virt-api condition met
-$ kubectl wait deployment virt-controller --for condition=available
-deployment.extensions/virt-controller condition met
+$ kubectl wait kubevirt kubevirt --for condition=ready
+kubevirt.kubevirt.io/kubevirt condition met
 ```
 
 Let's explore what is being deployed as a result:
