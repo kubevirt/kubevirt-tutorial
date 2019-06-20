@@ -1,10 +1,9 @@
-# Lab 3: Deploy KubeVirt/CDI/UI
+# Lab 3: Deploy KubeVirt and CDI
 
 In this section we're going to deploy the following three components:
 
 * The [KubeVirt Operator](https://github.com/kubevirt/kubevirt) provides a set of Custom Resource Definitions (CRDs) and components required to manage VMs inside Kubernetes
 * The Containerized Data Importer [(CDI) Operator](https://github.com/kubevirt/containerized-data-importer) provides another set of CRDs to facilitate the management of persistent storage for KubeVirt-based VMs
-* The [KubeVirt Web UI](https://github.com/kubevirt/web-ui) provides a graphical environment to manage VM based workloads
 
 ## Install the KubeVirt Operator
 
@@ -129,7 +128,7 @@ Let's summarize what happened on this lab:
   * The operators enabled us to create instances of KubeVirt and CDI as Custom Resources (CRs).
   * By creating CRs for both KubeVirt and CDI, the operators deployed the necessary KubeVirt and CDI components.
 * We verified that KubeVirt's API is available using *virtctl*, the CLI tool to manage KubeVirt VMs.
-* Finally, we've deployed a *ServiceMonitor* object to ask Prometheus to scrap the KubeVirt components, including the VMs we'll be running in subsequent labs.
+* Finally, we've deployed a *ServiceMonitor* object to ask Prometheus to scrape the KubeVirt components, including the VMs we'll be running in subsequent labs.
 
 
 This concludes this section, take your time to review what's been deployed, all the resources, etc and then head off to the next lab!
