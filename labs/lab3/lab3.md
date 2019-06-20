@@ -82,10 +82,8 @@ $ kubectl wait deployment cdi-operator --for condition=available
 deployment.extensions/cdi-operator condition met
 
 $ kubectl create -f cdi-operator-cr.yaml
-$ kubectl wait deployment -l cdi.kubevirt.io --for condition=available
-deployment.extensions/cdi-apiserver condition met
-deployment.extensions/cdi-deployment condition met
-deployment.extensions/cdi-uploadproxy condition met
+$ kubectl wait cdi cdi --for condition=running
+cdi.cdi.kubevirt.io/cdi condition met
 ```
 
 Now, let's see what we've got deployed:
