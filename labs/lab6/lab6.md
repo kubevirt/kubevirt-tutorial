@@ -30,7 +30,7 @@ service/kubevirt-web-ui   NodePort   10.96.35.132   <none>        9000:30000/TCP
 
 ## Explore the KubeVirt UI
 
-Using your browser, head to *http://<your_gcp_instance_hostname>:30000* and you'll be greeted by an status page showing the health of the cluster and a stream of events.
+Using your browser, head to *http://<your_instance_hostname>:30000* and you'll be greeted by an status page showing the health of the cluster and a stream of events.
 
 ![Cluster status page](images/kwebui-01.png)
 
