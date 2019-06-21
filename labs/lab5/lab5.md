@@ -10,7 +10,7 @@ Now let's create this VM and we'll observe the image importing process before th
 
 ```console
 $ cd ~/student-materials/
-$ kubectl create -f vm_datavolume.yaml
+$ kubectl create -f vm_datavolume.yml
 virtualmachine.kubevirt.io/vm2 created
 
 $ kubectl get pods | grep importer
