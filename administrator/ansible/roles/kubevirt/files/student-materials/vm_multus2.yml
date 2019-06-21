@@ -26,7 +26,7 @@ spec:
             name: default
           - bridge: {}
             macAddress: 20:37:cf:e0:ad:f2
-            name: ovs-br1
+            name: ovs-net-1
         machine:
           type: ""
         resources:
@@ -36,8 +36,8 @@ spec:
       - name: default
         pod: {}
       - multus:
-          networkName: ovs-br1
-        name: ovs-br1
+          networkName: ovs-net-1
+        name: ovs-net-1
       volumes:
       - name: disk0
         containerDisk:
