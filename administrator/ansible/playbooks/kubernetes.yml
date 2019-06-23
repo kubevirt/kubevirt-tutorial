@@ -3,6 +3,7 @@
   become: true
   vars:
       kubelet_extra_args: "{{ KUBELET_EXTRA_ARGS | default('--cgroup-driver=systemd') }}"
+      ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
       # ansible user could be found on administrator/terraform/gcp/varfiles/opensouthcode19.tfvars
       # lab_username
       ansible_user: "kubevirt"
