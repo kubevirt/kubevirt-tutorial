@@ -67,6 +67,4 @@ Here we can see that the PVC has an owner, the *vm2-dv* *DataVolume*, and that t
 
 This concludes this lab! Take your time exploring the UI and when your ready head to the next one!
 
-[Next Lab](../lab7/lab7.md)\
-[Previous Lab](../lab5/lab5.md)\
-[Home](../../README.md)
+[<< Previous: Deploy a VM using a DataVolume](../lab5/lab5.md) | [README](../../README.md) | [Next: Using the KubeVirt UI to interact with VMs >>](../lab7/lab7.md)

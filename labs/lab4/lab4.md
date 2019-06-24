@@ -105,6 +105,4 @@ In particular, can you start or stop a VM without *virtctl*?
 
 This concludes this section of the lab, before heading off to the next lab, spend some time describing and exploring the objects this lab created on the cluster.
 
-[Next Lab](../lab5/lab5.md)\
-[Previous Lab](../lab3/lab3.md)\
-[Home](../../README.md)
+[<< Previous: Deploy KubeVirt/CDI/UI](../lab3/lab3.md) | [README](../../README.md) | [Next: Deploy a VM using a DataVolume >>](../lab5/lab5.md)

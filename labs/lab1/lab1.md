@@ -35,6 +35,4 @@ This means the host you are about to connect to is not in your *known_hosts* lis
 
 This concludes this section of the lab.
 
-[Next Lab](../lab2/lab2.md)\
-[Previous Lab](../lab0/lab0.md)\
-[Home](../../README.md)
+[<< Previous: Lab Overview](../lab0/lab0.md) | [README](../../README.md) | [Next: Review the Kubernetes environment >>](../lab2/lab2.md)

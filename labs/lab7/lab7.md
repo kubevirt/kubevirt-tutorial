@@ -10,7 +10,7 @@ You can then access the web UI at `http://kubevirtlab-<number>.<domain>:30000` a
 
 ![kubevirt-ui](images/ui.png)
 
-## Using the KubeVirt web UI 
+## Using the KubeVirt web UI
 
 ### Create a Virtual Machine
 
@@ -75,9 +75,6 @@ Then clicking on a specific pod's name will provide an overview of the pod:
 
 - Is there more than one container in the pod? What does each container do?
 
-
 This concludes this section of the lab.
 
-[Next Lab](../lab8/lab8.md)\
-[Previous Lab](../lab6/lab6.md)\
-[Home](../../README.md)
+[<< Previous: Exploring the KubeVirt UI](../lab6/lab6.md) | [README](../../README.md) | [Next: Deploy a multi-homed VM using Multus >>](../lab8/lab8.md)

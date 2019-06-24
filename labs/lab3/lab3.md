@@ -133,6 +133,4 @@ Let's summarize what happened on this lab:
 
 This concludes this section, take your time to review what's been deployed, all the resources, etc and then head off to the next lab!
 
-[Next Lab](../lab4/lab4.md)\
-[Previous Lab](../lab2/lab2.md)\
-[Home](../../README.md)
+[<< Previous: Review the Kubernetes environment](../lab2/lab2.md) | [README](../../README.md) | [Next: Deploy our first Virtual Machine >>](../lab4/lab4.md)

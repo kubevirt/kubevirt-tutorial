@@ -17,7 +17,7 @@ The goal of the workshop is to show you how to deploy KubeVirt and get familiar 
 
 The clusters for the lab are deployed externally, and the only requisite to follow the workshop is a laptop with a modern web browser to access the web UI and an SSH client to connect to the cluster and execute all the commands.
 
-## Learn more 
+## Learn more
 
 More information about KubeVirt and related components can be found here:
 
@@ -26,5 +26,4 @@ More information about KubeVirt and related components can be found here:
 - [KubeVirt source code](https://github.com/kubevirt/kubevirt) repository
 - [Kubernetes](https://kubernetes.io)
 
-[Next Lab](../lab1/lab1.md)\
-[Home](../../README.md)
+[<< Back to README](../../README.md) | [Next: Introduction / Connectivity >>](../lab1/lab1.md)

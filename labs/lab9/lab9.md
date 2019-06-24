@@ -67,9 +67,6 @@ The dashboard will open right away:
 
 The dashboard counts the different return codes from the API client requests we saw earlier on PromUI and graphs CPU, memory and IOPs for all the VMs running on the cluster.
 
-
 This concludes this lab!
 
-[Next Lab](../lab10/lab10.md)\
-[Previous Lab](../lab8/lab8.md)\
-[Home](../../README.md)
+[<< Previous: Deploy a multi-homed VM using Multus](../lab8/lab8.md) | [README](../../README.md) | [Next: Conclusion >>](../lab10/lab10.md)
