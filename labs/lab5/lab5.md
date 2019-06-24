@@ -139,6 +139,4 @@ Pay special attention to the *Annotations* section where CDI adds interesting me
 
 This concludes this section of the lab, spend some time checking out all the objects and how they relate to each other, then head off to the next lab!
 
-[Next Lab](../lab6/lab6.md)\
-[Previous Lab](../lab5/lab5.md)\
-[Home](../../README.md)
+[<< Previous: Deploy our first Virtual Machine](../lab4/lab4.md) | [README](../../README.md) | [Next: Exploring the KubeVirt UI >>](../lab6/lab6.md)

@@ -1,6 +1,6 @@
 # Lab 2: Review the Kubernetes environment
 
-For the sake of time, some of the required setup has already been taken care of. The following steps wer performed as part of the instance preparation:
+For the sake of time, some of the required setup has already been taken care of. The following steps were performed as part of the instance preparation:
 
 * Installed Kubernetes prerequisites
 * Deployed an all-in-one Kubernetes cluster using *kubeadm*
@@ -95,6 +95,4 @@ Notice that both *PromUI* and *Grafana* have been exposed on the node's TCP port
 
 This concludes this section of the lab.
 
-[Next Lab](../lab3/lab3.md)\
-[Previous Lab](../lab1/lab1.md)\
-[Home](../../README.md)
+[<< Previous: Introduction / Connectivity](../lab1/lab1.md) | [README](../../README.md) | [Next: Deploy KubeVirt/CDI/UI >>](../lab3/lab3.md)

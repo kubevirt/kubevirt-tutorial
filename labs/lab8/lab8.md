@@ -126,6 +126,4 @@ Or
 $ ssh fedora@11.0.0.(5|6)
 ```
 
-[Next Lab](../lab9/lab9.md)\
-[Previous Lab](../lab7/lab7.md)\
-[Home](../../README.md)
+[<< Previous: Using the KubeVirt UI to interact with VMs](../lab7/lab7.md) | [README](../../README.md) | [Next: Exploring Kubevirt metrics >>](../lab9/lab9.md)
