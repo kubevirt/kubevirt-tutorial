@@ -20,11 +20,12 @@
 set +e
 
 function install_ansible() {
+    # Requirements for Ansible playbooks
+    pip install --user kubernetes PyYAML openshift
+
     # Install ansible
     pip install --user ansible
 
-    # Requirements for Ansible playbooks
-    pip install --user kubernetes
 
     # Test ansible installation
     export PATH=${PATH}:${HOME}/.local/bin
