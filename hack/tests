@@ -26,7 +26,6 @@ function install_ansible() {
     # Install ansible
     pip install --user ansible
 
-
     # Test ansible installation
     export PATH=${PATH}:${HOME}/.local/bin
     command ansible --version

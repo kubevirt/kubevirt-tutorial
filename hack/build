@@ -21,14 +21,13 @@ set +e
 
 function install_mdsh() {
 	# Download and install mdsh
-	mkdir -p ${HOME}/bin
-	wget https://raw.githubusercontent.com/bashup/mdsh/master/bin/mdsh -O ${HOME}/bin/mdsh
-	chmod 755 ${HOME}/bin/mdsh
+	wget https://raw.githubusercontent.com/bashup/mdsh/master/bin/mdsh -O "${HOME}/.local/bin/mdsh"
+	chmod 755 "${HOME}/.local/bin/mdsh"
+    export "PATH=${PATH}:${HOME}/.local/bin"
 }
 
 function validations() {
 	# Common duties to perform before the script execution
-
 	BASE_PATH="$(pwd)"
 	BUILD_PATH="${BASE_PATH}/build"
 	mkdir -p "${BUILD_PATH}"
