@@ -27,7 +27,6 @@ function install_ansible() {
     pip install --user ansible
 
     # Test ansible installation
-    export PATH=${PATH}:${HOME}/.local/bin
     command ansible --version
     retVal=$?
     if [[ $retVal -ne 0 ]]; then
@@ -42,6 +41,7 @@ function validations() {
 	KUCI_PATH="${KUTU_PATH}/../kubevirtci"
     KUCI_REPO="https://github.com/kubevirt/kubevirtci.git"
     K8S_VERS="${1}"
+    export PATH=${PATH}:${HOME}/.local/bin
 
     # Check ansible
 	type ansible || install_ansible
@@ -64,6 +64,7 @@ function k8s_cluster() {
 
     # Once on KubevirtCI repo, spin up a K8s cluster
     export TARGET=${K8S_VERS}
+    export KUBEVIRT_NUM_SECONDARY_NICS=1
     make cluster-up
 
     # Get into the cluster context
@@ -74,6 +75,20 @@ function lab_provision() {
     # Provision laboratory into K8s
     cd ${KUTU_PATH}/administrator/ansible
     ANSIBLE_ROLES_PATH=roles ansible-playbook -i "localhost," --connection=local playbooks/kubernetes.yml -e "TESTING=true" -e "TARGET=${TARGET}"
+}
+
+function lab_testing() {
+    # Build Lab bin files and execute it
+    cd ${KUTU_PATH}
+    
+    make build
+    
+    # Decorating the shell
+    export HOME=/workspace
+    export KUBECONFIG=$(${KUCI_PATH}/cluster-up/kubeconfig.sh)
+    alias virtctl="virtctl --kubeconfig=${KUBECONFIG}"
+
+    bash build/all-labs.sh
 }
 
 validations "$1"
