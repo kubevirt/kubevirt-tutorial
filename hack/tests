@@ -94,3 +94,4 @@ function lab_testing() {
 validations "$1"
 k8s_cluster
 lab_provision
+lab_testing

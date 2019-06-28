@@ -58,17 +58,16 @@ function create_binaries() {
 		echo "Error: File or Folder doesn't exists"
 		exit -1
     fi
+}
 
+function concat_binaries() {
 	# Concatenate sh files into the all-in-one test
 	find "${BUILD_PATH}" -name "*.sh" -print0 | sort -z | xargs -0 cat > "/tmp/all-labs.sh"
 	rm -f ${BUILD_PATH}/*
 	mv "/tmp/all-labs.sh" "${BUILD_PATH}/all-labs.sh"
-
     echo "Done!"
-
 }
 
 # $1 is the relative path where the MD files are located
-
 validations "$1"
 create_binaries "$1"
