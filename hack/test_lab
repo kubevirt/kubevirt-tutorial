@@ -40,6 +40,11 @@ function validations() {
     if [[ ! -f ${TEST_FILE} ]]; then
         echo "Test file: ${TEST_FILE} not found"
         exit 1
+	else
+		if [[ ! ${TEST_FILE#.*} =~ '.sh' ]]; then
+			echo "You need a file with '.sh' in order to be tested"
+			exit 0
+		fi
     fi
 
 }

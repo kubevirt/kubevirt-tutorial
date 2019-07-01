@@ -41,6 +41,8 @@ function validations() {
 	KUCI_PATH="${KUTU_PATH}/../kubevirtci"
     KUCI_REPO="https://github.com/kubevirt/kubevirtci.git"
     K8S_VERS="${1}"
+    BUILD_PATH="${KUTU_PATH}/build"
+    HACK_PATH="${KUTU_PATH}/hack"
     export PATH=${PATH}:${HOME}/.local/bin
 
     # Check ansible
@@ -88,8 +90,14 @@ function lab_testing() {
     export KUBECONFIG=$(${KUCI_PATH}/cluster-up/kubeconfig.sh)
     alias virtctl="virtctl --kubeconfig=${KUBECONFIG}"
 
-    bash build/all-labs.sh
+	for test_file in $(ls -1 "${BUILD_PATH}");
+	do
+		${HACK_PATH}/test_lab ${BUILD_PATH}/${test_file}
+	done
+
 }
+
+
 
 validations "$1"
 k8s_cluster
