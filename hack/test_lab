@@ -39,7 +39,7 @@ function validations() {
 
     if [[ ! -f ${TEST_FILE} ]]; then
         echo "Test file: ${TEST_FILE} not found"
-        exit -1
+        exit 1
     fi
 
 }
@@ -59,7 +59,7 @@ function load_test() {
             exec 3>&1 4>&2
             echo "Command: ${_command}" 1>>${LOG_FILE} 
             echo "Output:" 1>>${LOG_FILE}
-            TEST_MAP[${_command}]="$( { time $_command 1>>${LOG_FILE} 2>>${LOG_FILE}; } 2>&1 )" || (RC=ERR && continue)
+            TEST_MAP[${_command}]="$( { time $_command 1>>${LOG_FILE} 2>>${LOG_FILE}; } 2>&1 )" || RC=ERR
             echo "Time: ${TEST_MAP[${_command}]}" 1>>${LOG_FILE}
             echo 1>>${LOG_FILE} 
             REAL_TIME="$(echo "${REAL_TIME} + ${TEST_MAP[${_command}]}" | bc -l)"
@@ -80,6 +80,16 @@ function test_report() {
     echo "Real Time: ${REAL_TIME}"
 }
 
+function test_end() {
+    # This funciton will end the test based on the RC value
+    if [[ ${RC} == "PASS" ]]; then
+        exit 0
+    elif [[ ${RC} == "ERR" ]]; then
+        exit 1
+    fi
+}
+
 validations
 load_test
 test_report
+test_end
