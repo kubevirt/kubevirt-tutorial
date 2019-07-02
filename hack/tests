@@ -41,6 +41,12 @@ function install_bc() {
 	apt-get install /workspace/bc.deb
 }
 
+function find_student_materials(){
+	# When we work with prow, by default the workspace are located on /workspace
+	# instead of $HOME, then we need to redirect the materials properly
+    ln -s /workspace/student-materials ~/student-materials
+}
+
 function validations() {
 	# Common duties to perform before the script execution
 	KUTU_PATH="$(pwd)"
@@ -57,10 +63,11 @@ function validations() {
 	# Check bc
 	type bc || install_bc
 
+	# Check student-materials
+	[[ -d ${HOME}/student-materials ]] || find_student_materials
+
     # Set K8s version to spin up, if empty
-    if [[ -z ${K8S_VERS} ]]; then
-        K8S_VERS="k8s-1.13.3"
-    fi
+    [[ -z ${K8S_VERS} ]] && K8S_VERS="k8s-1.13.3"
 
     # Download KubevirtCI repo
     if [[ ! -d ${KUCI_PATH} ]]; then
@@ -90,6 +97,8 @@ function lab_provision() {
 
 function lab_testing() {
     # Build Lab bin files and execute it
+	declare -a test_results test_ok test_nok
+
     cd ${KUTU_PATH}
     
     make build
@@ -102,13 +111,31 @@ function lab_testing() {
 	for test_file in $(ls -1 "${BUILD_PATH}");
 	do
 		${HACK_PATH}/test_lab ${BUILD_PATH}/${test_file}
+        test_result=$?
+        test_results+=${test_result}
+		if [[ ${test_result} -eq 0 ]]; then
+			test_ok+=${test_result}
+		else
+			test_nok+=${test_result}
+		fi
 	done
-
 }
 
+function test_sumarization() {
+    echo "-------"
+	echo "Tests Done: ${#test_results[@]}"
+	echo "Tests on Passed state: ${#test_ok[@]}"
+	echo "Tests on Error state: ${#test_nok[@]}"
 
+    if [[ ${#test_nok[@]} -ge 1 ]]; then
+		exit 1
+	else
+		exit 0
+	fi
+}
 
 validations "$1"
 k8s_cluster
 lab_provision
 lab_testing
+test_sumarization
