@@ -1,6 +1,6 @@
 BASE_FOLDER ?= $(shell bash -c 'pwd')  # Base repo Folder
 LABS_FOLDER ?= "labs"                  # Relative to the BASE_FOLDER, where the md files are located
-TARGET      ?= "k8s-1.13.3"            # K8s taget based on Kubevirtci k8s supported versions 
+TARGET      ?= "k8s-multus-1.13.3"     # K8s taget based on Kubevirtci k8s supported versions 
 
 default: tests
 

@@ -45,6 +45,13 @@ function find_student_materials(){
 	# When we work with prow, by default the workspace are located on /workspace
 	# instead of $HOME, then we need to redirect the materials properly
     ln -s /workspace/student-materials ~/student-materials
+    ln -s /workspace/kubevirt ~/kubevirt
+
+	# Workaround, error: the path "$HOME/student-materials/kubevirt-servicemonitor.yml" does not exist
+	# seems like the executor does not understand env vars
+    mkdir -p /home/kubevirt
+    ln -s /workspace/kubevirt /home/kubevirt/kubevirt
+    ln -s /workspace/student-materials /home/kubevirt/student-materials
 }
 
 function validations() {
@@ -136,6 +143,7 @@ function test_sumarization() {
 
 validations "$1"
 k8s_cluster
-lab_provision
-lab_testing
-test_sumarization
+#lab_provision
+#lab_testing
+#test_sumarization
+sleep 1000

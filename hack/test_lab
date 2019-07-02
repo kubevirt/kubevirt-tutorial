@@ -17,7 +17,8 @@
 # Copyright 2019 Red Hat, Inc.
 #
 
-set -euo pipefail
+set +e
+#set -euo pipefail
 
 TEST_FILE=$1
 EXPECTED_RC=${2:-PASS}
@@ -64,7 +65,7 @@ function load_test() {
             exec 3>&1 4>&2
             echo "Command: ${_command}" 1>>${LOG_FILE} 
             echo "Output:" 1>>${LOG_FILE}
-            TEST_MAP[${_command}]="$( { time $_command 1>>${LOG_FILE} 2>>${LOG_FILE}; } 2>&1 )" || RC=ERR
+            TEST_MAP[${_command}]=$( { time eval $_command &>>${LOG_FILE}; } 2>&1 ) || RC=ERR
             echo "Time: ${TEST_MAP[${_command}]}" 1>>${LOG_FILE}
             echo 1>>${LOG_FILE} 
             REAL_TIME="$(echo "${REAL_TIME} + ${TEST_MAP[${_command}]}" | bc -l)"
