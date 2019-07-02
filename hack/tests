@@ -35,6 +35,12 @@ function install_ansible() {
     fi
 }
 
+function install_bc() {
+	# Install bc on debian based OS
+	wget http://ftp.us.debian.org/debian/pool/main/b/bc/bc_1.06.95-9+b3_amd64.deb -O /workspace/bc.deb
+	apt-get install /workspace/bc.deb
+}
+
 function validations() {
 	# Common duties to perform before the script execution
 	KUTU_PATH="$(pwd)"
@@ -47,6 +53,9 @@ function validations() {
 
     # Check ansible
 	type ansible || install_ansible
+
+	# Check bc
+	type bc || install_bc
 
     # Set K8s version to spin up, if empty
     if [[ -z ${K8S_VERS} ]]; then
