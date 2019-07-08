@@ -143,7 +143,6 @@ function test_sumarization() {
 
 validations "$1"
 k8s_cluster
-#lab_provision
-#lab_testing
-#test_sumarization
-sleep 1000
+lab_provision
+lab_testing
+test_sumarization
