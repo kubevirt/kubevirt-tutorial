@@ -119,6 +119,13 @@ function lab_testing() {
 	do
 		${HACK_PATH}/test_lab ${BUILD_PATH}/${test_file}
         test_result=$?
+
+        ## Retry if fail
+        if [[ ${test_result} -ne 0 ]]; then
+		    ${HACK_PATH}/test_lab ${BUILD_PATH}/${test_file}
+            test_result=$?
+        fi
+
         test_results+=${test_result}
 		if [[ ${test_result} -eq 0 ]]; then
 			test_ok+=${test_result}
