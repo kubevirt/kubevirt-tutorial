@@ -104,7 +104,6 @@ function lab_provision() {
 
 function lab_testing() {
     # Build Lab bin files and execute it
-	declare -a test_results test_ok test_nok
 
     cd ${KUTU_PATH}
     
@@ -118,19 +117,20 @@ function lab_testing() {
 	for test_file in $(ls -1 "${BUILD_PATH}");
 	do
 		${HACK_PATH}/test_lab ${BUILD_PATH}/${test_file}
-        test_result=$?
+        test_result="$?"
 
         ## Retry if fail
         if [[ ${test_result} -ne 0 ]]; then
+            echo "Retrying Test..."
 		    ${HACK_PATH}/test_lab ${BUILD_PATH}/${test_file}
-            test_result=$?
+            test_result="$?"
         fi
 
-        test_results+=${test_result}
+        test_results+=("${test_result}")
 		if [[ ${test_result} -eq 0 ]]; then
-			test_ok+=${test_result}
+            test_ok+=("${test_result}")
 		else
-			test_nok+=${test_result}
+            test_nok+=("${test_result}")
 		fi
 	done
 }
@@ -147,6 +147,8 @@ function test_sumarization() {
 		exit 0
 	fi
 }
+
+declare -a test_results test_ok test_nok
 
 validations "$1"
 k8s_cluster
