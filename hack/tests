@@ -104,7 +104,6 @@ function lab_provision() {
 
 function lab_testing() {
     # Build Lab bin files and execute it
-
     cd ${KUTU_PATH}
     
     make build
