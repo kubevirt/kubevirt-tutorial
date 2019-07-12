@@ -86,6 +86,12 @@ function test_report() {
     echo "Real Time: ${REAL_TIME}"
 }
 
+function upload_artifacts() {
+    # This function will move the logs generated to the $ARTIFACTS env var
+    # which points to /logs/artifacts/
+    cp -r ${LOG_FOLDER} ${ARTIFACTS}
+}
+
 function test_end() {
     # This funciton will end the test based on the RC value
     if [[ ${RC} == "PASS" ]]; then
@@ -98,4 +104,5 @@ function test_end() {
 validations
 load_test
 test_report
+upload_artifacts
 test_end
