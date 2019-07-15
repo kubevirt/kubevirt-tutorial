@@ -1,0 +1,108 @@
+#!/bin/bash
+#
+# This file is part of the KubeVirt project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Copyright 2019 Red Hat, Inc.
+#
+
+set +e
+#set -euo pipefail
+
+TEST_FILE=$1
+EXPECTED_RC=${2:-PASS}
+BASE_FOLDER="$(dirname "${BASH_SOURCE[0]}" >/dev/null 2>&1 && pwd)/.."
+LOG_FOLDER="${BASE_FOLDER}/logs"
+TEST_NAME=$(basename ${TEST_FILE%.*})
+LOG_FILE="${LOG_FOLDER}/${TEST_NAME}.log"
+RC=PASS
+REAL_TIME=0
+
+function validations() {
+    # Pre-validations that the script needs
+
+    if [[ ! -d ${LOG_FOLDER} ]]; then
+        mkdir -p ${LOG_FOLDER} || continue
+    fi
+
+    touch "${LOG_FILE}" || continue
+
+    if [[ ! -f ${TEST_FILE} ]]; then
+        echo "Test file: ${TEST_FILE} not found"
+        exit 1
+	else
+		if [[ ! ${TEST_FILE#.*} =~ '.sh' ]]; then
+			echo "You need a file with '.sh' in order to be tested"
+			exit 0
+		fi
+    fi
+
+}
+
+function load_test() {
+    # This function will load the raw test file to be executed
+    declare -A TEST_MAP
+	export TIMEFORMAT="%3R"
+
+    while IFS= read -r _command
+	do
+		if [[ -z "$_command" || ${_command} =~ ^#.* ]];then
+			continue
+		else
+            # This creates 2 new fd, in order to redirect the time command output
+            # Also the command-execution time values are stored in an array, maybe could be useful
+            exec 3>&1 4>&2
+            echo "Command: ${_command}" 1>>${LOG_FILE} 
+            echo "Output:" 1>>${LOG_FILE}
+            TEST_MAP[${_command}]=$( { time eval $_command &>>${LOG_FILE}; } 2>&1 ) || RC=ERR
+            echo "Time: ${TEST_MAP[${_command}]}" 1>>${LOG_FILE}
+            echo 1>>${LOG_FILE} 
+            REAL_TIME="$(echo "${REAL_TIME} + ${TEST_MAP[${_command}]}" | bc -l)"
+            exec 3>&- 4>&-
+		fi
+	done < "${TEST_FILE}"
+    # If you need to go through map, just uncomment this
+	#for _command in "${!TEST_MAP[@]}"; do echo "$_command - ${TEST_MAP[$_command]}"; echo ; echo; done
+
+}
+
+function test_report() {
+    # How the test will be reported to the user
+    echo "-------"
+    echo "Test Name: ${TEST_NAME}"
+    echo "Test Result: ${RC}"
+    echo "Test Expected Result: ${EXPECTED_RC}"
+    echo "Real Time: ${REAL_TIME}"
+}
+
+function upload_artifacts() {
+    # This function will move the logs generated to the $ARTIFACTS env var
+    # which points to /logs/artifacts/
+    cp -r ${LOG_FOLDER} ${ARTIFACTS}
+}
+
+function test_end() {
+    # This funciton will end the test based on the RC value
+    if [[ ${RC} == "PASS" ]]; then
+        exit 0
+    elif [[ ${RC} == "ERR" ]]; then
+        exit 1
+    fi
+}
+
+validations
+load_test
+test_report
+upload_artifacts
+test_end

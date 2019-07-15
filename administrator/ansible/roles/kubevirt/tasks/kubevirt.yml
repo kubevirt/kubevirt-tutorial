@@ -2,24 +2,36 @@
 - name: Install virtctl
   get_url:
     url: https://github.com/kubevirt/kubevirt/releases/download/{{ kubevirt_version }}/virtctl-{{ kubevirt_version }}-linux-amd64
-    dest: /home/{{ ansible_user }}/.local/bin/virtctl
+    dest: "{{ ansible_user_dir }}/.local/bin/virtctl"
     mode: 0755
     owner: "{{ ansible_user }}"
     validate_certs: false
   retries: 5
   delay: 5
+  when: not testing | bool
+
+- name: Install virtctl on testing
+  get_url:
+    url: https://github.com/kubevirt/kubevirt/releases/download/{{ kubevirt_version }}/virtctl-{{ kubevirt_version }}-linux-amd64
+    dest: '/root/.local/bin/virtctl'
+    mode: 0755
+    owner: "{{ ansible_user }}"
+    validate_certs: false
+  retries: 5
+  delay: 5
+  when: testing | bool
 
 - name: Create directory for KubeVirt manifests
   file:
     state: directory
-    path: /home/{{ ansible_user }}/kubevirt
+    path: "{{ ansible_user_dir }}/kubevirt"
     mode: 0755
     owner: "{{ ansible_user }}"
 
 - name: Copy KubeVirt manifests
   copy:
     src: files/{{ item }}
-    dest: /home/{{ ansible_user }}/kubevirt/
+    dest: "{{ ansible_user_dir }}/kubevirt/"
     mode: 0755
     owner: "{{ ansible_user }}"
   loop:
@@ -30,5 +42,5 @@
 - name: Copy student materials
   copy:
     src: files/student-materials
-    dest: /home/{{ ansible_user }}/
+    dest: "{{ ansible_user_dir }}/"
     owner: "{{ ansible_user }}"

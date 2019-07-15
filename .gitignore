@@ -3,3 +3,5 @@ cnv_rsa.ppk
 **.terraform
 **tfstate*
 sjr*
+build/*
+logs/*
