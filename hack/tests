@@ -55,6 +55,9 @@ function validations() {
     # Install ansible
     pip3 install ansible
 
+    # Install kubernetes
+    pip3 install kubernetes
+
     # Check student-materials
     [[ -d ${HOME}/student-materials ]] || find_student_materials
 
