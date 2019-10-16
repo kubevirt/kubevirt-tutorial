@@ -58,6 +58,9 @@ function validations() {
     # Install kubernetes
     pip3 install kubernetes
 
+    # Install openshift libraries
+    pip3 install openshift
+
     # Check student-materials
     [[ -d ${HOME}/student-materials ]] || find_student_materials
 
