@@ -35,6 +35,7 @@ function find_student_materials(){
 function validations() {
     # Common duties to perform before the script execution
     KUTU_PATH="$(pwd)"
+    mkdir -p "${HOME}/.local/bin"
     KUCI_PATH="${KUTU_PATH}/../kubevirtci"
     KUCI_REPO="https://github.com/kubevirt/kubevirtci.git"
     K8S_VERS="${1}"
