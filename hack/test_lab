@@ -100,7 +100,7 @@ function test_end() {
     fi
 }
 
-echo "Starting $TEST_FILE test_lab"
+echo -e "\n\nStarting $TEST_FILE test_lab"
 validations
 load_test
 test_report
