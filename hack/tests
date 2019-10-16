@@ -52,6 +52,12 @@ function validations() {
     wget -O get-pip.py https://bootstrap.pypa.io/get-pip.py
     python3 get-pip.py
 
+    # Hack default python to be python3 to avoid later ansible issues
+    update-alternatives --install /usr/bin/python python /usr/bin/python3 9
+    update-alternatives --config python
+
+    ls -l /usr/bin/python
+
     # Install ansible
     pip3 install ansible
 
