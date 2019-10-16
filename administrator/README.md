@@ -68,7 +68,7 @@ ANSIBLE_ROLES_PATH=roles \
 | Component   | Version  |
 | ----------- | -------- |
 | Kubernetes  | stable-1 |
-| kubevirt    | v0.17.0  |
+| kubevirt    | v0.22.0  |
 | cdi         | 1.9.0    |
 
 ## Terraform variable file example
