@@ -101,6 +101,9 @@ function test_end() {
 }
 
 echo -e "\n\nStarting $TEST_FILE test_lab"
+echo "#################### SOURCE OF TEST ####################"
+cat ${TEST_FILE}
+echo -e "#################### SOURCE OF TEST ####################\n"
 validations
 load_test
 test_report
