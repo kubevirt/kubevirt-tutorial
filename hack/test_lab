@@ -67,7 +67,7 @@ function load_test() {
             TEST_MAP[${_command}]=$( { time eval $_command &>>${LOG_FILE}; } 2>&1 ) || RC=ERR
             echo "Time: ${TEST_MAP[${_command}]}" 1>>${LOG_FILE}
             echo 1>>${LOG_FILE}
-            REAL_TIME="$(echo "${REAL_TIME} + ${TEST_MAP[${_command}]}")"
+            REAL_TIME="$(echo "${REAL_TIME} + ${TEST_MAP[${_command}]}" | bc -l)"
             exec 3>&- 4>&-
         fi
     done < "${TEST_FILE}"
