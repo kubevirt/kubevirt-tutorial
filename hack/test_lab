@@ -41,11 +41,11 @@ function validations() {
     if [[ ! -f ${TEST_FILE} ]]; then
         echo "Test file: ${TEST_FILE} not found"
         exit 1
-	else
-		if [[ ! ${TEST_FILE#.*} =~ '.sh' ]]; then
-			echo "You need a file with '.sh' in order to be tested"
-			exit 0
-		fi
+    else
+        if [[ ! ${TEST_FILE#.*} =~ '.sh' ]]; then
+            echo "You need a file with '.sh' in order to be tested"
+            exit 0
+        fi
     fi
 
 }
@@ -53,27 +53,26 @@ function validations() {
 function load_test() {
     # This function will load the raw test file to be executed
     declare -A TEST_MAP
-	export TIMEFORMAT="%3R"
+    export TIMEFORMAT="%3R"
 
-    while IFS= read -r _command
-	do
-		if [[ -z "$_command" || ${_command} =~ ^#.* ]];then
-			continue
-		else
+    while IFS= read -r _command; do
+        if [[ -z "$_command" || ${_command} =~ ^#.* ]];then
+            continue
+        else
             # This creates 2 new fd, in order to redirect the time command output
             # Also the command-execution time values are stored in an array, maybe could be useful
             exec 3>&1 4>&2
-            echo "Command: ${_command}" 1>>${LOG_FILE} 
+            echo "Command: ${_command}" 1>>${LOG_FILE}
             echo "Output:" 1>>${LOG_FILE}
             TEST_MAP[${_command}]=$( { time eval $_command &>>${LOG_FILE}; } 2>&1 ) || RC=ERR
             echo "Time: ${TEST_MAP[${_command}]}" 1>>${LOG_FILE}
-            echo 1>>${LOG_FILE} 
+            echo 1>>${LOG_FILE}
             REAL_TIME="$(echo "${REAL_TIME} + ${TEST_MAP[${_command}]}" | bc -l)"
             exec 3>&- 4>&-
-		fi
-	done < "${TEST_FILE}"
+        fi
+    done < "${TEST_FILE}"
     # If you need to go through map, just uncomment this
-	#for _command in "${!TEST_MAP[@]}"; do echo "$_command - ${TEST_MAP[$_command]}"; echo ; echo; done
+    #for _command in "${!TEST_MAP[@]}"; do echo "$_command - ${TEST_MAP[$_command]}"; echo ; echo; done
 
 }
 
@@ -101,8 +100,13 @@ function test_end() {
     fi
 }
 
+echo -e "\n\nStarting $TEST_FILE test_lab"
+echo "#################### SOURCE OF TEST ####################"
+cat ${TEST_FILE}
+echo -e "#################### SOURCE OF TEST ####################\n"
 validations
 load_test
 test_report
 upload_artifacts
 test_end
+echo "Finished $TEST_FILE test_lab"

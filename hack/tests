@@ -19,72 +19,73 @@
 
 set +e
 
-function install_ansible() {
-    # Requirements for Ansible playbooks
-    pip install --user kubernetes PyYAML openshift
-
-    # Install ansible
-    pip install --user ansible
-
-    # Test ansible installation
-    command ansible --version
-    retVal=$?
-    if [[ $retVal -ne 0 ]]; then
-        echo "I cannot install Ansible ://"
-        exit -1
-    fi
-}
-
-function install_bc() {
-	# Install bc on debian based OS
-	wget http://ftp.us.debian.org/debian/pool/main/b/bc/bc_1.06.95-9+b3_amd64.deb -O /workspace/bc.deb
-	apt-get install /workspace/bc.deb
-}
-
 function find_student_materials(){
-	# When we work with prow, by default the workspace are located on /workspace
-	# instead of $HOME, then we need to redirect the materials properly
+    # When we work with prow, by default the workspace are located on /workspace
+    # instead of $HOME, then we need to redirect the materials properly
     ln -s /workspace/student-materials ~/student-materials
     ln -s /workspace/kubevirt ~/kubevirt
 
-	# Workaround, error: the path "$HOME/student-materials/kubevirt-servicemonitor.yml" does not exist
-	# seems like the executor does not understand env vars
+    # Workaround, error: the path "$HOME/student-materials/kubevirt-servicemonitor.yml" does not exist
+    # seems like the executor does not understand env vars
     mkdir -p /home/kubevirt
     ln -s /workspace/kubevirt /home/kubevirt/kubevirt
     ln -s /workspace/student-materials /home/kubevirt/student-materials
 }
 
 function validations() {
-	# Common duties to perform before the script execution
-	KUTU_PATH="$(pwd)"
-	KUCI_PATH="${KUTU_PATH}/../kubevirtci"
+    # Common duties to perform before the script execution
+    KUTU_PATH="$(pwd)"
+    mkdir -p "${HOME}/.local/bin"
+    KUCI_PATH="${KUTU_PATH}/../kubevirtci"
     KUCI_REPO="https://github.com/kubevirt/kubevirtci.git"
     K8S_VERS="${1}"
     BUILD_PATH="${KUTU_PATH}/build"
     HACK_PATH="${KUTU_PATH}/hack"
     export PATH=${PATH}:${HOME}/.local/bin
 
-    # Check ansible
-	type ansible || install_ansible
+    # Installing apt source
+    add-apt-repository 'deb http://ftp.debian.org/debian stretch main contrib non-free'
+    apt-get update
 
-	# Check bc
-	type bc || install_bc
+    # Install bc on debian based OS
+    wget http://ftp.us.debian.org/debian/pool/main/b/bc/bc_1.06.95-9+b3_amd64.deb -O /workspace/bc.deb
+    apt-get install /workspace/bc.deb
 
-	# Check student-materials
-	[[ -d ${HOME}/student-materials ]] || find_student_materials
+    # Install Python3
+    apt-get -y install python3 wget
+    wget -O get-pip.py https://bootstrap.pypa.io/get-pip.py
+    python3 get-pip.py
+
+    # Hack default python to be python3 to avoid later ansible issues
+    update-alternatives --install /usr/bin/python python /usr/bin/python3 9
+    update-alternatives --config python
+
+    ls -l /usr/bin/python
+
+    # Install ansible
+    pip3 install ansible
+
+    # Install kubernetes
+    pip3 install kubernetes
+
+    # Install openshift libraries
+    pip3 install openshift
+
+    # Check student-materials
+    [[ -d ${HOME}/student-materials ]] || find_student_materials
 
     # Set K8s version to spin up, if empty
     [[ -z ${K8S_VERS} ]] && K8S_VERS="k8s-1.13.3"
 
     # Download KubevirtCI repo
     if [[ ! -d ${KUCI_PATH} ]]; then
-	    mkdir -p "${KUCI_PATH}"
+        mkdir -p "${KUCI_PATH}"
         git clone ${KUCI_REPO} ${KUCI_PATH}
     fi
 }
 
 function k8s_cluster() {
-    # Go to KubevirtCI path 
+    # Go to KubevirtCI path
     cd ${KUCI_PATH}
 
     # Once on KubevirtCI repo, spin up a K8s cluster
@@ -105,46 +106,45 @@ function lab_provision() {
 function lab_testing() {
     # Build Lab bin files and execute it
     cd ${KUTU_PATH}
-    
+
     make build
-    
+
     # Decorating the shell
     export HOME=/workspace
     export KUBECONFIG=$(${KUCI_PATH}/cluster-up/kubeconfig.sh)
     alias virtctl="virtctl --kubeconfig=${KUBECONFIG}"
 
-	for test_file in $(ls -1 "${BUILD_PATH}");
-	do
-		${HACK_PATH}/test_lab ${BUILD_PATH}/${test_file}
+    for test_file in $(ls -1 "${BUILD_PATH}"); do
+        ${HACK_PATH}/test_lab ${BUILD_PATH}/${test_file}
         test_result="$?"
 
         ## Retry if fail
         if [[ ${test_result} -ne 0 ]]; then
             echo "Retrying Test..."
-		    ${HACK_PATH}/test_lab ${BUILD_PATH}/${test_file}
+            ${HACK_PATH}/test_lab ${BUILD_PATH}/${test_file}
             test_result="$?"
         fi
 
         test_results+=("${test_result}")
-		if [[ ${test_result} -eq 0 ]]; then
+        if [[ ${test_result} -eq 0 ]]; then
             test_ok+=("${test_result}")
-		else
+        else
             test_nok+=("${test_result}")
-		fi
-	done
+        fi
+    done
 }
 
 function test_sumarization() {
     echo "-------"
-	echo "Tests Done: ${#test_results[@]}"
-	echo "Tests on Passed state: ${#test_ok[@]}"
-	echo "Tests on Error state: ${#test_nok[@]}"
+    echo "Tests Done: ${#test_results[@]}"
+    echo "Tests on Passed state: ${#test_ok[@]}"
+    echo "Tests on Error state: ${#test_nok[@]}"
 
     if [[ ${#test_nok[@]} -ge 1 ]]; then
-		exit 1
-	else
-		exit 0
-	fi
+        exit 1
+    else
+        exit 0
+    fi
 }
 
 declare -a test_results test_ok test_nok
