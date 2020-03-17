@@ -55,6 +55,7 @@ var _ = Describe("ginkgo_reporters", func() {
 			ProjectId: "QE",
 			PlannedIn: "QE_1.0",
 			Tier:      "tier1",
+			LookupMethod: "id",
 		}
 
 		properties = PolarionProperties{

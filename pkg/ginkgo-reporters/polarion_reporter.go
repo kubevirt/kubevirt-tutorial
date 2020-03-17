@@ -40,6 +40,7 @@ func init() {
 	flag.StringVar(&Polarion.Filename, "polarion-report-file", "polarion_results.xml", "Set Polarion report file path")
 	flag.StringVar(&Polarion.PlannedIn, "polarion-custom-plannedin", "", "Set Polarion planned-in ID")
 	flag.StringVar(&Polarion.Tier, "test-tier", "", "Set test tier number")
+	flag.StringVar(&Polarion.LookupMethod, "polarion-lookup-method", "id", "Set Polarion lookup method - id or name")
 }
 
 type PolarionTestSuite struct {
@@ -85,6 +86,7 @@ type PolarionReporter struct {
 	ProjectId     string
 	PlannedIn     string
 	Tier          string
+	LookupMethod  string
 }
 
 func (reporter *PolarionReporter) SpecSuiteWillBegin(config config.GinkgoConfigType, summary *types.SuiteSummary) {
@@ -102,7 +104,7 @@ func (reporter *PolarionReporter) SpecSuiteWillBegin(config config.GinkgoConfigT
 			},
 			{
 				Name:  "polarion-lookup-method",
-				Value: "id",
+				Value: reporter.LookupMethod,
 			},
 			{
 				Name:  "polarion-custom-plannedin",
