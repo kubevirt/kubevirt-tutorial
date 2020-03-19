@@ -50,16 +50,24 @@ var _ = Describe("ginkgo_reporters", func() {
 		}
 
 		reporter = PolarionReporter{
-			Run:       true,
-			Filename:  "polarion.xml",
-			ProjectId: "QE",
-			PlannedIn: "QE_1.0",
-			Tier:      "tier1",
-			LookupMethod: "id",
+			Run:             true,
+			Filename:        "polarion.xml",
+			ProjectId:       "QE",
+			PlannedIn:       "QE_1.0",
+			LookupMethod:    "id",
+			TestSuiteParams: "OS=EL7 SC=NFS",
 		}
 
 		properties = PolarionProperties{
 			Property: []PolarionProperty{
+				{
+					Name:  "polarion-custom-OS",
+					Value: "EL7",
+				},
+				{
+					Name:  "polarion-custom-SC",
+					Value: "NFS",
+				},
 				{
 					Name:  "polarion-project-id",
 					Value: "QE",
@@ -74,7 +82,7 @@ var _ = Describe("ginkgo_reporters", func() {
 				},
 				{
 					Name:  "polarion-testrun-id",
-					Value: "QE_1.0_tier1",
+					Value: "QE_1.0_EL7_NFS",
 				},
 				{
 					Name:  "polarion-custom-isautomated",
@@ -82,7 +90,7 @@ var _ = Describe("ginkgo_reporters", func() {
 				},
 				{
 					Name:  "polarion-testrun-status-id",
-                    Value: "inprogress",
+					Value: "inprogress",
 				},
 			},
 		}
@@ -148,9 +156,9 @@ var _ = Describe("ginkgo_reporters", func() {
 				},
 			},
 			{
-				Name: fmt.Sprintf("%s: %s", "IS", "A FAILING TEST"),
+				Name:       fmt.Sprintf("%s: %s", "IS", "A FAILING TEST"),
 				Properties: PolarionProperties{},
-				SystemOut: "Test output",
+				SystemOut:  "Test output",
 				FailureMessage: &JUnitFailureMessage{
 					Type:    "Failure",
 					Message: "file/b:4\nERROR MSG\nfile/a:3",
@@ -175,7 +183,6 @@ var _ = Describe("ginkgo_reporters", func() {
 			Filename:  "polarion.xml",
 			ProjectId: "QE",
 			PlannedIn: "QE_1.0",
-			Tier:      "tier1",
 		}
 
 		It("Should info reporter test cases did complete", func() {
@@ -203,7 +210,7 @@ var _ = Describe("ginkgo_reporters", func() {
 			Filename:  "polarion.xml",
 			ProjectId: "QE",
 			PlannedIn: "QE_1.0",
-			Tier:      "tier1",
+			TestSuiteParams: "",
 		}
 
 		It("Should info number of tests, execution time, number of failures & verify report file was created", func() {
