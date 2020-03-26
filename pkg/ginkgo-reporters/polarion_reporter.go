@@ -41,6 +41,7 @@ func init() {
 	flag.StringVar(&Polarion.PlannedIn, "polarion-custom-plannedin", "", "Set Polarion planned-in ID")
 	flag.StringVar(&Polarion.LookupMethod, "polarion-lookup-method", "id", "Set Polarion lookup method - id or name")
 	flag.StringVar(&Polarion.TestSuiteParams, "test-suite-params", "", "Set test suite params in space seperated name=value structure. Note that the values will be appended to the test run ID")
+	flag.StringVar(&Polarion.TestIDPrefix, "test-id-prefix", "", "Set Test ID prefix, in the case it is different than project ID")
 }
 
 type PolarionTestSuite struct {
@@ -85,8 +86,9 @@ type PolarionReporter struct {
 	TestSuiteName   string
 	ProjectId       string
 	PlannedIn       string
-	LookupMethod  string
+	LookupMethod    string
 	TestSuiteParams string
+	TestIDPrefix    string
 }
 
 func (reporter *PolarionReporter) SpecSuiteWillBegin(config config.GinkgoConfigType, summary *types.SuiteSummary) {
@@ -143,7 +145,11 @@ func (reporter *PolarionReporter) handleSetupSummary(name string, setupSummary *
 			Properties: PolarionProperties{},
 		}
 
-		testCase.Properties = extractTestID(name, reporter.ProjectId)
+		if reporter.TestIDPrefix != "" {
+			testCase.Properties = extractTestID(name, reporter.TestIDPrefix)
+		} else {
+			testCase.Properties = extractTestID(name, reporter.ProjectId)
+		}
 
 		testCase.FailureMessage = &JUnitFailureMessage{
 			Type:    reporter.failureTypeForState(setupSummary.State),
@@ -164,7 +170,11 @@ func (reporter *PolarionReporter) SpecDidComplete(specSummary *types.SpecSummary
 		Name: testName,
 	}
 
-	testCase.Properties = extractTestID(testName, reporter.ProjectId)
+	if reporter.TestIDPrefix != "" {
+		testCase.Properties = extractTestID(testName, reporter.TestIDPrefix)
+	} else {
+		testCase.Properties = extractTestID(testName, reporter.ProjectId)
+	}
 
 	if specSummary.State == types.SpecStateFailed || specSummary.State == types.SpecStateTimedOut || specSummary.State == types.SpecStatePanicked {
 		testCase.FailureMessage = &JUnitFailureMessage{
@@ -211,7 +221,7 @@ func (reporter *PolarionReporter) failureTypeForState(state types.SpecState) str
 	}
 }
 
-func extractTestID(testname string, ProjectID string) PolarionProperties {
+func extractTestID(testname string, testPrefix string) PolarionProperties {
 	var re = regexp.MustCompile(`test_id:\d+`)
 	properties := PolarionProperties{}
 	testID := re.FindString(testname)
@@ -221,7 +231,7 @@ func extractTestID(testname string, ProjectID string) PolarionProperties {
 			Property: []PolarionProperty{
 				{
 					Name:  "polarion-testcase-id",
-					Value: ProjectID + "-" + testID,
+					Value: testPrefix + "-" + testID,
 				},
 			},
 		}
