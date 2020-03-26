@@ -150,7 +150,7 @@ var _ = Describe("ginkgo_reporters", func() {
 					Property: []PolarionProperty{
 						{
 							Name:  "polarion-testcase-id",
-							Value: "QE-123",
+							Value: "PREFIX-123",
 						},
 					},
 				},
@@ -170,7 +170,7 @@ var _ = Describe("ginkgo_reporters", func() {
 					Property: []PolarionProperty{
 						{
 							Name:  "polarion-testcase-id",
-							Value: "QE-789",
+							Value: "PREFIX-789",
 						},
 					},
 				},
@@ -183,6 +183,7 @@ var _ = Describe("ginkgo_reporters", func() {
 			Filename:  "polarion.xml",
 			ProjectId: "QE",
 			PlannedIn: "QE_1.0",
+			TestIDPrefix: "PREFIX",
 		}
 
 		It("Should info reporter test cases did complete", func() {
