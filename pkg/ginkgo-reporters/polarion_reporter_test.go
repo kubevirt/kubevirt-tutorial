@@ -56,6 +56,8 @@ var _ = Describe("ginkgo_reporters", func() {
 			PlannedIn:       "QE_1.0",
 			LookupMethod:    "id",
 			TestSuiteParams: "OS=EL7 SC=NFS",
+			TestRunTemplate: "QE_Regression_template",
+			TestRunTitle:    "My run title",
 		}
 
 		properties = PolarionProperties{
@@ -91,6 +93,14 @@ var _ = Describe("ginkgo_reporters", func() {
 				{
 					Name:  "polarion-testrun-status-id",
 					Value: "inprogress",
+				},
+				{
+					Name:  "polarion-testrun-template-id",
+					Value: "QE_Regression_template",
+				},
+				{
+					Name:  "polarion-testrun-title",
+					Value: "My run title",
 				},
 			},
 		}
