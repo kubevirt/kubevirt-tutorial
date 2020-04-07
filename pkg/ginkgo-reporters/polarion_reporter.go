@@ -129,7 +129,7 @@ func (reporter *PolarionReporter) SpecSuiteWillBegin(config config.GinkgoConfigT
 		reporter.Suite.Properties.Property = addProperty(
 			reporter.Suite.Properties.Property, "polarion-testrun-template-id", reporter.TestRunTemplate)
 	}
-	if reporter.TestRunTemplate != "" {
+	if reporter.TestRunTitle != "" {
 		reporter.Suite.Properties.Property = addProperty(
 			reporter.Suite.Properties.Property, "polarion-testrun-title", reporter.TestRunTitle)
 	}
