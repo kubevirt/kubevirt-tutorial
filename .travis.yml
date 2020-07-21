@@ -1,8 +1,7 @@
 language: go
 
 go:
-  - "1.9"
-  - "1.10"
+  - "1.12"
 
 go_import_path: kubevirt.io/qe-tools
 
@@ -10,10 +9,6 @@ install: true
 
 notifications:
   email: false
-
-before_script:
-  - go get github.com/onsi/ginkgo
-  - go get github.com/onsi/gomega
 
 script:
   - make test

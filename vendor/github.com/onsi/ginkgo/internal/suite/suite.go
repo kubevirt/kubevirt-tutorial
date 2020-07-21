@@ -102,6 +102,9 @@ func (suite *Suite) generateSpecsIterator(description string, config config.Gink
 }
 
 func (suite *Suite) CurrentRunningSpecSummary() (*types.SpecSummary, bool) {
+	if !suite.running {
+		return nil, false
+	}
 	return suite.runner.CurrentSpecSummary()
 }
 
@@ -173,6 +176,13 @@ func (suite *Suite) PushJustBeforeEachNode(body interface{}, codeLocation types.
 		suite.failer.Fail("You may only call JustBeforeEach from within a Describe, Context or When", codeLocation)
 	}
 	suite.currentContainer.PushSetupNode(leafnodes.NewJustBeforeEachNode(body, codeLocation, timeout, suite.failer, suite.containerIndex))
+}
+
+func (suite *Suite) PushJustAfterEachNode(body interface{}, codeLocation types.CodeLocation, timeout time.Duration) {
+	if suite.running {
+		suite.failer.Fail("You may only call JustAfterEach from within a Describe or Context", codeLocation)
+	}
+	suite.currentContainer.PushSetupNode(leafnodes.NewJustAfterEachNode(body, codeLocation, timeout, suite.failer, suite.containerIndex))
 }
 
 func (suite *Suite) PushAfterEachNode(body interface{}, codeLocation types.CodeLocation, timeout time.Duration) {

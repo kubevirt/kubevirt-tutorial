@@ -189,10 +189,10 @@ var _ = Describe("ginkgo_reporters", func() {
 		}
 
 		reporter = PolarionReporter{
-			Run:       true,
-			Filename:  "polarion.xml",
-			ProjectId: "QE",
-			PlannedIn: "QE_1.0",
+			Run:          true,
+			Filename:     "polarion.xml",
+			ProjectId:    "QE",
+			PlannedIn:    "QE_1.0",
 			TestIDPrefix: "PREFIX",
 		}
 
@@ -217,10 +217,10 @@ var _ = Describe("ginkgo_reporters", func() {
 		}
 
 		reporter = PolarionReporter{
-			Run:       true,
-			Filename:  "polarion.xml",
-			ProjectId: "QE",
-			PlannedIn: "QE_1.0",
+			Run:             true,
+			Filename:        "polarion.xml",
+			ProjectId:       "QE",
+			PlannedIn:       "QE_1.0",
 			TestSuiteParams: "",
 		}
 
