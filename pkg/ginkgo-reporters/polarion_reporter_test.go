@@ -55,7 +55,7 @@ var _ = Describe("ginkgo_reporters", func() {
 			ProjectId:       "QE",
 			PlannedIn:       "QE_1.0",
 			LookupMethod:    "id",
-			TestSuiteParams: "OS=EL7 SC=NFS",
+			TestSuiteParams: "OS=EL7 SC=NFS,ENV_TIER=TIER1",
 			TestRunTemplate: "QE_Regression_template",
 			TestRunTitle:    "My run title",
 		}
@@ -71,6 +71,10 @@ var _ = Describe("ginkgo_reporters", func() {
 					Value: "NFS",
 				},
 				{
+					Name:  "polarion-custom-ENV_TIER",
+					Value: "TIER1",
+				},
+				{
 					Name:  "polarion-project-id",
 					Value: "QE",
 				},
@@ -84,7 +88,7 @@ var _ = Describe("ginkgo_reporters", func() {
 				},
 				{
 					Name:  "polarion-testrun-id",
-					Value: "QE_1.0_EL7_NFS",
+					Value: "QE_1.0_EL7_NFS_TIER1",
 				},
 				{
 					Name:  "polarion-custom-isautomated",
