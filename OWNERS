@@ -5,13 +5,12 @@ filters:
   "^administrator/.*":
     labels:
       - kind/lab-deployment
-reviewers:
-  - codificat
-  - iranzo
-  - ptrnull
-  - alosadagrande
 approvers:
-  - codificat
-  - iranzo
-  - ptrnull
-  - alosadagrande
+  - mazzystr
+reviewers:
+  - mazzystr
+emeritus_approvers:
+  - codificat # 25 Feb 20201
+  - iranzo # 1 Apr 2020
+  - ptrnull # 1 Apr 2020
+  - alosadagrande # 1 Apr 2020
