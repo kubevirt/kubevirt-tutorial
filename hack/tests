@@ -75,7 +75,7 @@ function validations() {
     [[ -d ${HOME}/student-materials ]] || find_student_materials
 
     # Set K8s version to spin up, if empty
-    [[ -z ${K8S_VERS} ]] && K8S_VERS="k8s-1.13.3"
+    [[ -z ${K8S_VERS} ]] && K8S_VERS="k8s-1.21"
 
     # Download KubevirtCI repo
     if [[ ! -d ${KUCI_PATH} ]]; then
