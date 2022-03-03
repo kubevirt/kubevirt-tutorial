@@ -1,8 +1,8 @@
 module kubevirt.io/qe-tools
 
-go 1.12
+go 1.16
 
 require (
-	github.com/onsi/ginkgo v1.14.0
-	github.com/onsi/gomega v1.10.1
+	github.com/onsi/ginkgo/v2 v2.1.3
+	github.com/onsi/gomega v1.17.0
 )
