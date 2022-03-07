@@ -24,9 +24,9 @@ import (
 	"os"
 	"time"
 
-	. "github.com/onsi/ginkgo"
-	"github.com/onsi/ginkgo/config"
-	"github.com/onsi/ginkgo/types"
+	. "github.com/onsi/ginkgo/v2"
+	"github.com/onsi/ginkgo/v2/config"
+	"github.com/onsi/ginkgo/v2/types"
 	. "github.com/onsi/gomega"
 )
 
@@ -110,7 +110,7 @@ var _ = Describe("ginkgo_reporters", func() {
 		}
 
 		It("Should info reporter test suite name & properties", func() {
-			reporter.SpecSuiteWillBegin(configType, suiteSummary)
+			reporter.SuiteWillBegin(configType, suiteSummary)
 			Expect(reporter.TestSuiteName).To(Equal(suiteSummary.SuiteDescription))
 			Expect(reporter.Suite.Properties).To(Equal(properties))
 		})
@@ -125,13 +125,13 @@ var _ = Describe("ginkgo_reporters", func() {
 			reporter        PolarionReporter
 		)
 		specSummaryPass = &types.SpecSummary{
-			ComponentTexts: []string{"THIS", "IS", "[test_id:123]A PASSING", "TEST"},
+			ComponentTexts: []string{"THIS IS", "[test_id:123]A PASSING", "TEST"},
 			State:          types.SpecStatePassed,
 			CapturedOutput: "Test output",
 		}
 
 		specSummaryFail = &types.SpecSummary{
-			ComponentTexts: []string{"THIS", "IS", "A FAILING", "TEST"},
+			ComponentTexts: []string{"THIS IS", "A FAILING", "TEST"},
 			State:          types.SpecStateFailed,
 			CapturedOutput: "Test output",
 			Failure: types.SpecFailure{
@@ -152,14 +152,14 @@ var _ = Describe("ginkgo_reporters", func() {
 		skipMessage := JUnitSkipped{}
 
 		specSummarySkip = &types.SpecSummary{
-			ComponentTexts: []string{"THIS", "IS", "[test_id:789]A SKIPPING", "TEST"},
+			ComponentTexts: []string{"THIS IS", "[test_id:789]A SKIPPING", "TEST"},
 			State:          types.SpecStateSkipped,
 			CapturedOutput: "Test output",
 		}
 
 		testcases := []PolarionTestCase{
 			{
-				Name: fmt.Sprintf("%s: %s", "IS", "[test_id:123]A PASSING TEST"),
+				Name: fmt.Sprintf("%s: %s", "THIS IS", "[test_id:123]A PASSING TEST"),
 				Properties: PolarionProperties{
 					Property: []PolarionProperty{
 						{
@@ -170,7 +170,7 @@ var _ = Describe("ginkgo_reporters", func() {
 				},
 			},
 			{
-				Name:       fmt.Sprintf("%s: %s", "IS", "A FAILING TEST"),
+				Name:       fmt.Sprintf("%s: %s", "THIS IS", "A FAILING TEST"),
 				Properties: PolarionProperties{},
 				SystemOut:  "Test output",
 				FailureMessage: &JUnitFailureMessage{
@@ -179,7 +179,7 @@ var _ = Describe("ginkgo_reporters", func() {
 				},
 			},
 			{
-				Name: fmt.Sprintf("%s: %s", "IS", "[test_id:789]A SKIPPING TEST"),
+				Name: fmt.Sprintf("%s: %s", "THIS IS", "[test_id:789]A SKIPPING TEST"),
 				Properties: PolarionProperties{
 					Property: []PolarionProperty{
 						{
@@ -229,7 +229,7 @@ var _ = Describe("ginkgo_reporters", func() {
 		}
 
 		It("Should info number of tests, execution time, number of failures & verify report file was created", func() {
-			reporter.SpecSuiteDidEnd(suiteSummary)
+			reporter.SuiteDidEnd(suiteSummary)
 			Expect(reporter.Suite.Tests).To(Equal(3))
 			Expect(reporter.Suite.Time).To(Equal(time.Minute.Seconds()))
 			Expect(reporter.Suite.Failures).To(Equal(1))

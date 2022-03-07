@@ -24,7 +24,7 @@ import (
 	"go/parser"
 	"go/token"
 
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
 	"kubevirt.io/qe-tools/pkg/polarion-xml"
