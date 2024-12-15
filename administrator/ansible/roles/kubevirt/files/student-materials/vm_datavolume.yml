@@ -6,7 +6,7 @@ metadata:
   name: vm2
   namespace: default
 spec:
-  running: true
+  runStrategy: Always
   template:
     metadata:
       labels:

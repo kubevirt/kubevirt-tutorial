@@ -5,7 +5,7 @@ metadata:
     kubevirt.io/os: linux
   name: vm1
 spec:
-  running: false
+  runStrategy: Halted
   template:
     metadata:
       labels:

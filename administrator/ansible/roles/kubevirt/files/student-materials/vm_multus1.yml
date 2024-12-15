@@ -6,7 +6,7 @@ metadata:
     kubevirt-vm: fedora-multus-1
   name: fedora-multus-1
 spec:
-  running: true
+  runStrategy: Always
   template:
     metadata:
       labels:
